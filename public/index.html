@@ -14,7 +14,7 @@
         body {
             font-family: 'Roboto', sans-serif;
             color: #E0E0E0;
-            overflow-x: hidden;
+            overflow-x: hidden; /* Prevent horizontal scroll for the main body */
             background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
         }
 
@@ -77,6 +77,9 @@
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             text-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
             overflow: hidden;
+            white-space: nowrap; /* Prevent text wrapping */
+            flex-shrink: 0; /* Prevent shrinking on smaller screens */
+            min-width: 120px; /* Minimum width for each tab */
         }
 
         .tab-btn::before {
@@ -313,6 +316,37 @@
                 padding: 0.75rem;
                 font-size: 0.875rem;
             }
+
+            /* Adjust header font size for smaller screens */
+            h1 {
+                font-size: 2.5rem; /* Smaller font for h1 on mobile */
+            }
+            p {
+                font-size: 0.9rem; /* Smaller font for general paragraphs */
+            }
+            .tab-btn {
+                font-size: 0.9rem; /* Smaller font for tabs */
+                padding: 1rem 0.5rem; /* Adjust padding for tabs */
+            }
+            .profile-img {
+                width: 100px;
+                height: 100px;
+            }
+            .sound-wave {
+                top: 10px;
+                left: 10px;
+            }
+            .qr-container {
+                padding: 15px;
+            }
+            #qris-modal-content {
+                padding: 20px;
+            }
+            #qris-close-btn {
+                font-size: 1.5rem;
+                top: 10px;
+                right: 10px;
+            }
         }
 
         /* Loading Spinner animation */
@@ -416,7 +450,8 @@
             padding: 30px;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
             text-align: center;
-            max-width: 90%;
+            max-width: 90%; /* Responsive width */
+            width: fit-content; /* Adjust width to content */
             transform: scale(0.8); /* Start smaller for animation */
             opacity: 0; /* Start hidden */
             transition: transform 0.3s ease, opacity 0.3s ease;
@@ -482,6 +517,23 @@
             word-wrap: break-word; /* Break long words */
         }
 
+        /* Rent Card Specific Styles */
+        .rent-card {
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid rgba(100, 116, 139, 0.3);
+            transition: all 0.3s ease;
+        }
+        .rent-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(14, 165, 233, 0.3);
+        }
+        .rent-card .price {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            color: #38bdf8;
+            text-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+        }
+
     </style>
 </head>
 <body class="bg-slate-900 min-h-screen">
@@ -518,22 +570,27 @@
             </header>
 
             <!-- Enhanced Navigation -->
-            <nav class="flex glass-panel-secondary border-b-2 border-slate-800/50 relative">
-                <button id="dashboard-tab" class="tab-btn active flex-1 p-6 text-lg font-orbitron border-b-4 border-transparent relative z-10">
+            <!-- Added overflow-x-auto for horizontal scrolling on small screens -->
+            <nav class="flex glass-panel-secondary border-b-2 border-slate-800/50 relative overflow-x-auto">
+                <button id="dashboard-tab" class="tab-btn active flex-shrink-0 p-6 text-lg md:text-xl font-orbitron border-b-4 border-transparent relative z-10">
                     <i class="fas fa-tachometer-alt mr-3 text-xl"></i>
                     <span>Dashboard</span>
                 </button>
-                <button id="contact-tab" class="tab-btn flex-1 p-6 text-lg font-orbitron border-b-4 border-transparent relative z-10">
-                    <i class="fas fa-user-astronaut mr-3 text-xl"></i>
-                    <span>Hubungi Dev</span>
-                </button>
-                <button id="ai-tab" class="tab-btn flex-1 p-6 text-lg font-orbitron border-b-4 border-transparent relative z-10">
+                <button id="ai-tab" class="tab-btn flex-shrink-0 p-6 text-lg md:text-xl font-orbitron border-b-4 border-transparent relative z-10">
                     <i class="fas fa-robot mr-3 text-xl"></i>
                     <span>AI Assistant</span>
                 </button>
+                <button id="rent-tab" class="tab-btn flex-shrink-0 p-6 text-lg md:text-xl font-orbitron border-b-4 border-transparent relative z-10">
+                    <i class="fas fa-handshake mr-3 text-xl"></i>
+                    <span>Sewa</span>
+                </button>
+                <button id="contact-tab" class="tab-btn flex-shrink-0 p-6 text-lg md:text-xl font-orbitron border-b-4 border-transparent relative z-10">
+                    <i class="fas fa-user-astronaut mr-3 text-xl"></i>
+                    <span>Hubungi Dev</span>
+                </button>
 
                 <!-- Active Tab Indicator -->
-                <div id="tab-indicator" class="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-sky-400 to-blue-500 transition-all duration-500 ease-out" style="width: 33.33%;"></div>
+                <div id="tab-indicator" class="absolute bottom-0 h-1 bg-gradient-to-r from-sky-400 to-blue-500 transition-all duration-500 ease-out"></div>
             </nav>
 
             <!-- Enhanced Content -->
@@ -544,7 +601,7 @@
                     <div id="payment-content" class="animate-fadeInUp">
 
                         <!-- Payment Type Selection -->
-                        <div class="flex justify-center gap-6 mb-8">
+                        <div class="flex flex-col md:flex-row justify-center gap-6 mb-8">
                             <button data-type="ewallet" class="payment-type-btn method-btn active px-8 py-4 rounded-xl text-lg font-semibold">
                                 <i class="fas fa-wallet mr-3 text-xl"></i>E-Wallet
                             </button>
@@ -583,11 +640,11 @@
                                         <p class="text-slate-300 text-lg mb-4">
                                             Transfer ke <span id="method-name" class="font-bold text-sky-300"></span>:
                                         </p>
-                                        <div class="flex items-center justify-center gap-6">
+                                        <div class="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6">
                                             <div class="glass-panel px-6 py-4 rounded-xl">
-                                                <p id="payment-number" class="text-3xl font-orbitron text-sky-300 font-bold"></p>
+                                                <p id="payment-number" class="text-2xl sm:text-3xl font-orbitron text-sky-300 font-bold"></p>
                                             </div>
-                                            <button id="copy-btn" title="Salin Nomor" class="method-btn active w-14 h-14 rounded-full text-xl flex items-center justify-center shadow-2xl hover:scale-110 transition-all duration-300">
+                                            <button id="copy-btn" title="Salin Nomor" class="method-btn active w-12 h-12 sm:w-14 sm:h-14 rounded-full text-xl flex items-center justify-center shadow-2xl hover:scale-110 transition-all duration-300">
                                                 <i class="far fa-copy"></i>
                                             </button>
                                         </div>
@@ -654,6 +711,65 @@
                                 <p class="text-slate-400">Jawaban AI akan muncul di sini...</p>
                                 <div id="ai-loading-spinner" class="hidden absolute inset-0 flex items-center justify-center bg-slate-800/70 rounded-xl">
                                     <div class="loading-spinner"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Rent View -->
+                <div id="rent-view" class="p-8 hidden">
+                    <div class="text-center animate-fadeInUp">
+                        <h2 class="text-3xl font-orbitron mb-8 text-sky-300">
+                            <i class="fas fa-handshake mr-3"></i>
+                            Sewa Layanan
+                        </h2>
+
+                        <p class="text-slate-300 text-lg mb-8">Pilih paket sewa yang sesuai dengan kebutuhan Anda.</p>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <!-- 7 Days Package -->
+                            <div class="rent-card glass-panel-secondary rounded-2xl p-6 flex flex-col items-center justify-between">
+                                <div class="text-center">
+                                    <i class="fas fa-calendar-week text-5xl text-purple-400 mb-4"></i>
+                                    <h3 class="text-2xl font-bold text-white mb-2">7 Hari</h3>
+                                    <p class="text-slate-400 mb-4">Akses singkat untuk kebutuhan mendesak.</p>
+                                </div>
+                                <div class="flex flex-col items-center">
+                                    <p class="price text-4xl mb-4">Rp10K</p>
+                                    <a href="https://t.me/miwasogg" target="_blank" rel="noopener noreferrer" class="rent-now-btn method-btn active px-6 py-3 rounded-xl text-base font-semibold">
+                                        Sewa Sekarang
+                                    </a>
+                                </div>
+                            </div>
+
+                            <!-- 1 Month Package -->
+                            <div class="rent-card glass-panel-secondary rounded-2xl p-6 flex flex-col items-center justify-between">
+                                <div class="text-center">
+                                    <i class="fas fa-calendar-alt text-5xl text-green-400 mb-4"></i>
+                                    <h3 class="text-2xl font-bold text-white mb-2">1 Bulan</h3>
+                                    <p class="text-slate-400 mb-4">Solusi ideal untuk penggunaan bulanan.</p>
+                                </div>
+                                <div class="flex flex-col items-center">
+                                    <p class="price text-4xl mb-4">Rp30K</p>
+                                    <a href="https://t.me/miwasogg" target="_blank" rel="noopener noreferrer" class="rent-now-btn method-btn active px-6 py-3 rounded-xl text-base font-semibold">
+                                        Sewa Sekarang
+                                    </a>
+                                </div>
+                            </div>
+
+                            <!-- 1 Year Package -->
+                            <div class="rent-card glass-panel-secondary rounded-2xl p-6 flex flex-col items-center justify-between">
+                                <div class="text-center">
+                                    <i class="fas fa-calendar-check text-5xl text-red-400 mb-4"></i>
+                                    <h3 class="text-2xl font-bold text-white mb-2">1 Tahun</h3>
+                                    <p class="text-slate-400 mb-4">Hemat lebih banyak dengan paket tahunan.</p>
+                                </div>
+                                <div class="flex flex-col items-center">
+                                    <p class="price text-4xl mb-4">Rp300K</p>
+                                    <a href="https://t.me/miwasogg" target="_blank" rel="noopener noreferrer" class="rent-now-btn method-btn active px-6 py-3 rounded-xl text-base font-semibold">
+                                        Sewa Sekarang
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -962,11 +1078,15 @@
 
             // Tab Switching Logic
             const dashboardTab = document.getElementById('dashboard-tab');
+            const aiTab = document.getElementById('ai-tab');
+            const rentTab = document.getElementById('rent-tab'); // New Rent tab
             const contactTab = document.getElementById('contact-tab');
-            const aiTab = document.getElementById('ai-tab'); // New AI tab
+
             const dashboardView = document.getElementById('dashboard-view');
+            const aiAssistantView = document.getElementById('ai-assistant-view');
+            const rentView = document.getElementById('rent-view'); // New Rent view
             const contactView = document.getElementById('contact-view');
-            const aiAssistantView = document.getElementById('ai-assistant-view'); // New AI view
+
             const tabIndicator = document.getElementById('tab-indicator');
 
             /**
@@ -982,8 +1102,9 @@
 
                 // Hide all content views
                 dashboardView.classList.add('hidden');
+                aiAssistantView.classList.add('hidden');
+                rentView.classList.add('hidden'); // Hide Rent view
                 contactView.classList.add('hidden');
-                aiAssistantView.classList.add('hidden'); // Hide AI view
 
                 // Show the active content view and apply animation
                 activeContentView.classList.remove('hidden');
@@ -1012,12 +1133,16 @@
                 switchTab(dashboardTab, dashboardView);
             });
 
-            contactTab.addEventListener('click', () => {
-                switchTab(contactTab, contactView);
-            });
-
             aiTab.addEventListener('click', () => {
                 switchTab(aiTab, aiAssistantView);
+            });
+
+            rentTab.addEventListener('click', () => { // Event listener for new Rent tab
+                switchTab(rentTab, rentView);
+            });
+
+            contactTab.addEventListener('click', () => {
+                switchTab(contactTab, contactView);
             });
 
             // Payment Type Switching (E-Wallet / QRIS)
@@ -1208,6 +1333,20 @@
             });
             sendAiQueryBtn.addEventListener('mouseleave', () => {
                 sendAiQueryBtn.classList.remove('pressed');
+            });
+
+            // Add pressed animation and sound to rent buttons (now anchor tags)
+            document.querySelectorAll('.rent-now-btn').forEach(button => {
+                button.addEventListener('click', playClickSound);
+                button.addEventListener('mousedown', () => {
+                    button.classList.add('pressed');
+                });
+                button.addEventListener('mouseup', () => {
+                    button.classList.remove('pressed');
+                });
+                button.addEventListener('mouseleave', () => {
+                    button.classList.remove('pressed');
+                });
             });
         });
     </script>
