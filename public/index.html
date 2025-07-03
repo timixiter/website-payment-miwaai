@@ -3,669 +3,969 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cosmic Payment Gateway</title>
+    <title>Cosmic Payment Gateway - Enhanced</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
-    
-    <!-- Impor Three.js -->
-    <script type="importmap">
-    {
-        "imports": {
-            "three": "https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.module.js"
-        }
-    }
-    </script>
-
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --glow-color: #0ea5e9; /* sky-500 */
-        }
+        /* Base styles for body and fonts */
         body {
             font-family: 'Roboto', sans-serif;
             color: #E0E0E0;
-            background-color: #02040a;
-            overflow: hidden;
+            overflow-x: hidden;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
         }
+
         h1, h2, h3, .font-orbitron {
             font-family: 'Orbitron', sans-serif;
         }
 
-        /* Canvas untuk latar belakang 3D Three.js */
-        #three-canvas {
+        /* Enhanced Starfield for background */
+        #starfield {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             z-index: -1;
+            background: radial-gradient(ellipse at center, #0f1419 0%, #020204 100%);
         }
 
-        /* Efek glassmorphism utama */
+        /* Advanced Glassmorphism effect for panels */
         .glass-panel {
-            background: rgba(15, 23, 42, 0.65);
-            backdrop-filter: blur(16px) saturate(180%);
-            -webkit-backdrop-filter: blur(16px) saturate(180%);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 0 25px rgba(0,0,0,0.3), 0 0 40px rgba(var(--glow-color), 0.2);
-            transition: opacity 0.5s ease, transform 0.5s ease;
-        }
-        
-        .main-panel.hidden {
-            opacity: 0;
-            transform: scale(0.95) translateY(20px);
-            pointer-events: none;
+            background: rgba(15, 23, 42, 0.3);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            box-shadow:
+                0 8px 32px 0 rgba(0, 0, 0, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
         }
 
-        /* Gaya tab */
+        .glass-panel-secondary {
+            background: rgba(30, 41, 59, 0.4);
+            backdrop-filter: blur(15px) saturate(150%);
+            -webkit-backdrop-filter: blur(15px) saturate(150%);
+            border: 1px solid rgba(100, 116, 139, 0.2);
+            box-shadow:
+                0 4px 24px 0 rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        }
+
+        /* Holographic animation for header */
+        .holographic {
+            background: linear-gradient(45deg,
+                rgba(56, 189, 248, 0.1) 0%,
+                rgba(168, 85, 247, 0.1) 25%,
+                rgba(236, 72, 153, 0.1) 50%,
+                rgba(56, 189, 248, 0.1) 75%,
+                rgba(168, 85, 247, 0.1) 100%);
+            background-size: 400% 400%;
+            animation: holographicShift 8s ease infinite;
+        }
+
+        @keyframes holographicShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        /* Enhanced Tab Buttons styling */
         .tab-btn {
-            transition: all 0.3s ease;
-            text-shadow: 0 0 8px rgba(var(--glow-color), 0.7);
+            position: relative;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            text-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+            overflow: hidden;
         }
+
+        .tab-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.3), transparent);
+            transition: left 0.8s;
+        }
+
+        .tab-btn:hover::before {
+            left: 100%;
+        }
+
         .tab-btn.active {
-            background: rgba(14, 165, 233, 0.25);
+            background: rgba(56, 189, 248, 0.25);
             color: #f0f9ff;
-            border-bottom-color: var(--glow-color);
-            box-shadow: 0 2px 15px -5px rgba(var(--glow-color), 0.5);
-        }
-        .tab-btn:not(.active):hover {
-            background: rgba(14, 165, 233, 0.1);
-            border-bottom-color: rgba(var(--glow-color), 0.5);
+            border-bottom-color: #0ea5e9;
+            box-shadow: 0 0 20px rgba(14, 165, 233, 0.4);
         }
 
-        /* Tombol dan elemen interaktif */
+        /* Enhanced Payment Method Buttons styling */
         .method-btn {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            transition: all 0.3s ease;
-            text-shadow: 0 0 3px rgba(0,0,0,0.5);
+            position: relative;
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid rgba(100, 116, 139, 0.3);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
         }
+
+        .method-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: radial-gradient(circle, rgba(14, 165, 233, 0.3) 0%, transparent 70%);
+            transition: all 0.6s ease;
+            transform: translate(-50%, -50%);
+        }
+
+        .method-btn:hover::before {
+            width: 200%;
+            height: 200%;
+        }
+
         .method-btn:hover {
-            background: rgba(14, 165, 233, 0.3);
-            border-color: var(--glow-color);
-            transform: translateY(-4px) scale(1.02);
-            box-shadow: 0 0 20px rgba(var(--glow-color), 0.6);
+            background: rgba(56, 189, 248, 0.15);
+            border-color: #0ea5e9;
+            transform: translateY(-5px) scale(1.02);
+            box-shadow:
+                0 10px 25px rgba(14, 165, 233, 0.3),
+                0 0 15px rgba(14, 165, 233, 0.2);
         }
+
         .method-btn.active {
-            background: var(--glow-color);
-            color: #02040a;
+            background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+            color: #ffffff;
             font-weight: 700;
-            border-color: var(--glow-color);
-            box-shadow: 0 0 25px rgba(var(--glow-color), 0.8), 0 0 50px rgba(var(--glow-color), 0.5);
-            transform: translateY(-2px);
+            border-color: #0ea5e9;
+            box-shadow:
+                0 15px 30px rgba(14, 165, 233, 0.4),
+                0 0 25px rgba(14, 165, 233, 0.3);
+            transform: translateY(-3px) scale(1.05);
         }
-        
-        /* Animasi */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.9); }
-            to { opacity: 1; transform: scale(1); }
-        }
-        .animate-fadeIn { animation: fadeIn 1s ease-out forwards; }
 
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
+        /* New: Button pressed animation */
+        .method-btn.pressed, .tab-btn.pressed, #music-toggle-btn.pressed {
+            transform: scale(0.95);
+            transition: transform 0.1s ease-out;
         }
-        .animate-slideUp { animation: slideUp 0.7s ease-out forwards; }
-        
+
+
+        /* Profile Image Enhancement with glowing border */
+        .profile-img {
+            position: relative;
+            transition: all 0.5s ease;
+        }
+
+        .profile-img::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            right: -5px;
+            bottom: -5px;
+            background: linear-gradient(45deg, #0ea5e9, #8b5cf6, #ec4899, #0ea5e9);
+            background-size: 400% 400%;
+            border-radius: 50%;
+            z-index: -1;
+            animation: gradientSpin 4s ease infinite;
+        }
+
+        @keyframes gradientSpin {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .profile-img:hover {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        /* Keyframe animations for various elements */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
         @keyframes pulseGlow {
-            0%, 100% { box-shadow: 0 0 20px rgba(var(--glow-color), 0.6); }
-            50% { box-shadow: 0 0 35px rgba(var(--glow-color), 1); }
-        }
-        .animate-pulseGlow { animation: pulseGlow 2.5s infinite; }
-
-        /* Area Chat AI */
-        .chat-container {
-            height: 400px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            padding: 15px;
-            background: rgba(2, 6, 23, 0.7);
-            border-radius: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .chat-message {
-            max-width: 85%;
-            padding: 12px 18px;
-            border-radius: 18px;
-            line-height: 1.5;
-            word-wrap: break-word;
-            opacity: 0;
-            transform: translateY(10px);
-            animation: slideUp 0.4s ease forwards;
-        }
-        .chat-message.user {
-            background: linear-gradient(135deg, #0ea5e9, #0284c7);
-            color: #fff;
-            align-self: flex-end;
-            border-bottom-right-radius: 4px;
-        }
-        .chat-message.ai {
-            background: #334155; /* slate-700 */
-            color: #E0E0E0;
-            align-self: flex-start;
-            border-bottom-left-radius: 4px;
-        }
-        .chat-input {
-            border: 1px solid #475569;
-            background-color: #1e293b;
-        }
-        .chat-input:focus {
-            border-color: var(--glow-color);
-            box-shadow: 0 0 0 2px rgba(var(--glow-color), 0.5);
-        }
-        
-        /* Indikator pengetikan AI */
-        .loading-dots span {
-            display: inline-block;
-            width: 9px;
-            height: 9px;
-            margin: 0 3px;
-            background-color: #94a3b8;
-            border-radius: 50%;
-            animation: bounce 1.4s infinite ease-in-out both;
-        }
-        .loading-dots span:nth-child(1) { animation-delay: -0.32s; }
-        .loading-dots span:nth-child(2) { animation-delay: -0.16s; }
-        @keyframes bounce {
-            0%, 80%, 100% { transform: scale(0); }
-            40% { transform: scale(1.0); }
+            0%, 100% {
+                box-shadow: 0 0 20px rgba(14, 165, 233, 0.4);
+                border-color: rgba(14, 165, 233, 0.6);
+            }
+            50% {
+                box-shadow: 0 0 40px rgba(14, 165, 233, 0.8);
+                border-color: rgba(14, 165, 233, 1);
+            }
         }
 
-        /* Avatar AI */
-        #ai-avatar {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            width: 70px;
-            height: 70px;
+        @keyframes floatAnimation {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Applying animations with Tailwind classes */
+        .animate-fadeInUp { animation: fadeInUp 0.8s ease-out forwards; }
+        .animate-slideInLeft { animation: slideInLeft 0.6s ease-out forwards; }
+        .animate-slideInRight { animation: slideInRight 0.6s ease-out forwards; }
+        .animate-pulseGlow { animation: pulseGlow 3s infinite; }
+        .animate-float { animation: floatAnimation 3s ease-in-out infinite; }
+
+        /* QR Code Container styling */
+        .qr-container {
+            position: relative;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow:
+                0 20px 40px rgba(0, 0, 0, 0.3),
+                0 0 30px rgba(14, 165, 233, 0.2);
+        }
+
+        .qr-container::before {
+            content: '';
+            position: absolute;
+            top: -3px;
+            left: -3px;
+            right: -3px;
+            bottom: -3px;
+            background: linear-gradient(45deg, #0ea5e9, #8b5cf6, #ec4899, #0ea5e9);
+            background-size: 400% 400%;
+            border-radius: 23px;
+            z-index: -1;
+            animation: gradientSpin 6s ease infinite;
+        }
+
+        /* Enhanced Notification styling */
+        .notification {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            box-shadow:
+                0 10px 25px rgba(16, 185, 129, 0.3),
+                0 0 20px rgba(16, 185, 129, 0.2);
+        }
+
+        /* Particle Effects styling */
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(56, 189, 248, 0.6);
             border-radius: 50%;
-            cursor: pointer;
-            z-index: 1000;
+            pointer-events: none;
+            animation: particleFloat 4s linear infinite;
+        }
+
+        @keyframes particleFloat {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Responsive adjustments for smaller screens */
+        @media (max-width: 640px) {
+            .glass-panel {
+                margin: 1rem;
+                border-radius: 1rem;
+            }
+
+            .method-btn {
+                padding: 0.75rem;
+                font-size: 0.875rem;
+            }
+        }
+
+        /* Loading Spinner animation */
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(56, 189, 248, 0.3);
+            border-top: 4px solid #38bdf8;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Sound Wave Animation for header */
+        .sound-wave {
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.4s ease;
-        }
-        #ai-avatar::before {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(14, 165, 233, 0.8) 0%, rgba(15, 23, 42, 0.5) 70%);
-            animation: pulseGlow 3s infinite, rotateGlow 10s linear infinite;
-            box-shadow: 0 0 15px rgba(var(--glow-color), 0.5), 0 0 30px rgba(var(--glow-color), 0.3);
-        }
-        #ai-avatar:hover {
-            transform: scale(1.1);
-        }
-        #ai-avatar i {
-            font-size: 2rem;
-            color: #f0f9ff;
-            text-shadow: 0 0 10px #fff;
-            z-index: 1;
-        }
-        @keyframes rotateGlow {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+            gap: 2px;
         }
 
-        /* Tombol Mute */
-        #mute-btn {
-            position: fixed;
-            top: 1.5rem;
-            right: 1.5rem;
-            width: 45px;
-            height: 45px;
-            z-index: 1000;
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: #94a3b8;
+        .sound-wave div {
+            width: 3px;
+            height: 20px;
+            background: linear-gradient(to top, #0ea5e9, #38bdf8);
+            border-radius: 2px;
+            animation: soundWave 1.5s ease-in-out infinite;
         }
-        #mute-btn:hover {
-            background: rgba(14, 165, 233, 0.2);
-            color: #fff;
+
+        .sound-wave div:nth-child(2) { animation-delay: 0.1s; }
+        .sound-wave div:nth-child(3) { animation-delay: 0.2s; }
+        .sound-wave div:nth-child(4) { animation-delay: 0.3s; }
+        .sound-wave div:nth-child(5) { animation-delay: 0.4s; }
+
+        @keyframes soundWave {
+            0%, 100% { transform: scaleY(1); }
+            50% { transform: scaleY(0.3); }
+        }
+
+        /* Music Toggle Button */
+        #music-toggle-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 5px 15px rgba(139, 92, 246, 0.4);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        #music-toggle-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 20px rgba(139, 92, 246, 0.6);
         }
     </style>
 </head>
-<body class="bg-slate-950">
+<body class="bg-slate-900 min-h-screen">
 
-    <canvas id="three-canvas"></canvas>
-    
-    <audio id="ambient-sound" loop>
-        <source src="https://files.catbox.moe/l2b3o6.mp3" type="audio/mpeg">
-    </audio>
-    
-    <button id="mute-btn" class="rounded-full flex items-center justify-center transition-all duration-300">
-        <i id="mute-icon" class="fas fa-volume-off"></i>
-    </button>
+    <canvas id="starfield"></canvas>
 
-    <div id="ai-avatar" title="Buka Panel">
-        <i class="fas fa-satellite-dish"></i>
-    </div>
+    <!-- Particle Container -->
+    <div id="particles-container" class="fixed inset-0 pointer-events-none z-0"></div>
 
-    <div class="min-h-screen w-full flex items-center justify-center p-4">
-        <main id="main-panel" class="w-full max-w-2xl glass-panel rounded-2xl overflow-hidden animate-fadeIn main-panel">
-            <header class="p-6 border-b border-slate-700/50 text-center relative">
-                <div class="absolute top-4 left-4 text-xs text-sky-400 opacity-70">
-                    <i class="fas fa-signal"></i> STATUS: SECURE
+    <div class="min-h-screen flex items-center justify-center p-4 animate-fadeInUp">
+        <main class="w-full max-w-3xl glass-panel rounded-3xl overflow-hidden shadow-2xl">
+
+            <!-- Enhanced Header -->
+            <header class="holographic p-8 border-b border-slate-700/30 text-center relative overflow-hidden">
+                <div class="sound-wave absolute top-4 left-4 opacity-50">
+                    <div></div><div></div><div></div><div></div><div></div>
                 </div>
-                <img src="https://files.catbox.moe/4ya0zn.jpg" alt="Profil Developer" class="w-24 h-24 rounded-full mx-auto border-4 border-slate-700 shadow-lg mb-4 ring-2 ring-sky-500/50 hover:ring-sky-400 transition-all duration-300">
-                <h1 class="text-3xl font-bold tracking-wider text-white">COSMIC PAYMENT</h1>
-                <p class="text-sm text-slate-400 mt-1">Gateway Pembayaran Futuristik oleh MiwaaGOD</p>
+
+                <div class="profile-img w-32 h-32 rounded-full mx-auto mb-6 animate-float">
+                    <img src="https://files.catbox.moe/4ya0zn.jpg" alt="Profil Developer" class="w-full h-full rounded-full object-cover border-4 border-slate-700 shadow-2xl">
+                </div>
+
+                <h1 class="text-4xl md:text-5xl font-bold tracking-wider text-white mb-2 animate-slideInLeft">
+                    COSMIC PAYMENT
+                </h1>
+                <p class="text-slate-300 text-lg animate-slideInRight">
+                    <i class="fas fa-rocket mr-2"></i>
+                    Next-Gen Payment Gateway by MiwaaGOD
+                </p>
+
+                <div class="absolute top-4 right-4 opacity-30">
+                    <i class="fas fa-satellite text-3xl text-sky-400"></i>
+                </div>
             </header>
 
-            <nav class="flex bg-slate-900/50 border-b-2 border-slate-800">
-                <button id="dashboard-tab" class="tab-btn active flex-1 p-4 text-base sm:text-lg font-orbitron border-b-4 border-transparent">
-                    <i class="fas fa-tachometer-alt mr-2"></i>Dashboard
+            <!-- Enhanced Navigation -->
+            <nav class="flex glass-panel-secondary border-b-2 border-slate-800/50 relative">
+                <button id="dashboard-tab" class="tab-btn active flex-1 p-6 text-lg font-orbitron border-b-4 border-transparent relative z-10">
+                    <i class="fas fa-tachometer-alt mr-3 text-xl"></i>
+                    <span>Dashboard</span>
                 </button>
-                 <button id="contact-tab" class="tab-btn flex-1 p-4 text-base sm:text-lg font-orbitron border-b-4 border-transparent">
-                    <i class="fas fa-user-astronaut mr-2"></i>Hubungi Dev
+                <button id="contact-tab" class="tab-btn flex-1 p-6 text-lg font-orbitron border-b-4 border-transparent relative z-10">
+                    <i class="fas fa-user-astronaut mr-3 text-xl"></i>
+                    <span>Hubungi Dev</span>
                 </button>
-                <button id="ai-assistant-tab" class="tab-btn flex-1 p-4 text-base sm:text-lg font-orbitron border-b-4 border-transparent">
-                    <i class="fas fa-robot mr-2"></i>AI Asisten
-                </button>
+
+                <!-- Active Tab Indicator -->
+                <div id="tab-indicator" class="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-sky-400 to-blue-500 transition-all duration-500 ease-out" style="width: 50%;"></div>
             </nav>
 
-            <div class="relative">
-                <div id="dashboard-view" class="p-6 sm:p-8">
-                    <div class="animate-slideUp">
-                        <div class="flex justify-center gap-4 mb-6">
-                            <button data-type="ewallet" class="payment-type-btn method-btn active px-5 py-2 rounded-lg"><i class="fas fa-wallet mr-2"></i>E-Wallet</button>
-                            <button data-type="qris" class="payment-type-btn method-btn px-5 py-2 rounded-lg"><i class="fas fa-qrcode mr-2"></i>QRIS</button>
+            <!-- Enhanced Content -->
+            <div class="relative min-h-[500px]">
+
+                <!-- Dashboard View -->
+                <div id="dashboard-view" class="p-8">
+                    <div id="payment-content" class="animate-fadeInUp">
+
+                        <!-- Payment Type Selection -->
+                        <div class="flex justify-center gap-6 mb-8">
+                            <button data-type="ewallet" class="payment-type-btn method-btn active px-8 py-4 rounded-xl text-lg font-semibold">
+                                <i class="fas fa-wallet mr-3 text-xl"></i>E-Wallet
+                            </button>
+                            <button data-type="qris" class="payment-type-btn method-btn px-8 py-4 rounded-xl text-lg font-semibold">
+                                <i class="fas fa-qrcode mr-3 text-xl"></i>QRIS
+                            </button>
                         </div>
-                        <div id="ewallet-view">
-                            <div class="grid grid-cols-3 gap-3 mb-6">
-                                <button data-method="dana" class="ewallet-method-btn method-btn p-3 rounded-lg text-center text-lg">DANA</button>
-                                <button data-method="gopay" class="ewallet-method-btn method-btn p-3 rounded-lg text-center text-lg">GOPAY</button>
-                                <button data-method="ovo" class="ewallet-method-btn method-btn p-3 rounded-lg text-center text-lg">OVO</button>
+
+                        <!-- E-Wallet View -->
+                        <div id="ewallet-view" class="animate-slideInLeft">
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                                <button data-method="dana" class="ewallet-method-btn method-btn p-6 rounded-xl text-center text-xl font-semibold transition-all duration-300 hover:scale-105">
+                                    <i class="fas fa-mobile-alt text-2xl mb-2 block text-blue-400"></i>
+                                    DANA
+                                </button>
+                                <button data-method="gopay" class="ewallet-method-btn method-btn p-6 rounded-xl text-center text-xl font-semibold transition-all duration-300 hover:scale-105">
+                                    <i class="fas fa-credit-card text-2xl mb-2 block text-green-400"></i>
+                                    GOPAY
+                                </button>
+                                <button data-method="ovo" class="ewallet-method-btn method-btn p-6 rounded-xl text-center text-xl font-semibold transition-all duration-300 hover:scale-105">
+                                    <i class="fas fa-coins text-2xl mb-2 block text-purple-400"></i>
+                                    OVO
+                                </button>
                             </div>
-                            <div class="bg-slate-900/70 rounded-lg p-5 text-center min-h-[120px] flex flex-col justify-center items-center border border-slate-700">
+
+                            <div id="details-container" class="glass-panel-secondary rounded-2xl p-8 text-center min-h-[180px] flex flex-col justify-center items-center border-2 border-slate-700/50">
                                 <div id="placeholder" class="text-slate-400">
-                                    <i class="fas fa-arrow-up text-2xl"></i>
-                                    <p class="mt-2">Pilih metode pembayaran</p>
+                                    <div class="animate-float">
+                                        <i class="fas fa-arrow-up text-4xl mb-4 text-sky-400"></i>
+                                        <p class="text-lg">Pilih metode pembayaran favorit Anda</p>
+                                    </div>
                                 </div>
-                                <div id="details" class="hidden w-full">
-                                    <p class="text-sm text-slate-300">Silakan transfer ke <span id="method-name" class="font-bold text-sky-300"></span>:</p>
-                                    <div class="flex items-center justify-center gap-4 mt-2">
-                                        <p id="payment-number" class="text-2xl sm:text-3xl font-orbitron text-sky-300"></p>
-                                        <button id="copy-btn" title="Salin Nomor" class="bg-sky-500 text-slate-900 w-10 h-10 rounded-full text-lg hover:bg-sky-400 active:bg-sky-600 transition-all duration-200 flex items-center justify-center shadow-lg hover:shadow-sky-400/50">
-                                            <i class="far fa-copy"></i>
-                                        </button>
+
+                                <div id="details" class="hidden w-full animate-fadeInUp">
+                                    <div class="mb-6">
+                                        <p class="text-slate-300 text-lg mb-4">
+                                            Transfer ke <span id="method-name" class="font-bold text-sky-300"></span>:
+                                        </p>
+                                        <div class="flex items-center justify-center gap-6">
+                                            <div class="glass-panel px-6 py-4 rounded-xl">
+                                                <p id="payment-number" class="text-3xl font-orbitron text-sky-300 font-bold"></p>
+                                            </div>
+                                            <button id="copy-btn" title="Salin Nomor" class="method-btn active w-14 h-14 rounded-full text-xl flex items-center justify-center shadow-2xl hover:scale-110 transition-all duration-300">
+                                                <i class="far fa-copy"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="text-sm text-slate-400 space-y-2">
+                                        <p><i class="fas fa-info-circle mr-2"></i>Pastikan nama penerima sudah benar</p>
+                                        <p><i class="fas fa-clock mr-2"></i>Pembayaran akan diproses dalam 1-3 menit</p>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div id="qris-view" class="hidden text-center">
-                             <p class="text-slate-300 mb-4">Pindai kode QR di bawah ini.</p>
-                             <div class="max-w-xs mx-auto bg-white p-3 rounded-lg border-4 border-sky-400 shadow-2xl shadow-sky-500/30 animate-pulseGlow">
-                                 <img src="https://files.catbox.moe/x5ixxt.jpeg" alt="Kode QRIS Pembayaran" class="w-full h-auto rounded-md">
-                             </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div id="contact-view" class="p-6 sm:p-8 hidden">
-                    <div class="text-center animate-slideUp">
-                        <h2 class="text-2xl font-orbitron mb-6 text-sky-300">Hubungi Developer</h2>
-                        <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
-                            <a href="https://wa.me/628174731245" target="_blank" rel="noopener noreferrer" class="method-btn w-full sm:w-auto flex items-center justify-center px-6 py-3 rounded-lg text-lg">
-                                <i class="fab fa-whatsapp text-2xl mr-3 text-green-400"></i> WhatsApp
-                            </a>
-                            <a href="https://t.me/miwasogg" target="_blank" rel="noopener noreferrer" class="method-btn w-full sm:w-auto flex items-center justify-center px-6 py-3 rounded-lg text-lg">
-                                <i class="fab fa-telegram text-2xl mr-3 text-sky-400"></i> Telegram
-                            </a>
+
+                        <!-- Enhanced QRIS View -->
+                        <div id="qris-view" class="hidden text-center animate-slideInRight">
+                            <div class="mb-6">
+                                <h3 class="text-2xl font-orbitron mb-4 text-sky-300">
+                                    <i class="fas fa-qrcode mr-3"></i>Scan QR Code
+                                </h3>
+                                <p class="text-slate-300 text-lg">Pindai kode QR menggunakan aplikasi pembayaran favorit Anda</p>
+                            </div>
+
+                            <div class="max-w-sm mx-auto mb-6">
+                                <div class="qr-container animate-pulseGlow">
+                                    <img src="https://files.catbox.moe/x5ixxt.jpeg" alt="Kode QRIS Pembayaran" class="w-full h-auto rounded-xl shadow-2xl">
+                                </div>
+                            </div>
+
+                            <div class="glass-panel-secondary rounded-xl p-6 max-w-md mx-auto">
+                                <div class="flex items-center justify-center mb-4">
+                                    <i class="fas fa-shield-alt text-green-400 text-2xl mr-3"></i>
+                                    <span class="text-lg font-semibold text-green-300">Pembayaran Aman</span>
+                                </div>
+                                <div class="text-sm text-slate-400 space-y-2">
+                                    <p><i class="fas fa-check mr-2 text-green-400"></i>Dienkripsi dengan teknologi terdepan</p>
+                                    <p><i class="fas fa-check mr-2 text-green-400"></i>Kompatibel dengan semua e-wallet</p>
+                                    <p><i class="fas fa-check mr-2 text-green-400"></i>Proses instan 24/7</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div id="ai-assistant-view" class="p-6 sm:p-8 hidden">
-                    <h2 class="text-2xl font-orbitron mb-4 text-sky-300 text-center">MIWA AI Assistant</h2>
-                    <div id="chat-container" class="chat-container"></div>
-                    <div class="mt-4 flex gap-3">
-                        <input type="text" id="chat-input" class="chat-input flex-grow p-3 rounded-full outline-none" placeholder="Tanya MIWA AI...">
-                        <button id="send-chat-btn" class="bg-sky-500 text-slate-900 w-12 h-12 rounded-full text-lg hover:bg-sky-400 active:bg-sky-600 transition-all duration-200 flex items-center justify-center shadow-lg hover:shadow-sky-400/50 animate-pulseGlow">
-                            <i class="fas fa-paper-plane"></i>
-                        </button>
+                <!-- Enhanced Contact View -->
+                <div id="contact-view" class="p-8 hidden">
+                    <div class="text-center animate-fadeInUp">
+                        <h2 class="text-3xl font-orbitron mb-8 text-sky-300">
+                            <i class="fas fa-satellite-dish mr-3"></i>
+                            Hubungi Developer
+                        </h2>
+
+                        <div class="glass-panel-secondary rounded-2xl p-8 mb-8">
+                            <div class="flex items-center justify-center mb-6">
+                                <div class="w-20 h-20 rounded-full bg-gradient-to-br from-sky-400 to-blue-600 flex items-center justify-center">
+                                    <i class="fas fa-code text-3xl text-white"></i>
+                                </div>
+                            </div>
+                            <h3 class="text-2xl font-bold mb-4 text-white">MiwaaGOD</h3>
+                            <p class="text-slate-300 text-lg mb-6">Full Stack Developer & Payment Gateway Specialist</p>
+                            <div class="text-sm text-slate-400">
+                                <p><i class="fas fa-clock mr-2"></i>Response Time: 1-2 Hours</p>
+                                <p><i class="fas fa-globe mr-2"></i>Available 24/7</p>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <a href="https://wa.me/628174731245" target="_blank" rel="noopener noreferrer" class="method-btn group flex items-center justify-center px-8 py-6 rounded-xl text-lg font-semibold transition-all duration-300 hover:scale-105">
+                                <i class="fab fa-whatsapp text-3xl mr-4 text-green-400 group-hover:scale-110 transition-transform duration-300"></i>
+                                <div class="text-left">
+                                    <div class="font-bold">WhatsApp</div>
+                                    <div class="text-sm text-slate-400">Chat langsung</div>
+                                </div>
+                            </a>
+                            <a href="https://t.me/miwasogg" target="_blank" rel="noopener noreferrer" class="method-btn group flex items-center justify-center px-8 py-6 rounded-xl text-lg font-semibold transition-all duration-300 hover:scale-105">
+                                <i class="fab fa-telegram text-3xl mr-4 text-sky-400 group-hover:scale-110 transition-transform duration-300"></i>
+                                <div class="text-left">
+                                    <div class="font-bold">Telegram</div>
+                                    <div class="text-sm text-slate-400">Pesan instan</div>
+                                </div>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
         </main>
     </div>
 
-    <div id="notification" class="fixed bottom-8 left-1/2 -translate-x-1/2 glass-panel py-2 px-5 rounded-full text-white transition-all duration-500 opacity-0 -translate-y-10 pointer-events-none">
-        <i class="fas fa-check-circle text-green-400 mr-2"></i>Nomor berhasil disalin!
+    <!-- Enhanced Notification -->
+    <div id="notification" class="fixed bottom-8 left-1/2 -translate-x-1/2 notification py-4 px-8 rounded-2xl text-white transition-all duration-500 opacity-0 -translate-y-10 pointer-events-none">
+        <div class="flex items-center">
+            <i class="fas fa-check-circle text-2xl mr-3"></i>
+            <span class="text-lg font-semibold">Nomor berhasil disalin ke clipboard!</span>
+        </div>
     </div>
 
-    <script type="module">
-        import * as THREE from 'three';
+    <!-- Music Toggle Button -->
+    <button id="music-toggle-btn" class="method-btn">
+        <i id="music-icon" class="fas fa-volume-up"></i>
+    </button>
 
+    <!-- Audio Element for Background Music -->
+    <audio id="background-music" loop>
+        <source src="https://files.catbox.moe/7lnu71.mp3" type="audio/mpeg">
+        Browser Anda tidak mendukung elemen audio.
+    </audio>
+
+    <!-- Tone.js for sound effects -->
+    <script src="https://unpkg.com/tone@14.7.58/build/Tone.js"></script>
+
+    <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // --- Inisialisasi Audio ---
-            const ambientSound = document.getElementById('ambient-sound');
-            const muteBtn = document.getElementById('mute-btn');
-            const muteIcon = document.getElementById('mute-icon');
-            let isMuted = true;
 
-            const clickSound = new Audio('https://files.catbox.moe/bgsif3.mp3');
-            clickSound.volume = 0.5;
-            const aiResponseSound = new Audio('https://files.catbox.moe/i5we15.mp3');
-            aiResponseSound.volume = 0.4;
-            
+            // Initialize Tone.js for sound effects
+            const synth = new Tone.Synth().toDestination();
+            const clickPitch = "C5"; // A pleasant pitch for a click sound
+
+            /**
+             * Plays a simple click sound using Tone.js.
+             */
             function playClickSound() {
-                clickSound.currentTime = 0;
-                clickSound.play().catch(e => {});
+                // Ensure audio context is started on user interaction
+                if (Tone.context.state !== 'running') {
+                    Tone.start();
+                }
+                synth.triggerAttackRelease(clickPitch, "8n"); // Play a note for an 8th note duration
             }
 
-            function toggleMute() {
-                isMuted = !isMuted;
-                ambientSound.muted = isMuted;
-                muteIcon.className = isMuted ? 'fas fa-volume-off' : 'fas fa-volume-up';
-                if (!isMuted && ambientSound.paused) {
-                    ambientSound.play().catch(e => console.log("Audio play failed. User interaction needed."));
+            // Get the audio element and music toggle button
+            const backgroundMusic = document.getElementById('background-music');
+            const musicToggleButton = document.getElementById('music-toggle-btn');
+            const musicIcon = document.getElementById('music-icon');
+            let isMusicPlaying = false; // Track music state
+
+            // Function to toggle music playback
+            function toggleMusic() {
+                if (isMusicPlaying) {
+                    backgroundMusic.pause();
+                    musicIcon.classList.remove('fa-volume-up');
+                    musicIcon.classList.add('fa-volume-mute');
+                    isMusicPlaying = false;
+                } else {
+                    // Start Tone.js context on first user interaction
+                    if (Tone.context.state !== 'running') {
+                        Tone.start();
+                    }
+                    backgroundMusic.play().catch(error => {
+                        console.error("Autoplay prevented:", error);
+                        // Inform user to click to play if autoplay fails
+                        // This message box is a placeholder, in a real app you'd use a custom modal
+                        // alert("Browser prevented autoplay. Please click the music icon to play.");
+                    });
+                    musicIcon.classList.remove('fa-volume-mute');
+                    musicIcon.classList.add('fa-volume-up');
+                    isMusicPlaying = true;
                 }
             }
-            muteBtn.addEventListener('click', toggleMute);
-            // Coba putar audio setelah interaksi pertama
-            document.body.addEventListener('click', () => {
-                if (!isMuted && ambientSound.paused) {
-                    ambientSound.play().catch(e => {});
+
+            // Event listener for music toggle button
+            musicToggleButton.addEventListener('click', toggleMusic);
+
+            // Add click sound and pressed animation to all interactive buttons
+            document.querySelectorAll('button, a.method-btn').forEach(button => {
+                button.addEventListener('click', playClickSound);
+
+                // Add pressed animation on mousedown and remove on mouseup/mouseleave
+                button.addEventListener('mousedown', () => {
+                    button.classList.add('pressed');
+                });
+                button.addEventListener('mouseup', () => {
+                    button.classList.remove('pressed');
+                });
+                button.addEventListener('mouseleave', () => {
+                    button.classList.remove('pressed');
+                });
+            });
+
+
+            // Enhanced Starfield Animation
+            const canvas = document.getElementById('starfield');
+            const ctx = canvas.getContext('2d');
+            let animationId; // To store the requestAnimationFrame ID
+
+            /**
+             * Resizes the canvas to fill the entire window.
+             */
+            function resizeCanvas() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+
+            // Event listener for window resize
+            window.addEventListener('resize', resizeCanvas);
+            resizeCanvas(); // Initial resize
+
+            const stars = [];
+            const numStars = 300;
+            const shootingStars = [];
+
+            // Create regular stars with random properties
+            for (let i = 0; i < numStars; i++) {
+                stars.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    radius: Math.random() * 2 + 0.5,
+                    vx: Math.random() * 0.3 - 0.15, // velocity x
+                    vy: Math.random() * 0.3 - 0.15, // velocity y
+                    opacity: Math.random() * 0.8 + 0.2,
+                    twinkle: Math.random() * 0.02 + 0.01 // twinkling speed
+                });
+            }
+
+            /**
+             * Creates a new shooting star at random intervals.
+             */
+            function createShootingStar() {
+                if (Math.random() < 0.005) { // Probability of creating a shooting star
+                    shootingStars.push({
+                        x: Math.random() * canvas.width,
+                        y: Math.random() * canvas.height * 0.3, // Start from upper part of the screen
+                        vx: Math.random() * 8 + 4, // Horizontal velocity
+                        vy: Math.random() * 4 + 2, // Vertical velocity
+                        length: Math.random() * 80 + 40, // Length of the tail
+                        opacity: 1,
+                        decay: Math.random() * 0.02 + 0.01 // Opacity decay rate
+                    });
                 }
-            }, { once: true });
+            }
 
+            /**
+             * Draws all stars (regular and shooting) on the canvas.
+             */
+            function drawStars() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
 
-            // --- Latar Belakang 3D Three.js ---
-            let scene, camera, renderer, stars;
-            let mouseX = 0, mouseY = 0;
+                // Draw regular stars
+                stars.forEach(star => {
+                    ctx.beginPath();
+                    ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(255, 255, 255, ${star.opacity})`;
+                    ctx.fill();
 
-            function initThree() {
-                const canvas = document.getElementById('three-canvas');
-                scene = new THREE.Scene();
-                camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 1000);
-                camera.position.z = 1;
-                
-                renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
-                renderer.setSize(window.innerWidth, window.innerHeight);
-                renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-
-                const starGeo = new THREE.BufferGeometry();
-                const starCount = 20000;
-                const positions = new Float32Array(starCount * 3);
-                for(let i=0; i < starCount * 3; i++) {
-                    positions[i] = (Math.random() - 0.5) * 800;
-                }
-                starGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-                
-                const starMaterial = new THREE.PointsMaterial({
-                    color: 0xffffff,
-                    size: 0.7,
-                    transparent: true,
-                    opacity: 0.8
+                    // Twinkling effect: change opacity
+                    star.opacity += star.twinkle;
+                    if (star.opacity > 1 || star.opacity < 0.2) {
+                        star.twinkle = -star.twinkle; // Reverse twinkling direction
+                    }
                 });
 
-                stars = new THREE.Points(starGeo, starMaterial);
-                scene.add(stars);
+                // Draw shooting stars
+                shootingStars.forEach((star, index) => {
+                    // Create a linear gradient for the tail effect
+                    const gradient = ctx.createLinearGradient(star.x, star.y, star.x - star.length, star.y - star.length/2);
+                    gradient.addColorStop(0, `rgba(56, 189, 248, ${star.opacity})`); // Bright at head
+                    gradient.addColorStop(1, 'rgba(56, 189, 248, 0)'); // Fades out at tail
 
-                window.addEventListener('resize', onWindowResize);
-                document.addEventListener('mousemove', onMouseMove);
-                animate();
+                    ctx.beginPath();
+                    ctx.moveTo(star.x, star.y);
+                    ctx.lineTo(star.x - star.length, star.y - star.length/2);
+                    ctx.strokeStyle = gradient;
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+
+                    // Update shooting star position and opacity
+                    star.x += star.vx;
+                    star.y += star.vy;
+                    star.opacity -= star.decay;
+
+                    // Remove shooting star if it's out of view or faded
+                    if (star.opacity <= 0 || star.x > canvas.width || star.y > canvas.height) {
+                        shootingStars.splice(index, 1);
+                    }
+                });
             }
 
-            function onWindowResize() {
-                camera.aspect = window.innerWidth / window.innerHeight;
-                camera.updateProjectionMatrix();
-                renderer.setSize(window.innerWidth, window.innerHeight);
+            /**
+             * Updates the position of all regular stars.
+             * Stars wrap around the screen when they go out of bounds.
+             */
+            function updateStars() {
+                stars.forEach(star => {
+                    star.x += star.vx;
+                    star.y += star.vy;
+
+                    // Wrap stars around the screen
+                    if (star.x < 0) star.x = canvas.width;
+                    if (star.x > canvas.width) star.x = 0;
+                    if (star.y < 0) star.y = canvas.height;
+                    if (star.y > canvas.height) star.y = 0;
+                });
             }
 
-            function onMouseMove(event) {
-                mouseX = event.clientX - window.innerWidth / 2;
-                mouseY = event.clientY - window.innerHeight / 2;
+            /**
+             * Main animation loop for the starfield.
+             */
+            function animateStarfield() {
+                updateStars();
+                createShootingStar(); // Attempt to create new shooting stars
+                drawStars();
+                animationId = requestAnimationFrame(animateStarfield); // Loop the animation
             }
 
-            function animate() {
-                requestAnimationFrame(animate);
-                const t = Date.now() * 0.0001;
-                stars.rotation.y = t * 0.5;
-                
-                camera.position.x += (mouseX * 0.0001 - camera.position.x) * 0.05;
-                camera.position.y += (-mouseY * 0.0001 - camera.position.y) * 0.05;
-                camera.lookAt(scene.position);
+            // Start the starfield animation
+            animateStarfield();
 
-                renderer.render(scene, camera);
+            // Particle Effects
+            const particlesContainer = document.getElementById('particles-container');
+            const numParticles = 50; // Number of particles
+
+            /**
+             * Creates a single particle element.
+             * @returns {HTMLElement} The created particle div.
+             */
+            function createParticle() {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                // Randomize initial position and animation delay for variety
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.animationDelay = `${Math.random() * 4}s`;
+                particle.style.animationDuration = `${Math.random() * 3 + 3}s`; // Random duration between 3-6s
+                return particle;
             }
 
-            initThree();
+            // Add particles to the container
+            for (let i = 0; i < numParticles; i++) {
+                particlesContainer.appendChild(createParticle());
+            }
 
-            // --- Logika UI ---
-            const mainPanel = document.getElementById('main-panel');
-            const aiAvatar = document.getElementById('ai-avatar');
-            const tabs = document.querySelectorAll('.tab-btn');
-            const views = {
-                'dashboard-tab': document.getElementById('dashboard-view'),
-                'contact-tab': document.getElementById('contact-view'),
-                'ai-assistant-tab': document.getElementById('ai-assistant-view')
-            };
+            // Tab Switching Logic
+            const dashboardTab = document.getElementById('dashboard-tab');
+            const contactTab = document.getElementById('contact-tab');
+            const dashboardView = document.getElementById('dashboard-view');
+            const contactView = document.getElementById('contact-view');
+            const tabIndicator = document.getElementById('tab-indicator');
+
+            /**
+             * Switches the active tab and updates the UI.
+             * @param {HTMLElement} activeTabButton The button for the tab to activate.
+             * @param {HTMLElement} activeContentView The content view to display.
+             * @param {HTMLElement} inactiveContentView The content view to hide.
+             */
+            function switchTab(activeTabButton, activeContentView, inactiveContentView) {
+                // Remove 'active' class from all tab buttons
+                document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+                // Add 'active' class to the clicked tab button
+                activeTabButton.classList.add('active');
+
+                // Add animation classes before hiding/showing
+                if (activeContentView === dashboardView) {
+                    dashboardView.classList.remove('hidden');
+                    dashboardView.classList.add('animate-fadeInUp');
+                    contactView.classList.add('hidden');
+                    contactView.classList.remove('animate-fadeInUp'); // Remove if it was there
+                } else {
+                    contactView.classList.remove('hidden');
+                    contactView.classList.add('animate-fadeInUp');
+                    dashboardView.classList.add('hidden');
+                    dashboardView.classList.remove('animate-fadeInUp'); // Remove if it was there
+                }
+
+
+                // Update tab indicator position and width
+                const tabWidth = activeTabButton.offsetWidth;
+                const tabLeft = activeTabButton.offsetLeft;
+                tabIndicator.style.width = `${tabWidth}px`;
+                tabIndicator.style.transform = `translateX(${tabLeft}px)`;
+            }
+
+            // Initial setup for tab indicator
+            // Ensure indicator is correctly positioned on load for the active tab
+            const initialActiveTab = document.querySelector('.tab-btn.active');
+            if (initialActiveTab) {
+                const tabWidth = initialActiveTab.offsetWidth;
+                const tabLeft = initialActiveTab.offsetLeft;
+                tabIndicator.style.width = `${tabWidth}px`;
+                tabIndicator.style.transform = `translateX(${tabLeft}px)`;
+            }
+
+
+            // Event listeners for tab buttons
+            dashboardTab.addEventListener('click', () => {
+                switchTab(dashboardTab, dashboardView, contactView);
+            });
+
+            contactTab.addEventListener('click', () => {
+                switchTab(contactTab, contactView, dashboardView);
+            });
+
+            // Payment Type Switching (E-Wallet / QRIS)
             const paymentTypeBtns = document.querySelectorAll('.payment-type-btn');
             const ewalletView = document.getElementById('ewallet-view');
             const qrisView = document.getElementById('qris-view');
+
+            paymentTypeBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // Remove 'active' from all type buttons
+                    paymentTypeBtns.forEach(b => b.classList.remove('active'));
+                    // Add 'active' to the clicked button
+                    btn.classList.add('active');
+
+                    // Show/hide views based on data-type with animation
+                    if (btn.dataset.type === 'ewallet') {
+                        ewalletView.classList.remove('hidden', 'animate-slideInRight');
+                        ewalletView.classList.add('animate-slideInLeft');
+                        qrisView.classList.add('hidden');
+                    } else if (btn.dataset.type === 'qris') {
+                        qrisView.classList.remove('hidden', 'animate-slideInLeft');
+                        qrisView.classList.add('animate-slideInRight');
+                        ewalletView.classList.add('hidden');
+                    }
+                });
+            });
+
+            // E-Wallet Method Selection and Details Display
             const ewalletMethodBtns = document.querySelectorAll('.ewallet-method-btn');
-            const detailsContainer = {
-                placeholder: document.getElementById('placeholder'),
-                details: document.getElementById('details'),
-                methodName: document.getElementById('method-name'),
-                paymentNumber: document.getElementById('payment-number')
-            };
+            const detailsContainer = document.getElementById('details-container');
+            const placeholder = document.getElementById('placeholder');
+            const details = document.getElementById('details');
+            const methodNameSpan = document.getElementById('method-name');
+            const paymentNumberP = document.getElementById('payment-number');
             const copyBtn = document.getElementById('copy-btn');
             const notification = document.getElementById('notification');
-            
-            const paymentData = {
-                dana: { name: "DANA", number: "08174731245" },
-                gopay: { name: "GOPAY", number: "08174731245" },
-                ovo: { name: "OVO", number: "08174731245" }
-            };
-            let activeMethod = null;
 
-            aiAvatar.addEventListener('click', () => {
-                mainPanel.classList.toggle('hidden');
-                playClickSound();
-            });
-
-            tabs.forEach(tab => {
-                tab.addEventListener('click', () => {
-                    playClickSound();
-                    tabs.forEach(t => t.classList.remove('active'));
-                    tab.classList.add('active');
-                    Object.values(views).forEach(v => v.classList.add('hidden'));
-                    views[tab.id].classList.remove('hidden');
-                });
-            });
-
-            paymentTypeBtns.forEach(btn => btn.addEventListener('click', () => {
-                playClickSound();
-                paymentTypeBtns.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                ewalletView.classList.toggle('hidden', btn.dataset.type !== 'ewallet');
-                qrisView.classList.toggle('hidden', btn.dataset.type !== 'qris');
-            }));
-
-            ewalletMethodBtns.forEach(btn => btn.addEventListener('click', () => {
-                playClickSound();
-                activeMethod = btn.dataset.method;
-                const data = paymentData[activeMethod];
-                detailsContainer.methodName.textContent = data.name;
-                detailsContainer.paymentNumber.textContent = data.number;
-                detailsContainer.placeholder.classList.add('hidden');
-                detailsContainer.details.classList.remove('hidden');
-                ewalletMethodBtns.forEach(b => b.classList.toggle('active', b.dataset.method === activeMethod));
-            }));
-
-            copyBtn.addEventListener('click', () => {
-                playClickSound();
-                if (!activeMethod) return;
-                navigator.clipboard.writeText(paymentData[activeMethod].number).then(() => {
-                    showNotification();
-                });
-            });
-
-            function showNotification() {
-                notification.classList.remove('opacity-0', '-translate-y-10');
-                notification.classList.add('opacity-100', 'translate-y-0');
-                setTimeout(() => {
-                    notification.classList.add('opacity-0', '-translate-y-10');
-                    notification.classList.remove('opacity-100', 'translate-y-0');
-                }, 2500);
-            }
-
-            // --- Logika AI Assistant (MIWA) ---
-            const chatContainer = document.getElementById('chat-container');
-            const chatInput = document.getElementById('chat-input');
-            const sendChatBtn = document.getElementById('send-chat-btn');
-            
-            const CHAT_HISTORY_KEY = 'miwa_chat_history';
-            let chatHistory = [];
-
-            // Sistem prompt untuk memberikan kepribadian pada AI
-            const systemPrompt = {
-                role: "system",
-                parts: [{ text: "Anda adalah MIWA, asisten AI futuristik untuk Cosmic Payment Gateway. Anda ramah, canggih, dan sangat membantu. Selalu jawab dalam Bahasa Indonesia. Fokus pada pertanyaan seputar pembayaran, status transaksi, dan cara penggunaan gateway. Jika ditanya di luar topik, dengan sopan kembalikan percakapan ke topik pembayaran." }]
+            // Payment details data (example data)
+            const paymentDetails = {
+                dana: { name: "DANA", number: "0812-3456-7890" },
+                gopay: { name: "GOPAY", number: "0876-5432-1098" },
+                ovo: { name: "OVO", number: "0850-1234-5678" }
             };
 
-            function loadChatHistory() {
-                const storedHistory = localStorage.getItem(CHAT_HISTORY_KEY);
-                if (storedHistory) {
-                    chatHistory = JSON.parse(storedHistory);
-                    chatHistory.forEach(msg => {
-                        if (msg.role !== 'system') {
-                            addMessageToChat(msg.parts[0].text, msg.role === 'user' ? 'user' : 'ai', false);
-                        }
-                    });
-                } else {
-                    chatHistory = [systemPrompt];
-                    addMessageToChat("Halo! Saya MIWA, asisten AI Anda. Ada yang bisa saya bantu terkait pembayaran?", 'ai', false);
-                }
-            }
+            ewalletMethodBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // Remove 'active' from all e-wallet method buttons
+                    ewalletMethodBtns.forEach(b => b.classList.remove('active'));
+                    // Add 'active' to the clicked button
+                    btn.classList.add('active');
 
-            function saveChatHistory() {
-                localStorage.setItem(CHAT_HISTORY_KEY, JSON.stringify(chatHistory));
-            }
+                    const method = btn.dataset.method;
+                    const detail = paymentDetails[method];
 
-            function addMessageToChat(message, sender, animate = true) {
-                const messageElement = document.createElement('div');
-                messageElement.classList.add('chat-message', sender);
-                if (!animate) {
-                    messageElement.style.opacity = 1;
-                    messageElement.style.transform = 'translateY(0)';
-                }
-                messageElement.textContent = message;
-                chatContainer.appendChild(messageElement);
-                chatContainer.scrollTop = chatContainer.scrollHeight;
-            }
+                    if (detail) {
+                        placeholder.classList.add('hidden'); // Hide placeholder
+                        details.classList.remove('hidden'); // Show details
+                        details.classList.add('animate-fadeInUp'); // Apply fade-in animation
 
-            function showLoadingIndicator() {
-                const loadingElement = document.createElement('div');
-                loadingElement.id = 'loading-indicator';
-                loadingElement.classList.add('chat-message', 'ai', 'loading-dots');
-                loadingElement.innerHTML = '<span></span><span></span><span></span>';
-                chatContainer.appendChild(loadingElement);
-                chatContainer.scrollTop = chatContainer.scrollHeight;
-            }
-
-            function hideLoadingIndicator() {
-                document.getElementById('loading-indicator')?.remove();
-            }
-
-            async function sendMessageToGemini() {
-                const prompt = chatInput.value.trim();
-                if (prompt === '') return;
-
-                playClickSound();
-                addMessageToChat(prompt, 'user');
-                chatHistory.push({ role: "user", parts: [{ text: prompt }] });
-                chatInput.value = '';
-                
-                showLoadingIndicator();
-
-                // =================================================================
-                // PANDUAN BACKEND: Implementasi Middleware & Keamanan API
-                // =================================================================
-                // Di aplikasi Next.js, Anda akan membuat file `middleware.ts` di root.
-                // Middleware ini akan mencegat request ke API routes (`/api/*`).
-                //
-                // Contoh `middleware.ts`:
-                // import { NextRequest, NextResponse } from 'next/server';
-                // import { Ratelimit } from '@upstash/ratelimit';
-                // import { kv } from '@vercel/kv';
-                //
-                // const ratelimit = new Ratelimit({ redis: kv, limiter: Ratelimit.slidingWindow(5, '10s') });
-                //
-                // export async function middleware(request: NextRequest) {
-                //   const ip = request.ip ?? '127.0.0.1';
-                //   const { success } = await ratelimit.limit(ip);
-                //   if (!success) {
-                //     return new NextResponse('Rate limit exceeded', { status: 429 });
-                //   }
-                //
-                //   // Di sini Anda juga akan melakukan validasi HMAC signature untuk webhook,
-                //   // validasi timestamp, dan cek token JWT jika ada.
-                //
-                //   return NextResponse.next();
-                // }
-                //
-                // export const config = {
-                //   matcher: '/api/:path*',
-                // };
-                // =================================================================
-
-                try {
-                    const payload = { contents: chatHistory };
-                    const apiKey = ""; // Otomatis diisi oleh Canvas
-                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
-
-                    const response = await fetch(apiUrl, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                    });
-
-                    const result = await response.json();
-                    hideLoadingIndicator();
-                    aiResponseSound.play().catch(e => {});
-
-                    if (result.candidates?.[0]?.content?.parts?.[0]?.text) {
-                        const aiResponse = result.candidates[0].content.parts[0].text;
-                        addMessageToChat(aiResponse, 'ai');
-                        chatHistory.push({ role: "model", parts: [{ text: aiResponse }] });
-                        saveChatHistory();
-                    } else {
-                        addMessageToChat("Maaf, terjadi gangguan kosmik. Saya tidak bisa merespons saat ini.", 'ai');
+                        methodNameSpan.textContent = detail.name;
+                        paymentNumberP.textContent = detail.number;
                     }
-                } catch (error) {
-                    console.error('Error calling Gemini API:', error);
-                    hideLoadingIndicator();
-                    addMessageToChat("Koneksi ke nebula AI terputus. Silakan coba lagi.", 'ai');
-                }
-            }
-
-            sendChatBtn.addEventListener('click', sendMessageToGemini);
-            chatInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') sendMessageToGemini();
+                });
             });
 
-            // Inisialisasi
-            document.querySelector('[data-type="ewallet"]').classList.add('active');
-            document.querySelector('[data-method="dana"]').classList.add('active');
-            activeMethod = 'dana';
-            detailsContainer.methodName.textContent = paymentData.dana.name;
-            detailsContainer.paymentNumber.textContent = paymentData.dana.number;
-            detailsContainer.placeholder.classList.add('hidden');
-            detailsContainer.details.classList.remove('hidden');
-            
-            loadChatHistory();
+            // Copy to Clipboard functionality
+            copyBtn.addEventListener('click', () => {
+                const textToCopy = paymentNumberP.textContent;
+                if (textToCopy) {
+                    // Use execCommand for broader compatibility in iframes
+                    const textarea = document.createElement('textarea');
+                    textarea.value = textToCopy;
+                    document.body.appendChild(textarea);
+                    textarea.select();
+                    try {
+                        document.execCommand('copy');
+                        showNotification(); // Show success notification
+                    } catch (err) {
+                        console.error('Failed to copy text: ', err);
+                        // Optionally, show an error notification
+                    } finally {
+                        document.body.removeChild(textarea);
+                    }
+                }
+            });
+
+            /**
+             * Displays a success notification for a short duration.
+             */
+            function showNotification() {
+                notification.classList.remove('opacity-0', '-translate-y-10', 'pointer-events-none');
+                notification.classList.add('opacity-100', 'translate-y-0');
+
+                setTimeout(() => {
+                    notification.classList.remove('opacity-100', 'translate-y-0');
+                    notification.classList.add('opacity-0', '-translate-y-10', 'pointer-events-none');
+                }, 3000); // Notification disappears after 3 seconds
+            }
         });
     </script>
 </body>
