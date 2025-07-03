@@ -1290,6 +1290,7 @@
                 aiResponseArea.innerHTML = ''; // Clear previous response
                 aiLoadingSpinner.classList.remove('hidden'); // Show loading spinner
 
+                // Chat history for context (optional, but good practice for conversational AI)
                 let chatHistory = [];
                 chatHistory.push({ role: "user", parts: [{ text: prompt }] });
 
@@ -1304,19 +1305,34 @@
                         body: JSON.stringify(payload)
                     });
 
-                    const result = await response.json();
+                    // Check if the HTTP response itself was successful
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        console.error('API HTTP Error:', response.status, response.statusText, errorText);
+                        aiResponseArea.innerHTML = `<p class="text-red-400">Terjadi kesalahan jaringan atau API: ${response.status} ${response.statusText}. Coba lagi.</p>`;
+                        return; // Exit if HTTP error
+                    }
 
+                    const result = await response.json();
+                    console.log('Gemini API Raw Response:', result); // Log the full response for debugging
+
+                    // Check for candidates and content parts
                     if (result.candidates && result.candidates.length > 0 &&
                         result.candidates[0].content && result.candidates[0].content.parts &&
                         result.candidates[0].content.parts.length > 0) {
                         const text = result.candidates[0].content.parts[0].text;
                         aiResponseArea.innerHTML = `<p>${text}</p>`;
+                    } else if (result.promptFeedback && result.promptFeedback.blockReason) {
+                        // Handle cases where the prompt was blocked
+                        aiResponseArea.innerHTML = `<p class="text-red-400">Maaf, pertanyaan Anda diblokir karena alasan keamanan: ${result.promptFeedback.blockReason}.</p>`;
                     } else {
-                        aiResponseArea.innerHTML = '<p class="text-red-400">Maaf, tidak dapat menghasilkan respons. Coba lagi.</p>';
-                        console.error('Unexpected API response structure:', result);
+                        // Fallback for unexpected but non-error API response structure
+                        aiResponseArea.innerHTML = '<p class="text-red-400">Maaf, tidak dapat menghasilkan respons yang valid. Struktur respons tidak terduga.</p>';
+                        console.error('Unexpected API response structure or empty content:', result);
                     }
                 } catch (error) {
-                    aiResponseArea.innerHTML = `<p class="text-red-400">Terjadi kesalahan: ${error.message}</p>`;
+                    // Catch network errors or issues with JSON parsing
+                    aiResponseArea.innerHTML = `<p class="text-red-400">Terjadi kesalahan saat mengambil respons AI: ${error.message}. Pastikan koneksi internet Anda stabil.</p>`;
                     console.error('Error fetching AI response:', error);
                 } finally {
                     aiLoadingSpinner.classList.add('hidden'); // Hide loading spinner
