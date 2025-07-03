@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MiwaAI Payment Gateway - Enhanced</title>
+    <title>Cosmic Payment Gateway - Enhanced</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -148,7 +148,7 @@
         }
 
         /* New: Button pressed animation */
-        .method-btn.pressed, .tab-btn.pressed, #music-toggle-btn.pressed {
+        .method-btn.pressed, .tab-btn.pressed, #music-toggle-btn.pressed, #show-qris-btn.pressed, #qris-close-btn.pressed, #send-ai-query-btn.pressed {
             transform: scale(0.95);
             transition: transform 0.1s ease-out;
         }
@@ -381,6 +381,107 @@
             transform: scale(1.1);
             box-shadow: 0 8px 20px rgba(139, 92, 246, 0.6);
         }
+
+        /* QRIS Modal Overlay */
+        #qris-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7); /* Semi-transparent dark background */
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            z-index: 1000; /* Ensure it's above other content */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0; /* Start hidden */
+            visibility: hidden; /* Start hidden */
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        #qris-modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        #qris-modal-content {
+            position: relative;
+            background: rgba(15, 23, 42, 0.8); /* Glassmorphism for modal content */
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+            text-align: center;
+            max-width: 90%;
+            transform: scale(0.8); /* Start smaller for animation */
+            opacity: 0; /* Start hidden */
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        #qris-modal-overlay.active #qris-modal-content {
+            transform: scale(1); /* Scale up when active */
+            opacity: 1;
+        }
+
+        #qris-close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: #E0E0E0;
+            font-size: 1.8rem;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        #qris-close-btn:hover {
+            color: #ef4444; /* Red color on hover */
+        }
+
+        /* AI Assistant specific styles */
+        #ai-assistant-section {
+            background: rgba(30, 41, 59, 0.4);
+            backdrop-filter: blur(15px) saturate(150%);
+            -webkit-backdrop-filter: blur(15px) saturate(150%);
+            border: 1px solid rgba(100, 116, 139, 0.2);
+            box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        #ai-query-input {
+            width: 100%;
+            padding: 1rem;
+            border-radius: 0.75rem;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            color: #E0E0E0;
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        #ai-query-input:focus {
+            outline: none;
+            border-color: #38bdf8;
+            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.3);
+        }
+
+        #ai-response-area {
+            min-height: 120px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(100, 116, 139, 0.2);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            color: #f0f9ff;
+            text-align: left;
+            overflow-y: auto;
+            white-space: pre-wrap; /* Preserve whitespace and wrap text */
+            word-wrap: break-word; /* Break long words */
+        }
+
     </style>
 </head>
 <body class="bg-slate-900 min-h-screen">
@@ -404,7 +505,7 @@
                 </div>
 
                 <h1 class="text-4xl md:text-5xl font-bold tracking-wider text-white mb-2 animate-slideInLeft">
-                    MIWAAI PAYMENT
+                    COSMIC PAYMENT
                 </h1>
                 <p class="text-slate-300 text-lg animate-slideInRight">
                     <i class="fas fa-rocket mr-2"></i>
@@ -426,9 +527,13 @@
                     <i class="fas fa-user-astronaut mr-3 text-xl"></i>
                     <span>Hubungi Dev</span>
                 </button>
+                <button id="ai-tab" class="tab-btn flex-1 p-6 text-lg font-orbitron border-b-4 border-transparent relative z-10">
+                    <i class="fas fa-robot mr-3 text-xl"></i>
+                    <span>AI Assistant</span>
+                </button>
 
                 <!-- Active Tab Indicator -->
-                <div id="tab-indicator" class="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-sky-400 to-blue-500 transition-all duration-500 ease-out" style="width: 50%;"></div>
+                <div id="tab-indicator" class="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-sky-400 to-blue-500 transition-all duration-500 ease-out" style="width: 33.33%;"></div>
             </nav>
 
             <!-- Enhanced Content -->
@@ -500,16 +605,15 @@
                         <div id="qris-view" class="hidden text-center animate-slideInRight">
                             <div class="mb-6">
                                 <h3 class="text-2xl font-orbitron mb-4 text-sky-300">
-                                    <i class="fas fa-qrcode mr-3"></i>Scan QR Code
+                                    <i class="fas fa-qrcode mr-3"></i>QR Code Pembayaran
                                 </h3>
-                                <p class="text-slate-300 text-lg">Pindai kode QR menggunakan aplikasi pembayaran favorit Anda</p>
+                                <p class="text-slate-300 text-lg">Klik tombol di bawah untuk menampilkan QR Code</p>
                             </div>
 
-                            <div class="max-w-sm mx-auto mb-6">
-                                <div class="qr-container animate-pulseGlow">
-                                    <img src="https://files.catbox.moe/x5ixxt.jpeg" alt="Kode QRIS Pembayaran" class="w-full h-auto rounded-xl shadow-2xl">
-                                </div>
-                            </div>
+                            <!-- New: Button to show QRIS as an overlay -->
+                            <button id="show-qris-btn" class="method-btn active px-8 py-4 rounded-xl text-lg font-semibold mb-6">
+                                <i class="fas fa-eye mr-3 text-xl"></i>Tampilkan QR Code
+                            </button>
 
                             <div class="glass-panel-secondary rounded-xl p-6 max-w-md mx-auto">
                                 <div class="flex items-center justify-center mb-4">
@@ -520,6 +624,36 @@
                                     <p><i class="fas fa-check mr-2 text-green-400"></i>Dienkripsi dengan teknologi terdepan</p>
                                     <p><i class="fas fa-check mr-2 text-green-400"></i>Kompatibel dengan semua e-wallet</p>
                                     <p><i class="fas fa-check mr-2 text-green-400"></i>Proses instan 24/7</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI Assistant View -->
+                <div id="ai-assistant-view" class="p-8 hidden">
+                    <div class="text-center animate-fadeInUp">
+                        <h2 class="text-3xl font-orbitron mb-8 text-sky-300">
+                            <i class="fas fa-robot mr-3"></i>
+                            AI Assistant
+                        </h2>
+
+                        <div id="ai-assistant-section" class="rounded-2xl p-8 mb-8">
+                            <div class="mb-6">
+                                <label for="ai-query-input" class="block text-left text-slate-300 text-lg font-semibold mb-2">
+                                    Ajukan pertanyaan Anda:
+                                </label>
+                                <textarea id="ai-query-input" placeholder="Contoh: Apa itu gateway pembayaran?" class="rounded-xl"></textarea>
+                            </div>
+
+                            <button id="send-ai-query-btn" class="method-btn active px-8 py-4 rounded-xl text-lg font-semibold mb-6 w-full">
+                                <i class="fas fa-paper-plane mr-3 text-xl"></i>Kirim Pertanyaan
+                            </button>
+
+                            <div id="ai-response-area" class="rounded-xl p-4 text-left relative">
+                                <p class="text-slate-400">Jawaban AI akan muncul di sini...</p>
+                                <div id="ai-loading-spinner" class="hidden absolute inset-0 flex items-center justify-center bg-slate-800/70 rounded-xl">
+                                    <div class="loading-spinner"></div>
                                 </div>
                             </div>
                         </div>
@@ -589,6 +723,23 @@
         Browser Anda tidak mendukung elemen audio.
     </audio>
 
+    <!-- QRIS Modal Overlay Structure -->
+    <div id="qris-modal-overlay">
+        <div id="qris-modal-content">
+            <button id="qris-close-btn"><i class="fas fa-times-circle"></i></button>
+            <h3 class="text-2xl font-orbitron mb-4 text-sky-300">
+                <i class="fas fa-qrcode mr-3"></i>Scan QR Code
+            </h3>
+            <p class="text-slate-300 text-lg mb-6">Pindai kode QR menggunakan aplikasi pembayaran favorit Anda</p>
+
+            <div class="max-w-sm mx-auto">
+                <div class="qr-container animate-pulseGlow">
+                    <img src="https://files.catbox.moe/x5ixxt.jpeg" alt="Kode QRIS Pembayaran" class="w-full h-auto rounded-xl shadow-2xl">
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Tone.js for sound effects -->
     <script src="https://unpkg.com/tone@14.7.58/build/Tone.js"></script>
 
@@ -630,9 +781,8 @@
                     }
                     backgroundMusic.play().catch(error => {
                         console.error("Autoplay prevented:", error);
-                        // Inform user to click to play if autoplay fails
-                        // This message box is a placeholder, in a real app you'd use a custom modal
-                        // alert("Browser prevented autoplay. Please click the music icon to play.");
+                        // In a real application, you might show a custom message box here
+                        // instead of an alert, as alerts are blocked in iframes.
                     });
                     musicIcon.classList.remove('fa-volume-mute');
                     musicIcon.classList.add('fa-volume-up');
@@ -813,35 +963,31 @@
             // Tab Switching Logic
             const dashboardTab = document.getElementById('dashboard-tab');
             const contactTab = document.getElementById('contact-tab');
+            const aiTab = document.getElementById('ai-tab'); // New AI tab
             const dashboardView = document.getElementById('dashboard-view');
             const contactView = document.getElementById('contact-view');
+            const aiAssistantView = document.getElementById('ai-assistant-view'); // New AI view
             const tabIndicator = document.getElementById('tab-indicator');
 
             /**
              * Switches the active tab and updates the UI.
              * @param {HTMLElement} activeTabButton The button for the tab to activate.
              * @param {HTMLElement} activeContentView The content view to display.
-             * @param {HTMLElement} inactiveContentView The content view to hide.
              */
-            function switchTab(activeTabButton, activeContentView, inactiveContentView) {
+            function switchTab(activeTabButton, activeContentView) {
                 // Remove 'active' class from all tab buttons
                 document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
                 // Add 'active' class to the clicked tab button
                 activeTabButton.classList.add('active');
 
-                // Add animation classes before hiding/showing
-                if (activeContentView === dashboardView) {
-                    dashboardView.classList.remove('hidden');
-                    dashboardView.classList.add('animate-fadeInUp');
-                    contactView.classList.add('hidden');
-                    contactView.classList.remove('animate-fadeInUp'); // Remove if it was there
-                } else {
-                    contactView.classList.remove('hidden');
-                    contactView.classList.add('animate-fadeInUp');
-                    dashboardView.classList.add('hidden');
-                    dashboardView.classList.remove('animate-fadeInUp'); // Remove if it was there
-                }
+                // Hide all content views
+                dashboardView.classList.add('hidden');
+                contactView.classList.add('hidden');
+                aiAssistantView.classList.add('hidden'); // Hide AI view
 
+                // Show the active content view and apply animation
+                activeContentView.classList.remove('hidden');
+                activeContentView.classList.add('animate-fadeInUp');
 
                 // Update tab indicator position and width
                 const tabWidth = activeTabButton.offsetWidth;
@@ -863,11 +1009,15 @@
 
             // Event listeners for tab buttons
             dashboardTab.addEventListener('click', () => {
-                switchTab(dashboardTab, dashboardView, contactView);
+                switchTab(dashboardTab, dashboardView);
             });
 
             contactTab.addEventListener('click', () => {
-                switchTab(contactTab, contactView, dashboardView);
+                switchTab(contactTab, contactView);
+            });
+
+            aiTab.addEventListener('click', () => {
+                switchTab(aiTab, aiAssistantView);
             });
 
             // Payment Type Switching (E-Wallet / QRIS)
@@ -907,9 +1057,9 @@
 
             // Payment details data (example data)
             const paymentDetails = {
-                dana: { name: "DANA", number: "0817-4731-245" },
-                gopay: { name: "GOPAY", number: "COMINGSOON!!" },
-                ovo: { name: "OVO", number: "COMINGSOON!!" }
+                dana: { name: "DANA", number: "0812-3456-7890" },
+                gopay: { name: "GOPAY", number: "0876-5432-1098" },
+                ovo: { name: "OVO", number: "0850-1234-5678" }
             };
 
             ewalletMethodBtns.forEach(btn => {
@@ -966,6 +1116,99 @@
                     notification.classList.add('opacity-0', '-translate-y-10', 'pointer-events-none');
                 }, 3000); // Notification disappears after 3 seconds
             }
+
+            // QRIS Modal Logic
+            const showQrisBtn = document.getElementById('show-qris-btn');
+            const qrisModalOverlay = document.getElementById('qris-modal-overlay');
+            const qrisCloseBtn = document.getElementById('qris-close-btn');
+
+            showQrisBtn.addEventListener('click', () => {
+                qrisModalOverlay.classList.add('active');
+            });
+
+            qrisCloseBtn.addEventListener('click', () => {
+                qrisModalOverlay.classList.remove('active');
+            });
+
+            // Close modal if clicked outside the content (on the overlay itself)
+            qrisModalOverlay.addEventListener('click', (event) => {
+                if (event.target === qrisModalOverlay) {
+                    qrisModalOverlay.classList.remove('active');
+                }
+            });
+
+            // Ensure the new close button also has the pressed animation and sound
+            qrisCloseBtn.addEventListener('click', playClickSound);
+            qrisCloseBtn.addEventListener('mousedown', () => {
+                qrisCloseBtn.classList.add('pressed');
+            });
+            qrisCloseBtn.addEventListener('mouseup', () => {
+                qrisCloseBtn.classList.remove('pressed');
+            });
+            qrisCloseBtn.addEventListener('mouseleave', () => {
+                qrisCloseBtn.classList.remove('pressed');
+            });
+
+            // AI Assistant Logic
+            const aiQueryInput = document.getElementById('ai-query-input');
+            const sendAiQueryBtn = document.getElementById('send-ai-query-btn');
+            const aiResponseArea = document.getElementById('ai-response-area');
+            const aiLoadingSpinner = document.getElementById('ai-loading-spinner');
+
+            sendAiQueryBtn.addEventListener('click', async () => {
+                const prompt = aiQueryInput.value.trim();
+                if (!prompt) {
+                    aiResponseArea.innerHTML = '<p class="text-red-400">Harap masukkan pertanyaan.</p>';
+                    return;
+                }
+
+                aiResponseArea.innerHTML = ''; // Clear previous response
+                aiLoadingSpinner.classList.remove('hidden'); // Show loading spinner
+
+                let chatHistory = [];
+                chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+
+                const payload = { contents: chatHistory };
+                const apiKey = ""; // Canvas will automatically provide this
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    const result = await response.json();
+
+                    if (result.candidates && result.candidates.length > 0 &&
+                        result.candidates[0].content && result.candidates[0].content.parts &&
+                        result.candidates[0].content.parts.length > 0) {
+                        const text = result.candidates[0].content.parts[0].text;
+                        aiResponseArea.innerHTML = `<p>${text}</p>`;
+                    } else {
+                        aiResponseArea.innerHTML = '<p class="text-red-400">Maaf, tidak dapat menghasilkan respons. Coba lagi.</p>';
+                        console.error('Unexpected API response structure:', result);
+                    }
+                } catch (error) {
+                    aiResponseArea.innerHTML = `<p class="text-red-400">Terjadi kesalahan: ${error.message}</p>`;
+                    console.error('Error fetching AI response:', error);
+                } finally {
+                    aiLoadingSpinner.classList.add('hidden'); // Hide loading spinner
+                    aiQueryInput.value = ''; // Clear input field
+                }
+            });
+
+            // Ensure the new AI button also has the pressed animation and sound
+            sendAiQueryBtn.addEventListener('mousedown', () => {
+                sendAiQueryBtn.classList.add('pressed');
+            });
+            sendAiQueryBtn.addEventListener('mouseup', () => {
+                sendAiQueryBtn.classList.remove('pressed');
+            });
+            sendAiQueryBtn.addEventListener('mouseleave', () => {
+                sendAiQueryBtn.classList.remove('pressed');
+            });
         });
     </script>
 </body>
