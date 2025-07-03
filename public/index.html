@@ -98,6 +98,97 @@
         }
         .animate-pulseGlow { animation: pulseGlow 2.5s infinite; }
 
+        /* Gaya untuk area chat AI */
+        .chat-container {
+            height: 400px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding: 15px;
+            background: rgba(2, 6, 23, 0.7); /* slate-950 dengan transparansi */
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .chat-message {
+            max-width: 80%;
+            padding: 10px 15px;
+            border-radius: 15px;
+            word-wrap: break-word;
+        }
+
+        .chat-message.user {
+            background-color: #0ea5e9; /* sky-500 */
+            color: #0c0a09;
+            align-self: flex-end;
+            border-bottom-right-radius: 2px;
+        }
+
+        .chat-message.ai {
+            background-color: #475569; /* slate-600 */
+            color: #E0E0E0;
+            align-self: flex-start;
+            border-bottom-left-radius: 2px;
+        }
+
+        .chat-input-container {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .chat-input {
+            flex-grow: 1;
+            padding: 10px 15px;
+            border-radius: 25px;
+            border: 1px solid #475569;
+            background-color: #1e293b; /* slate-800 */
+            color: #E0E0E0;
+            outline: none;
+        }
+
+        .chat-input:focus {
+            border-color: #0ea5e9;
+            box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.5);
+        }
+
+        .chat-send-btn {
+            background-color: #0ea5e9;
+            color: #0c0a09;
+            padding: 10px 15px;
+            border-radius: 25px;
+            transition: all 0.2s ease;
+        }
+
+        .chat-send-btn:hover {
+            background-color: #0284c7; /* sky-600 */
+            transform: translateY(-1px);
+        }
+
+        .chat-send-btn:active {
+            background-color: #0369a1; /* sky-700 */
+            transform: translateY(0);
+        }
+
+        .loading-dots span {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            margin: 0 2px;
+            background-color: #E0E0E0;
+            border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+
+        .loading-dots span:nth-child(1) { animation-delay: -0.32s; }
+        .loading-dots span:nth-child(2) { animation-delay: -0.16s; }
+        .loading-dots span:nth-child(3) { animation-delay: 0s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1.0); }
+        }
     </style>
 </head>
 <body class="bg-slate-900">
@@ -120,6 +211,9 @@
                 </button>
                  <button id="contact-tab" class="tab-btn flex-1 p-4 text-base sm:text-lg font-orbitron border-b-4 border-transparent">
                     <i class="fas fa-user-astronaut mr-2"></i>Hubungi Dev
+                </button>
+                <button id="ai-assistant-tab" class="tab-btn flex-1 p-4 text-base sm:text-lg font-orbitron border-b-4 border-transparent">
+                    <i class="fas fa-robot mr-2"></i>AI Asisten
                 </button>
             </nav>
 
@@ -183,6 +277,20 @@
                                 Telegram
                             </a>
                         </div>
+                    </div>
+                </div>
+
+                <!-- View AI Assistant -->
+                <div id="ai-assistant-view" class="p-6 sm:p-8 hidden">
+                    <h2 class="text-2xl font-orbitron mb-6 text-sky-300 text-center">AI Asisten</h2>
+                    <div id="chat-container" class="chat-container">
+                        <!-- Pesan chat akan dimuat di sini -->
+                    </div>
+                    <div class="chat-input-container">
+                        <input type="text" id="chat-input" class="chat-input" placeholder="Ketik pesan Anda...">
+                        <button id="send-chat-btn" class="chat-send-btn">
+                            <i class="fas fa-paper-plane mr-2"></i>Kirim
+                        </button>
                     </div>
                 </div>
             </div>
@@ -249,8 +357,11 @@
             // --- Logika UI ---
             const dashboardTab = document.getElementById('dashboard-tab');
             const contactTab = document.getElementById('contact-tab');
+            const aiAssistantTab = document.getElementById('ai-assistant-tab'); // Tab AI Asisten
+            
             const dashboardView = document.getElementById('dashboard-view');
             const contactView = document.getElementById('contact-view');
+            const aiAssistantView = document.getElementById('ai-assistant-view'); // View AI Asisten
             
             const paymentTypeBtns = document.querySelectorAll('.payment-type-btn');
             const ewalletView = document.getElementById('ewallet-view');
@@ -263,6 +374,10 @@
             const copyBtn = document.getElementById('copy-btn');
             const notification = document.getElementById('notification');
 
+            const chatContainer = document.getElementById('chat-container');
+            const chatInput = document.getElementById('chat-input');
+            const sendChatBtn = document.getElementById('send-chat-btn');
+
             const paymentData = {
                 dana: { name: "DANA", number: "08174731245" },
                 gopay: { name: "GOPAY", number: "08174731245" },
@@ -271,24 +386,36 @@
 
             let activeMethod = null;
             let notificationTimeout;
+            let clickSound = new Audio('https://www.soundjay.com/buttons/button-1.mp3'); // Efek suara klik
 
             // Fungsi untuk beralih Tab Utama
             function switchTabView(tabToShow) {
+                // Sembunyikan semua view
+                dashboardView.classList.add('hidden');
+                contactView.classList.add('hidden');
+                aiAssistantView.classList.add('hidden');
+
+                // Nonaktifkan semua tab
+                dashboardTab.classList.remove('active');
+                contactTab.classList.remove('active');
+                aiAssistantTab.classList.remove('active');
+
+                // Tampilkan view yang sesuai dan aktifkan tab
                 if (tabToShow === 'dashboard') {
                     dashboardView.classList.remove('hidden');
-                    contactView.classList.add('hidden');
                     dashboardTab.classList.add('active');
-                    contactTab.classList.remove('active');
-                } else {
-                    dashboardView.classList.add('hidden');
+                } else if (tabToShow === 'contact') {
                     contactView.classList.remove('hidden');
-                    dashboardTab.classList.remove('active');
                     contactTab.classList.add('active');
+                } else if (tabToShow === 'ai-assistant') {
+                    aiAssistantView.classList.remove('hidden');
+                    aiAssistantTab.classList.add('active');
                 }
             }
             
-            dashboardTab.addEventListener('click', () => switchTabView('dashboard'));
-            contactTab.addEventListener('click', () => switchTabView('contact'));
+            dashboardTab.addEventListener('click', () => { switchTabView('dashboard'); playClickSound(); });
+            contactTab.addEventListener('click', () => { switchTabView('contact'); playClickSound(); });
+            aiAssistantTab.addEventListener('click', () => { switchTabView('ai-assistant'); playClickSound(); }); // Event listener untuk tab AI Asisten
 
             // Fungsi untuk beralih antara E-Wallet dan QRIS di dalam Dashboard
             function switchPaymentType(type) {
@@ -309,11 +436,27 @@
                 ewalletMethodBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.method === method));
             }
 
-            paymentTypeBtns.forEach(btn => btn.addEventListener('click', () => switchPaymentType(btn.dataset.type)));
-            ewalletMethodBtns.forEach(btn => btn.addEventListener('click', () => selectEwalletMethod(btn.dataset.method)));
+            // Tambahkan efek suara klik ke semua tombol yang relevan
+            function addClickSoundToButtons() {
+                const allButtons = document.querySelectorAll('button, a.method-btn'); // Pilih semua tombol dan link dengan class method-btn
+                allButtons.forEach(button => {
+                    button.addEventListener('click', () => {
+                        playClickSound();
+                    });
+                });
+            }
+
+            function playClickSound() {
+                clickSound.currentTime = 0; // Reset audio ke awal setiap kali diputar
+                clickSound.play().catch(e => console.error("Error playing sound:", e));
+            }
+
+            paymentTypeBtns.forEach(btn => btn.addEventListener('click', () => { switchPaymentType(btn.dataset.type); playClickSound(); }));
+            ewalletMethodBtns.forEach(btn => btn.addEventListener('click', () => { selectEwalletMethod(btn.dataset.method); playClickSound(); }));
 
             // Event listener untuk tombol salin
             copyBtn.addEventListener('click', () => {
+                playClickSound(); // Mainkan suara saat tombol salin diklik
                 if (!activeMethod) return;
                 const numberToCopy = paymentData[activeMethod].number;
                 const textArea = document.createElement("textarea");
@@ -343,10 +486,91 @@
                 }, 2500);
             }
 
+            // --- Logika AI Assistant ---
+            let chatHistory = [];
+
+            // Fungsi untuk menambahkan pesan ke UI chat
+            function addMessageToChat(message, sender) {
+                const messageElement = document.createElement('div');
+                messageElement.classList.add('chat-message', sender);
+                messageElement.textContent = message;
+                chatContainer.appendChild(messageElement);
+                chatContainer.scrollTop = chatContainer.scrollHeight; // Gulir ke bawah
+            }
+
+            // Fungsi untuk menampilkan indikator loading AI
+            function showLoadingIndicator() {
+                const loadingElement = document.createElement('div');
+                loadingElement.classList.add('chat-message', 'ai', 'loading-dots');
+                loadingElement.innerHTML = '<span></span><span></span><span></span>';
+                loadingElement.id = 'loading-indicator';
+                chatContainer.appendChild(loadingElement);
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            }
+
+            // Fungsi untuk menyembunyikan indikator loading AI
+            function hideLoadingIndicator() {
+                const loadingElement = document.getElementById('loading-indicator');
+                if (loadingElement) {
+                    loadingElement.remove();
+                }
+            }
+
+            // Fungsi untuk mengirim pesan ke Gemini API
+            async function sendMessageToGemini() {
+                const prompt = chatInput.value.trim();
+                if (prompt === '') return;
+
+                addMessageToChat(prompt, 'user');
+                chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+                chatInput.value = ''; // Kosongkan input
+
+                showLoadingIndicator(); // Tampilkan indikator loading
+
+                try {
+                    const payload = { contents: chatHistory };
+                    const apiKey = ""; // API key akan diisi secara otomatis oleh Canvas
+                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    const result = await response.json();
+                    
+                    hideLoadingIndicator(); // Sembunyikan indikator loading
+
+                    if (result.candidates && result.candidates.length > 0 &&
+                        result.candidates[0].content && result.candidates[0].content.parts &&
+                        result.candidates[0].content.parts.length > 0) {
+                        const aiResponse = result.candidates[0].content.parts[0].text;
+                        addMessageToChat(aiResponse, 'ai');
+                        chatHistory.push({ role: "model", parts: [{ text: aiResponse }] });
+                    } else {
+                        addMessageToChat("Maaf, saya tidak dapat memahami permintaan Anda. Bisakah Anda mencoba lagi?", 'ai');
+                    }
+                } catch (error) {
+                    console.error('Error calling Gemini API:', error);
+                    hideLoadingIndicator(); // Sembunyikan indikator loading jika ada error
+                    addMessageToChat("Terjadi kesalahan saat menghubungi AI. Mohon coba lagi nanti.", 'ai');
+                }
+            }
+
+            sendChatBtn.addEventListener('click', () => { sendMessageToGemini(); playClickSound(); });
+            chatInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    sendMessageToGemini();
+                    playClickSound();
+                }
+            });
+
             // Inisialisasi
             switchTabView('dashboard'); // Tampilkan dashboard saat pertama kali dimuat
             switchPaymentType('ewallet'); // Di dalam dashboard, tampilkan e-wallet
             selectEwalletMethod('dana'); // Pilih Dana secara default
+            addClickSoundToButtons(); // Tambahkan efek suara ke semua tombol
         });
     </script>
 </body>
