@@ -3,163 +3,142 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MIWAAI - Portal Antarbintang</title>
+    <title>Pusat Pembayaran - MIWAAI HOSTING</title>
+    <!-- Chosen Palette: Calm Harmony Neutrals with Vibrant Accents -->
+    <!-- Application Structure Plan: Aplikasi ini dirancang sebagai dasbor interaktif dengan tata letak dua kolom logis. Kolom kiri berisi navigasi tab utama (E-Wallet dan QRIS), dan kolom kanan menampilkan detail pembayaran yang dinamis. Struktur ini meminimalkan kebutuhan untuk bergulir dan memungkinkan pengguna untuk dengan cepat beralih antar kategori pembayaran. Ini dipilih karena efisiensinya dalam menyajikan informasi dan meningkatkan alur pengguna dengan menjaga semua interaksi pada satu layar, memberikan pengalaman yang koheren dan mudah dinavigasi. -->
+    <!-- Visualization & Content Choices: Karena laporan sumber tidak memiliki data kuantitatif, fokusnya adalah pada penyajian informasi tekstual dan fungsionalitas interaktif. Goal: Memfasilitasi pembayaran yang cepat dan jelas -> Presentation: Tampilan berbasis tab dengan kartu metode pembayaran yang dapat diklik dan panel detail dinamis. -> Interaction: Pengguna mengklik tab untuk beralih kategori. Di dalam tab E-Wallet, mengklik tombol penyedia (Dana, OVO, Gopay) akan menampilkan nomor pembayaran dan logo yang relevan. Tombol 'Salin' menyalin nomor dan menampilkan notifikasi animasi. Justification: Desain ini lebih menarik secara visual dan interaktif dibandingkan dengan daftar statis, dengan penambahan animasi untuk umpan balik yang lebih baik dan "wow factor" yang halus. Library/Method: Vanilla JavaScript untuk logika, Tailwind CSS untuk tata letak dan gaya, dan CSS keyframes untuk animasi. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700&family=Exo+2:wght@300;400;500;600;700&family=Audiowide&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* CSS styles remain unchanged */
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        .tab-active {
+            border-bottom-color: #6366f1; /* Indigo 500 */
+            color: #4338ca; /* Indigo 700 */
+            font-weight: 600;
+        }
+        .tab-inactive {
+            border-bottom-color: transparent;
+            color: #6b7280; /* Gray 500 */
+        }
+        .method-btn-active {
+            background-color: #eef2ff; /* Indigo 50 */
+            color: #4338ca; /* Indigo 700 */
+            border-color: #a5b4fc; /* Indigo 300 */
+            font-weight: 600;
+            box-shadow: 0 4px 10px rgba(99, 102, 241, 0.2);
+            transform: translateY(-2px);
+        }
+        .method-btn-inactive {
+            background-color: #f9fafb; /* Gray 50 */
+            color: #374151; /* Gray 700 */
+            border-color: #e5e7eb; /* Gray 200 */
+        }
+        .method-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fadeIn {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        @keyframes slideInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-slideInUp {
+            animation: slideInUp 0.6s ease-out forwards;
+        }
+
+        @keyframes pulseBorder {
+            0% { border-color: #a5b4fc; box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.4); }
+            50% { border-color: #818cf8; box-shadow: 0 0 0 8px rgba(99, 102, 241, 0); }
+            100% { border-color: #a5b4fc; box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); }
+        }
+        .animate-pulseBorder {
+            animation: pulseBorder 2s infinite;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            70% { transform: scale(1.05); opacity: 1; }
+            100% { transform: scale(1); }
+        }
+        .animate-popIn {
+            animation: popIn 0.3s ease-out forwards;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-3px); }
+            50% { transform: translateX(3px); }
+            75% { transform: translateX(-3px); }
+        }
+        .animate-shake {
+            animation: shake 0.2s ease-in-out;
+        }
     </style>
 </head>
-<body class="bg-black text-blue-100 min-h-screen flex">
+<body class="bg-gradient-to-br from-slate-50 to-indigo-50 min-h-screen flex items-center justify-center py-8">
 
-    <!-- Three.js Canvas for Background -->
-    <canvas id="three-canvas" aria-hidden="true"></canvas>
+    <div class="container mx-auto max-w-2xl px-4 animate-fadeIn">
 
-    <!-- Loading Screen -->
-    <div id="loading-screen" class="fixed inset-0 bg-black flex flex-col items-center justify-center z-[9999] transition-opacity duration-1000" role="alert" aria-live="assertive">
-        <div class="relative w-32 h-32 mb-8">
-            <div class="absolute inset-0 border-4 border-t-4 border-blue-500 rounded-full animate-spin"></div>
-            <div class="absolute inset-0 flex items-center justify-center text-blue-300 text-xl font-bold font-['Orbitron']">MIWAAI</div>
-        </div>
-        <p class="text-blue-300 text-xl font-['Audiowide'] loading-text-wrapper">
-          Memuat Website MiwaAI
-        </p>
-    </div>
-
-    <!-- Sidebar -->
-    <aside id="sidebar" class="sidebar fixed top-0 left-0 h-full glass-panel flex flex-col py-6 px-4" aria-label="Navigasi Utama">
-        <div class="flex items-center justify-between mb-8">
-            <div class="flex items-center">
-                <img src="https://files.catbox.moe/4ya0zn.jpg" alt="MIWAAI Logo" class="w-10 h-10 rounded-full mr-3 border-2 border-neon-blue">
-                <span class="text-xl font-bold text-neon-blue whitespace-nowrap">MIWAAI</span>
+        <header class="text-center mb-8">
+            <div class="relative inline-block mb-4 group">
+                <img src="https://files.catbox.moe/4ya0zn.jpg" alt="Profil Pengguna" class="w-24 h-24 rounded-full mx-auto border-4 border-white shadow-md transition-transform duration-300 group-hover:scale-105">
+                <div class="absolute inset-0 rounded-full border-4 border-transparent group-hover:border-indigo-400 transition-all duration-300 animate-pulseBorder"></div>
             </div>
-            <button id="sidebar-toggle-desktop" class="sidebar-toggle-desktop text-blue-300 hover:text-white transition-colors" aria-label="Tutup Sidebar">
-                <i class="fas fa-chevron-left"></i>
-            </button>
-        </div>
+            <h1 class="text-3xl sm:text-4xl font-bold text-slate-900 leading-tight">Pusat Pembayaran MIWAAI</h1>
+            <p class="mt-2 text-slate-600 max-w-md mx-auto">Pilih dan selesaikan pembayaran Anda dengan mudah, cepat, dan aman.</p>
+            <p class="text-xs text-slate-400 mt-1">Credit: 𝐌𝐢𝐰𝐚𝐚𝐆𝐎𝐃</p>
+        </header>
 
-        <nav class="flex-1 space-y-4" role="navigation">
-            <a href="#dashboard-view" data-view="dashboard" id="nav-dashboard" class="sidebar-item flex items-center p-3 rounded-lg text-blue-200 hover:text-white hover:bg-blue-900/20 transition-all duration-200 active" aria-current="page">
-                <i class="fas fa-satellite-dish text-xl mr-4"></i>
-                <span class="whitespace-nowrap">Dashboard Utama</span>
-                <div class="laser-line"></div>
-            </a>
-            <a href="#ewallet-view" data-view="ewallet" id="nav-ewallet" class="sidebar-item flex items-center p-3 rounded-lg text-blue-200 hover:text-white hover:bg-blue-900/20 transition-all duration-200">
-                <i class="fas fa-wallet text-xl mr-4"></i>
-                <span class="whitespace-nowrap">Pembayaran E-Wallet</span>
-                <div class="laser-line"></div>
-            </a>
-            <a href="#qris-view" data-view="qris" id="nav-qris" class="sidebar-item flex items-center p-3 rounded-lg text-blue-200 hover:text-white hover:bg-blue-900/20 transition-all duration-200">
-                <i class="fas fa-qrcode text-xl mr-4"></i>
-                <span class="whitespace-nowrap">QRIS & Scanner</span>
-                <div class="laser-line"></div>
-            </a>
-            <a href="#ai-view" data-view="ai" id="nav-ai" class="sidebar-item flex items-center p-3 rounded-lg text-blue-200 hover:text-white hover:bg-blue-900/20 transition-all duration-200">
-                <i class="fas fa-robot text-xl mr-4"></i>
-                <span class="whitespace-nowrap">Asisten AI</span>
-                <div class="laser-line"></div>
-            </a>
-            <a href="#hosting-panel-view" data-view="hosting-panel" id="nav-hosting" class="sidebar-item flex items-center p-3 rounded-lg text-blue-200 hover:text-white hover:bg-blue-900/20 transition-all duration-200">
-                <i class="fas fa-rocket text-xl mr-4"></i>
-                <span class="whitespace-nowrap">Hosting Panel</span>
-                <div class="laser-line"></div>
-            </a>
-            <a href="#settings-view" data-view="settings" id="nav-settings" class="sidebar-item flex items-center p-3 rounded-lg text-blue-200 hover:text-white hover:bg-blue-900/20 transition-all duration-200">
-                <i class="fas fa-cog text-xl mr-4"></i>
-                <span class="whitespace-nowrap">Pengaturan</span>
-                <div class="laser-line"></div>
-            </a>
-        </nav>
+        <main class="bg-white rounded-xl shadow-xl overflow-hidden animate-slideInUp">
+            <nav class="flex border-b border-slate-200 bg-slate-50">
+                <button id="ewallet-tab" class="flex-1 py-4 text-center border-b-2 transition-colors duration-200 tab-active hover:bg-slate-100">
+                    <i class="fa-solid fa-wallet mr-2"></i>E-Wallet
+                </button>
+                <button id="qris-tab" class="flex-1 py-4 text-center border-b-2 transition-colors duration-200 tab-inactive hover:bg-slate-100">
+                     <i class="fa-solid fa-qrcode mr-2"></i>QRIS
+                </button>
+            </nav>
 
-        <div class="mt-8 space-y-4">
-            <button id="theme-toggle-btn" class="w-full flex items-center p-3 rounded-lg bg-purple-600 text-white font-semibold hover:bg-purple-700 transition-colors shadow-md hover:shadow-lg" aria-label="Togol Mode Cahaya">
-                <i class="fa-solid fa-sun text-xl mr-4"></i>
-                <span class="whitespace-nowrap">Mode Cahaya</span>
-            </button>
-        </div>
-    </aside>
-
-    <!-- Main Content Area -->
-    <div id="content-container" class="content-container flex-1 flex flex-col min-h-screen">
-        <button id="hamburger-menu" class="hamburger-menu fixed top-4 left-4 z-50 p-3 rounded-full bg-blue-600 text-white shadow-lg hover:bg-blue-700 transition-all duration-300" aria-label="Tampilkan Menu">
-            <i class="fas fa-bars"></i>
-        </button>
-
-        <div class="container mx-auto max-w-2xl px-4 relative z-10 py-8">
-
-            <header class="text-center mb-8">
-                <div class="relative inline-block mb-4 group">
-                    <img src="https://files.catbox.moe/4ya0zn.jpg" alt="Profil Pengguna" class="w-24 h-24 rounded-full mx-auto border-4 border-white shadow-md transition-transform duration-300 group-hover:scale-105 animate-float">
-                    <div class="absolute inset-0 rounded-full border-4 border-transparent group-hover:border-blue-400 transition-all duration-300 animate-pulseBorder"></div>
-                </div>
-                <h1 class="text-3xl sm:text-4xl font-bold font-['Orbitron'] text-blue-300 leading-tight drop-shadow-lg typing-text-container">
-                    <span id="hero-typing-text" class="text-neon-blue"></span>
-                </h1>
-                <p class="text-xs text-blue-200 mt-1">Credit: 𝐌𝐢𝐰𝐚𝐚𝐆𝐎𝐃</p>
-            </header>
-
-            <section id="initial-contact-section" class="glass-panel p-8 rounded-xl mb-8 animate-slideInUp" data-aos="zoom-in">
-                <h2 class="text-2xl font-bold text-neon-blue mb-4 text-center">Hubungi Developer</h2>
-                <p class="text-blue-200 text-center mb-6">Punya pertanyaan atau butuh bantuan? Hubungi kami melalui media sosial di bawah ini.</p>
-                <div class="flex justify-center space-x-6">
-                    <a href="https://wa.me/628174731245" target="_blank" class="social-icon whatsapp" aria-label="Hubungi melalui WhatsApp">
-                        <i class="fab fa-whatsapp"></i>
-                    </a>
-                    <a href="https://t.me/miwasogg" target="_blank" class="social-icon telegram" aria-label="Hubungi melalui Telegram">
-                        <i class="fab fa-telegram-plane"></i>
-                    </a>
-                </div>
-            </section>
-
-            <main id="main-content" class="rounded-xl shadow-xl overflow-hidden">
-                <!-- Dashboard View -->
-                <div id="dashboard-view" class="content-view p-6 sm:p-8">
-                    <div class="text-center mb-6">
-                        <h2 class="text-xl font-semibold text-blue-200">Selamat Datang di Dashboard Utama!</h2>
-                        <p class="text-blue-300 mt-1">Jelajahi fitur-fitur portal antarbintang Anda.</p>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="glass-panel p-4 rounded-lg text-center" data-aos="fade-up">
-                            <i class="fas fa-chart-line text-4xl text-neon-blue mb-2"></i>
-                            <h3 class="text-lg font-semibold">Statistik Perjalanan</h3>
-                            <p class="text-blue-200">Lihat ringkasan aktivitas perjalanan Anda.</p>
-                        </div>
-                        <div class="glass-panel p-4 rounded-lg text-center" data-aos="fade-up" data-aos-delay="100">
-                            <i class="fas fa-bell text-4xl text-neon-purple mb-2"></i>
-                            <h3 class="text-lg font-semibold">Notifikasi Terbaru</h3>
-                            <p class="text-blue-200">Pembaruan penting dari sistem portal.</p>
-                        </div>
-                    </div>
-                </div>
-
+            <div class="p-6 sm:p-8">
                 <!-- E-Wallet View -->
-                <div id="ewallet-view" class="content-view p-6 sm:p-8 hidden">
+                <div id="ewallet-view">
                     <div class="text-center mb-6">
-                         <h2 class="text-xl font-semibold text-blue-200">Pembayaran E-Wallet</h2>
-                         <p class="text-blue-300 mt-1">Pilih penyedia layanan untuk melihat nomor tujuan.</p>
+                         <h2 class="text-xl font-semibold text-slate-800">Pembayaran E-Wallet</h2>
+                         <p class="text-slate-500 mt-1">Pilih penyedia layanan untuk melihat nomor tujuan.</p>
                     </div>
 
                     <div id="method-selector" class="grid grid-cols-3 gap-3 mb-6">
-                        <button data-method="dana" class="method-btn p-3 text-center border rounded-lg hover:scale-105 active:scale-95" aria-label="Pilih DANA">Dana</button>
-                        <button data-method="ovo" class="method-btn p-3 text-center border rounded-lg hover:scale-105 active:scale-95" aria-label="Pilih OVO">OVO</button>
-                        <button data-method="gopay" class="method-btn p-3 text-center border rounded-lg hover:scale-105 active:scale-95" aria-label="Pilih Gopay">Gopay</button>
+                        <button data-method="dana" class="method-btn p-3 text-center border rounded-lg transition-all duration-200 method-btn-inactive hover:scale-105 active:scale-95">Dana</button>
+                        <button data-method="ovo" class="method-btn p-3 text-center border rounded-lg transition-all duration-200 method-btn-inactive hover:scale-105 active:scale-95">OVO</button>
+                        <button data-method="gopay" class="method-btn p-3 text-center border rounded-lg transition-all duration-200 method-btn-inactive hover:scale-105 active:scale-95">Gopay</button>
                     </div>
 
-                    <div id="details-container" class="rounded-lg p-5 text-center min-h-[140px] flex flex-col justify-center animate-fadeIn">
+                    <div id="details-container" class="bg-slate-50 rounded-lg p-5 text-center min-h-[140px] flex flex-col justify-center transition-all duration-300 animate-fadeIn">
                         <div id="placeholder">
-                            <i class="fa-solid fa-arrow-up text-blue-500 text-2xl"></i>
-                            <p class="mt-2 text-blue-400">Pilih metode di atas</p>
+                            <i class="fa-solid fa-arrow-up text-slate-400 text-2xl"></i>
+                            <p class="mt-2 text-slate-500">Pilih metode di atas</p>
                         </div>
                         <div id="details" class="hidden">
                             <img id="method-logo" src="" alt="Logo Metode" class="h-10 mx-auto mb-3 animate-popIn">
-                            <p class="text-sm text-blue-300">Nomor Akun <span id="method-name" class="font-semibold"></span></p>
+                            <p class="text-sm text-slate-600">Nomor Akun <span id="method-name" class="font-semibold"></span></p>
                             <div class="flex items-center justify-center gap-4 mt-2">
-                                <p id="payment-number" class="text-2xl font-mono font-bold tracking-wide animate-popIn"></p>
-                                <button id="copy-btn" class="w-10 h-10 rounded-lg text-sm font-semibold hover:scale-105 active:scale-95 transition-all duration-200 flex items-center justify-center shadow-md hover:shadow-lg active:shadow-sm" aria-label="Salin Nomor Akun">
+                                <p id="payment-number" class="text-2xl font-mono font-bold text-slate-800 tracking-wide animate-popIn"></p>
+                                <button id="copy-btn" class="bg-indigo-600 text-white w-10 h-10 rounded-lg text-sm font-semibold hover:bg-indigo-700 active:bg-indigo-800 transition-all duration-200 flex items-center justify-center shadow-md hover:shadow-lg active:shadow-sm">
                                     <i class="fa-regular fa-copy"></i>
                                 </button>
                             </div>
@@ -168,67 +147,126 @@
                 </div>
 
                 <!-- QRIS View -->
-                <div id="qris-view" class="content-view p-6 sm:p-8 hidden">
+                <div id="qris-view" class="hidden">
                      <div class="text-center mb-6">
-                         <h2 class="text-xl font-semibold text-blue-200">Pembayaran QRIS</h2>
-                         <p class="text-blue-300 mt-1">Pindai kode untuk membayar dengan aplikasi apa pun.</p>
+                         <h2 class="text-xl font-semibold text-slate-800">Pembayaran QRIS</h2>
+                         <p class="text-slate-500 mt-1">Pindai kode untuk membayar dengan aplikasi apa pun.</p>
                     </div>
-                    <div class="max-w-60 mx-auto p-3 rounded-lg border-2 border-blue-700 shadow-inner animate-popIn bg-blue-900">
+                    <div class="max-w-60 mx-auto bg-white p-3 rounded-lg border-2 border-slate-200 shadow-inner animate-popIn">
                         <img src="https://files.catbox.moe/x5ixxt.jpeg" alt="Kode QRIS untuk MIWAAI" class="w-full h-auto rounded-md">
                     </div>
-                     <p class="text-center text-xs text-blue-300 mt-4">Pastikan nama merchant adalah <strong class="text-blue-100">MIWAAI HOSTING</strong>.</p>
+                     <p class="text-center text-xs text-slate-500 mt-4">Pastikan nama merchant adalah <strong class="text-slate-700">MIWAAI HOSTING</strong>.</p>
                 </div>
+            </div>
+        </main>
+        
+        <footer class="text-center mt-8">
+            <p class="text-sm text-slate-500">&copy; 2025 MIWAAI HOSTING. Semua Hak Cipta Dilindungi.</p>
+        </footer>
+    </div>
 
-                <!-- AI Assistant View -->
-                <div id="ai-view" class="content-view p-6 sm:p-8 hidden">
-                    <div class="text-center mb-6">
-                        <h2 class="text-xl font-semibold text-blue-200">Asisten AI MIWAAI</h2>
-                        <p class="text-blue-300 mt-1">Ajukan pertanyaan tentang pembayaran digital, teknologi, atau apa pun!</p>
-                    </div>
-                    <div class="flex flex-col gap-4">
-                        <textarea id="ai-input" class="w-full p-3 rounded-lg bg-blue-900 border border-blue-700 text-white placeholder-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y min-h-[80px]" placeholder="Ketik pertanyaan Anda di sini..." aria-label="Input Pertanyaan AI"></textarea>
-                        <button id="ask-ai-btn" class="w-full py-3 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 transition-colors shadow-md hover:shadow-lg flex items-center justify-center space-x-2" aria-label="Tanya AI">
-                            <i class="fa-solid fa-sparkles"></i>
-                            <span>Tanya AI ✨</span>
-                        </button>
-                        <div id="ai-response-area" class="p-4 rounded-lg text-blue-100 text-left relative">
-                            <p id="ai-response-text">Asisten AI siap membantu Anda. Ajukan pertanyaan!</p>
-                            <div id="ai-loading-indicator" class="hidden absolute inset-0 bg-blue-950 bg-opacity-80 flex items-center justify-center rounded-lg">
-                                <span class="loading-dots text-2xl text-blue-400">.<span>.</span><span>.</span></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+    <!-- Notification -->
+    <div id="notification" class="fixed bottom-5 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-sm py-2 px-4 rounded-full shadow-xl transition-all duration-300 opacity-0 translate-y-4 pointer-events-none">
+        Nomor berhasil disalin ke clipboard!
+    </div>
 
-                <!-- Hosting Panel View (Dummy) -->
-                <div id="hosting-panel-view" class="content-view p-6 sm:p-8 hidden">
-                    <div class="text-center mb-6">
-                        <h2 class="text-xl font-semibold text-blue-200">Panel Hosting Antarbintang</h2>
-                        <p class="text-blue-300 mt-1">Kelola sumber daya hosting galaksi Anda.</p>
-                    </div>
-                    <div class="glass-panel p-4 rounded-lg text-center" data-aos="fade-up">
-                        <i class="fas fa-server text-4xl text-neon-blue mb-2"></i>
-                        <h3 class="text-lg font-semibold">Status Server: Online</h3>
-                        <p class="text-blue-200">Semua sistem beroperasi pada kapasitas optimal.</p>
-                    </div>
-                    <div class="glass-panel p-4 rounded-lg text-center mt-4" data-aos="fade-up" data-aos-delay="100">
-                        <i class="fas fa-upload text-4xl text-neon-purple mb-2"></i>
-                        <h3 class="text-lg font-semibold">Unggah Data Kosmik</h3>
-                        <p class="text-blue-200">Transfer file ke jaringan antarplanet kami.</p>
-                    </div>
-                </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const ewalletTab = document.getElementById('ewallet-tab');
+            const qrisTab = document.getElementById('qris-tab');
+            const ewalletView = document.getElementById('ewallet-view');
+            const qrisView = document.getElementById('qris-view');
+            const methodSelector = document.getElementById('method-selector');
+            
+            const placeholder = document.getElementById('placeholder');
+            const details = document.getElementById('details');
+            const methodNameEl = document.getElementById('method-name');
+            const methodLogoEl = document.getElementById('method-logo');
+            const paymentNumberEl = document.getElementById('payment-number');
+            const copyBtn = document.getElementById('copy-btn');
+            const notification = document.getElementById('notification');
 
-                <!-- Settings View (Dummy) -->
-                <div id="settings-view" class="content-view p-6 sm:p-8 hidden">
-                    <div class="text-center mb-6">
-                        <h2 class="text-xl font-semibold text-blue-200">Pengaturan Portal</h2>
-                        <p class="text-blue-300 mt-1">Sesuaikan pengalaman antarbintang Anda.</p>
-                    </div>
-                    <div class="glass-panel p-4 rounded-lg" data-aos="fade-up">
-                        <h3 class="text-lg font-semibold text-white mb-2">Preferensi Tampilan</h3>
-                        <label class="flex items-center space-x-3 cursor-pointer">
-                            <input type="checkbox" id="dark-mode-toggle-setting" class="sr-only peer" aria-label="Aktifkan Mode Gelap">
-                            <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
-                            <span class="text-blue-200">Aktifkan Mode Gelap</span>
-                        </label>
-                    </div
+            const paymentData = {
+                dana: { name: "DANA", number: "08174731245", logo: "https://files.catbox.moe/ub1asb.jpg" },
+                ovo: { name: "OVO", number: "08174731245", logo: "https://files.catbox.moe/xk31nx.jpg" },
+                gopay: { name: "GOPAY", number: "08174731245", logo: "https://files.catbox.moe/46j4wz.jpg" }
+            };
+
+            let activeMethod = null;
+            let notificationTimeout;
+
+            function switchView(view) {
+                if (view === 'ewallet') {
+                    ewalletView.classList.remove('hidden');
+                    qrisView.classList.add('hidden');
+                    ewalletTab.classList.add('tab-active');
+                    ewalletTab.classList.remove('tab-inactive');
+                    qrisTab.classList.remove('tab-active');
+                    qrisTab.classList.add('tab-inactive');
+                } else {
+                    ewalletView.classList.add('hidden');
+                    qrisView.classList.remove('hidden');
+                    qrisTab.classList.add('tab-active');
+                    qrisTab.classList.remove('tab-inactive');
+                    ewalletTab.classList.remove('tab-active');
+                    ewalletTab.classList.add('tab-inactive');
+                }
+            }
+            
+            function selectMethod(method) {
+                activeMethod = method;
+                const data = paymentData[method];
+
+                methodNameEl.textContent = data.name;
+                paymentNumberEl.textContent = data.number;
+                methodLogoEl.src = data.logo;
+                methodLogoEl.alt = `Logo ${data.name}`;
+
+                placeholder.classList.add('hidden');
+                details.classList.remove('hidden');
+                details.classList.add('animate-fadeIn'); // Re-trigger animation on content change
+
+                methodSelector.querySelectorAll('button').forEach(btn => {
+                    const isSelected = btn.dataset.method === method;
+                    btn.classList.toggle('method-btn-active', isSelected);
+                    btn.classList.toggle('method-btn-inactive', !isSelected);
+                });
+            }
+
+            ewalletTab.addEventListener('click', () => switchView('ewallet'));
+            qrisTab.addEventListener('click', () => switchView('qris'));
+
+            methodSelector.addEventListener('click', (e) => {
+                const button = e.target.closest('button');
+                if (button && button.dataset.method) {
+                    selectMethod(button.dataset.method);
+                }
+            });
+
+            copyBtn.addEventListener('click', () => {
+                if (!activeMethod) return;
+                const numberToCopy = paymentData[activeMethod].number;
+                navigator.clipboard.writeText(numberToCopy).then(() => {
+                    showNotification();
+                    copyBtn.classList.add('animate-shake'); // Add shake animation on copy
+                    setTimeout(() => {
+                        copyBtn.classList.remove('animate-shake');
+                    }, 200);
+                });
+            });
+
+            function showNotification() {
+                clearTimeout(notificationTimeout);
+                notification.classList.remove('opacity-0', 'translate-y-4');
+                notificationTimeout = setTimeout(() => {
+                    notification.classList.add('opacity-0', 'translate-y-4');
+                }, 2500);
+            }
+            
+            // Initial state: Select Dana by default
+            selectMethod('dana');
+        });
+    </script>
+
+</body>
+</html>
