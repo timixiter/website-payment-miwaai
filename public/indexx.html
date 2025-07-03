@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pusat Pembayaran - MIWAAI HOSTING</title>
+    <!-- Chosen Palette: Calm Harmony Neutrals with Vibrant Accents -->
+    <!-- Application Structure Plan: Aplikasi ini dirancang sebagai dasbor interaktif dengan tata letak dua kolom logis. Kolom kiri berisi navigasi tab utama (E-Wallet dan QRIS), dan kolom kanan menampilkan detail pembayaran yang dinamis. Struktur ini meminimalkan kebutuhan untuk bergulir dan memungkinkan pengguna untuk dengan cepat beralih antar kategori pembayaran. Ini dipilih karena efisiensinya dalam menyajikan informasi dan meningkatkan alur pengguna dengan menjaga semua interaksi pada satu layar, memberikan pengalaman yang koheren dan mudah dinavigasi. -->
+    <!-- Visualization & Content Choices: Karena laporan sumber tidak memiliki data kuantitatif, fokusnya adalah pada penyajian informasi tekstual dan fungsionalitas interaktif. Goal: Memfasilitasi pembayaran yang cepat dan jelas -> Presentation: Tampilan berbasis tab dengan kartu metode pembayaran yang dapat diklik dan panel detail dinamis. -> Interaction: Pengguna mengklik tab untuk beralih kategori. Di dalam tab E-Wallet, mengklik tombol penyedia (Dana, OVO, Gopay) akan menampilkan nomor pembayaran dan logo yang relevan. Tombol 'Salin' menyalin nomor dan menampilkan notifikasi animasi. Justification: Desain ini lebih menarik secara visual dan interaktif dibandingkan dengan daftar statis, dengan penambahan animasi untuk umpan balik yang lebih baik dan "wow factor" yang halus. Library/Method: Vanilla JavaScript untuk logika, Tailwind CSS untuk tata letak dan gaya, dan CSS keyframes untuk animasi. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        .tab-active {
+            border-bottom-color: #6366f1; /* Indigo 500 */
+            color: #4338ca; /* Indigo 700 */
+            font-weight: 600;
+        }
+        .tab-inactive {
+            border-bottom-color: transparent;
+            color: #6b7280; /* Gray 500 */
+        }
+        .method-btn-active {
+            background-color: #eef2ff; /* Indigo 50 */
+            color: #4338ca; /* Indigo 700 */
+            border-color: #a5b4fc; /* Indigo 300 */
+            font-weight: 600;
+            box-shadow: 0 4px 10px rgba(99, 102, 241, 0.2);
+            transform: translateY(-2px);
+        }
+        .method-btn-inactive {
+            background-color: #f9fafb; /* Gray 50 */
+            color: #374151; /* Gray 700 */
+            border-color: #e5e7eb; /* Gray 200 */
+        }
+        .method-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fadeIn {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        @keyframes slideInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-slideInUp {
+            animation: slideInUp 0.6s ease-out forwards;
+        }
+
+        @keyframes pulseBorder {
+            0% { border-color: #a5b4fc; box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.4); }
+            50% { border-color: #818cf8; box-shadow: 0 0 0 8px rgba(99, 102, 241, 0); }
+            100% { border-color: #a5b4fc; box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); }
+        }
+        .animate-pulseBorder {
+            animation: pulseBorder 2s infinite;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            70% { transform: scale(1.05); opacity: 1; }
+            100% { transform: scale(1); }
+        }
+        .animate-popIn {
+            animation: popIn 0.3s ease-out forwards;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-3px); }
+            50% { transform: translateX(3px); }
+            75% { transform: translateX(-3px); }
+        }
+        .animate-shake {
+            animation: shake 0.2s ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-50 to-indigo-50 min-h-screen flex items-center justify-center py-8">
+
+    <div class="container mx-auto max-w-2xl px-4 animate-fadeIn">
+
+        <header class="text-center mb-8">
+            <div class="relative inline-block mb-4 group">
+                <img src="https://files.catbox.moe/4ya0zn.jpg" alt="Profil Pengguna" class="w-24 h-24 rounded-full mx-auto border-4 border-white shadow-md transition-transform duration-300 group-hover:scale-105">
+                <div class="absolute inset-0 rounded-full border-4 border-transparent group-hover:border-indigo-400 transition-all duration-300 animate-pulseBorder"></div>
+            </div>
+            <h1 class="text-3xl sm:text-4xl font-bold text-slate-900 leading-tight">Pusat Pembayaran MIWAAI</h1>
+            <p class="mt-2 text-slate-600 max-w-md mx-auto">Pilih dan selesaikan pembayaran Anda dengan mudah, cepat, dan aman.</p>
+            <p class="text-xs text-slate-400 mt-1">Credit: 𝐌𝐢𝐰𝐚𝐚𝐆𝐎𝐃</p>
+        </header>
+
+        <main class="bg-white rounded-xl shadow-xl overflow-hidden animate-slideInUp">
+            <nav class="flex border-b border-slate-200 bg-slate-50">
+                <button id="ewallet-tab" class="flex-1 py-4 text-center border-b-2 transition-colors duration-200 tab-active hover:bg-slate-100">
+                    <i class="fa-solid fa-wallet mr-2"></i>E-Wallet
+                </button>
+                <button id="qris-tab" class="flex-1 py-4 text-center border-b-2 transition-colors duration-200 tab-inactive hover:bg-slate-100">
+                     <i class="fa-solid fa-qrcode mr-2"></i>QRIS
+                </button>
+            </nav>
+
+            <div class="p-6 sm:p-8">
+                <!-- E-Wallet View -->
+                <div id="ewallet-view">
+                    <div class="text-center mb-6">
+                         <h2 class="text-xl font-semibold text-slate-800">Pembayaran E-Wallet</h2>
+                         <p class="text-slate-500 mt-1">Pilih penyedia layanan untuk melihat nomor tujuan.</p>
+                    </div>
+
+                    <div id="method-selector" class="grid grid-cols-3 gap-3 mb-6">
+                        <button data-method="dana" class="method-btn p-3 text-center border rounded-lg transition-all duration-200 method-btn-inactive hover:scale-105 active:scale-95">Dana</button>
+                        <button data-method="ovo" class="method-btn p-3 text-center border rounded-lg transition-all duration-200 method-btn-inactive hover:scale-105 active:scale-95">OVO</button>
+                        <button data-method="gopay" class="method-btn p-3 text-center border rounded-lg transition-all duration-200 method-btn-inactive hover:scale-105 active:scale-95">Gopay</button>
+                    </div>
+
+                    <div id="details-container" class="bg-slate-50 rounded-lg p-5 text-center min-h-[140px] flex flex-col justify-center transition-all duration-300 animate-fadeIn">
+                        <div id="placeholder">
+                            <i class="fa-solid fa-arrow-up text-slate-400 text-2xl"></i>
+                            <p class="mt-2 text-slate-500">Pilih metode di atas</p>
+                        </div>
+                        <div id="details" class="hidden">
+                            <img id="method-logo" src="" alt="Logo Metode" class="h-10 mx-auto mb-3 animate-popIn">
+                            <p class="text-sm text-slate-600">Nomor Akun <span id="method-name" class="font-semibold"></span></p>
+                            <div class="flex items-center justify-center gap-4 mt-2">
+                                <p id="payment-number" class="text-2xl font-mono font-bold text-slate-800 tracking-wide animate-popIn"></p>
+                                <button id="copy-btn" class="bg-indigo-600 text-white w-10 h-10 rounded-lg text-sm font-semibold hover:bg-indigo-700 active:bg-indigo-800 transition-all duration-200 flex items-center justify-center shadow-md hover:shadow-lg active:shadow-sm">
+                                    <i class="fa-regular fa-copy"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- QRIS View -->
+                <div id="qris-view" class="hidden">
+                     <div class="text-center mb-6">
+                         <h2 class="text-xl font-semibold text-slate-800">Pembayaran QRIS</h2>
+                         <p class="text-slate-500 mt-1">Pindai kode untuk membayar dengan aplikasi apa pun.</p>
+                    </div>
+                    <div class="max-w-60 mx-auto bg-white p-3 rounded-lg border-2 border-slate-200 shadow-inner animate-popIn">
+                        <img src="https://files.catbox.moe/x5ixxt.jpeg" alt="Kode QRIS untuk MIWAAI" class="w-full h-auto rounded-md">
+                    </div>
+                     <p class="text-center text-xs text-slate-500 mt-4">Pastikan nama merchant adalah <strong class="text-slate-700">MIWAAI HOSTING</strong>.</p>
+                </div>
+            </div>
+        </main>
+        
+        <footer class="text-center mt-8">
+            <p class="text-sm text-slate-500">&copy; 2025 MIWAAI HOSTING. Semua Hak Cipta Dilindungi.</p>
+        </footer>
+    </div>
+
+    <!-- Notification -->
+    <div id="notification" class="fixed bottom-5 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-sm py-2 px-4 rounded-full shadow-xl transition-all duration-300 opacity-0 translate-y-4 pointer-events-none">
+        Nomor berhasil disalin ke clipboard!
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const ewalletTab = document.getElementById('ewallet-tab');
+            const qrisTab = document.getElementById('qris-tab');
+            const ewalletView = document.getElementById('ewallet-view');
+            const qrisView = document.getElementById('qris-view');
+            const methodSelector = document.getElementById('method-selector');
+            
+            const placeholder = document.getElementById('placeholder');
+            const details = document.getElementById('details');
+            const methodNameEl = document.getElementById('method-name');
+            const methodLogoEl = document.getElementById('method-logo');
+            const paymentNumberEl = document.getElementById('payment-number');
+            const copyBtn = document.getElementById('copy-btn');
+            const notification = document.getElementById('notification');
+
+            const paymentData = {
+                dana: { name: "DANA", number: "08174731245", logo: "https://files.catbox.moe/ub1asb.jpg" },
+                ovo: { name: "OVO", number: "08174731245", logo: "https://files.catbox.moe/xk31nx.jpg" },
+                gopay: { name: "GOPAY", number: "08174731245", logo: "https://files.catbox.moe/46j4wz.jpg" }
+            };
+
+            let activeMethod = null;
+            let notificationTimeout;
+
+            function switchView(view) {
+                if (view === 'ewallet') {
+                    ewalletView.classList.remove('hidden');
+                    qrisView.classList.add('hidden');
+                    ewalletTab.classList.add('tab-active');
+                    ewalletTab.classList.remove('tab-inactive');
+                    qrisTab.classList.remove('tab-active');
+                    qrisTab.classList.add('tab-inactive');
+                } else {
+                    ewalletView.classList.add('hidden');
+                    qrisView.classList.remove('hidden');
+                    qrisTab.classList.add('tab-active');
+                    qrisTab.classList.remove('tab-inactive');
+                    ewalletTab.classList.remove('tab-active');
+                    ewalletTab.classList.add('tab-inactive');
+                }
+            }
+            
+            function selectMethod(method) {
+                activeMethod = method;
+                const data = paymentData[method];
+
+                methodNameEl.textContent = data.name;
+                paymentNumberEl.textContent = data.number;
+                methodLogoEl.src = data.logo;
+                methodLogoEl.alt = `Logo ${data.name}`;
+
+                placeholder.classList.add('hidden');
+                details.classList.remove('hidden');
+                details.classList.add('animate-fadeIn'); // Re-trigger animation on content change
+
+                methodSelector.querySelectorAll('button').forEach(btn => {
+                    const isSelected = btn.dataset.method === method;
+                    btn.classList.toggle('method-btn-active', isSelected);
+                    btn.classList.toggle('method-btn-inactive', !isSelected);
+                });
+            }
+
+            ewalletTab.addEventListener('click', () => switchView('ewallet'));
+            qrisTab.addEventListener('click', () => switchView('qris'));
+
+            methodSelector.addEventListener('click', (e) => {
+                const button = e.target.closest('button');
+                if (button && button.dataset.method) {
+                    selectMethod(button.dataset.method);
+                }
+            });
+
+            copyBtn.addEventListener('click', () => {
+                if (!activeMethod) return;
+                const numberToCopy = paymentData[activeMethod].number;
+                navigator.clipboard.writeText(numberToCopy).then(() => {
+                    showNotification();
+                    copyBtn.classList.add('animate-shake'); // Add shake animation on copy
+                    setTimeout(() => {
+                        copyBtn.classList.remove('animate-shake');
+                    }, 200);
+                });
+            });
+
+            function showNotification() {
+                clearTimeout(notificationTimeout);
+                notification.classList.remove('opacity-0', 'translate-y-4');
+                notificationTimeout = setTimeout(() => {
+                    notification.classList.add('opacity-0', 'translate-y-4');
+                }, 2500);
+            }
+            
+            // Initial state: Select Dana by default
+            selectMethod('dana');
+        });
+    </script>
+
+</body>
+</html>
