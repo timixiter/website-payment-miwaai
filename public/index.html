@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MIWAAI Payment Gateway - Enhanced</title>
+    <title>Cosmic Payment Gateway - Enhanced</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -242,6 +242,42 @@
         .animate-slideInRight { animation: slideInRight 0.6s ease-out forwards; }
         .animate-pulseGlow { animation: pulseGlow 3s infinite; }
         .animate-float { animation: floatAnimation 3s ease-in-out infinite; }
+
+        /* New: Warp Speed Transitions */
+        @keyframes warpOut {
+            0% {
+                opacity: 1;
+                transform: scale(1);
+                filter: blur(0px);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(0.95);
+                filter: blur(5px);
+            }
+        }
+
+        @keyframes warpIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.95);
+                filter: blur(5px);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+                filter: blur(0px);
+            }
+        }
+
+        .animate-warp-out {
+            animation: warpOut 0.3s ease-out forwards;
+        }
+
+        .animate-warp-in {
+            animation: warpIn 0.5s ease-out forwards;
+        }
+
 
         /* QR Code Container styling */
         .qr-container {
@@ -557,7 +593,7 @@
                 </div>
 
                 <h1 class="text-4xl md:text-5xl font-bold tracking-wider text-white mb-2 animate-slideInLeft">
-                    MIWAAI PAYMENT
+                    COSMIC PAYMENT
                 </h1>
                 <p class="text-slate-300 text-lg animate-slideInRight">
                     <i class="fas fa-rocket mr-2"></i>
@@ -594,11 +630,10 @@
             </nav>
 
             <!-- Enhanced Content -->
-            <div class="relative min-h-[500px]">
-
+            <div id="content-views-container" class="relative min-h-[500px]">
                 <!-- Dashboard View -->
                 <div id="dashboard-view" class="p-8">
-                    <div id="payment-content" class="animate-fadeInUp">
+                    <div id="payment-content">
 
                         <!-- Payment Type Selection -->
                         <div class="flex flex-col md:flex-row justify-center gap-6 mb-8">
@@ -611,7 +646,7 @@
                         </div>
 
                         <!-- E-Wallet View -->
-                        <div id="ewallet-view" class="animate-slideInLeft">
+                        <div id="ewallet-view">
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
                                 <button data-method="dana" class="ewallet-method-btn method-btn p-6 rounded-xl text-center text-xl font-semibold transition-all duration-300 hover:scale-105">
                                     <i class="fas fa-mobile-alt text-2xl mb-2 block text-blue-400"></i>
@@ -635,7 +670,7 @@
                                     </div>
                                 </div>
 
-                                <div id="details" class="hidden w-full animate-fadeInUp">
+                                <div id="details" class="hidden w-full">
                                     <div class="mb-6">
                                         <p class="text-slate-300 text-lg mb-4">
                                             Transfer ke <span id="method-name" class="font-bold text-sky-300"></span>:
@@ -659,7 +694,7 @@
                         </div>
 
                         <!-- Enhanced QRIS View -->
-                        <div id="qris-view" class="hidden text-center animate-slideInRight">
+                        <div id="qris-view" class="hidden text-center">
                             <div class="mb-6">
                                 <h3 class="text-2xl font-orbitron mb-4 text-sky-300">
                                     <i class="fas fa-qrcode mr-3"></i>QR Code Pembayaran
@@ -689,7 +724,7 @@
 
                 <!-- AI Assistant View -->
                 <div id="ai-assistant-view" class="p-8 hidden">
-                    <div class="text-center animate-fadeInUp">
+                    <div class="text-center">
                         <h2 class="text-3xl font-orbitron mb-8 text-sky-300">
                             <i class="fas fa-robot mr-3"></i>
                             AI Assistant
@@ -719,7 +754,7 @@
 
                 <!-- Rent View -->
                 <div id="rent-view" class="p-8 hidden">
-                    <div class="text-center animate-fadeInUp">
+                    <div class="text-center">
                         <h2 class="text-3xl font-orbitron mb-8 text-sky-300">
                             <i class="fas fa-handshake mr-3"></i>
                             Sewa Layanan
@@ -778,7 +813,7 @@
 
                 <!-- Enhanced Contact View -->
                 <div id="contact-view" class="p-8 hidden">
-                    <div class="text-center animate-fadeInUp">
+                    <div class="text-center">
                         <h2 class="text-3xl font-orbitron mb-8 text-sky-300">
                             <i class="fas fa-satellite-dish mr-3"></i>
                             Hubungi Developer
@@ -1079,36 +1114,61 @@
             // Tab Switching Logic
             const dashboardTab = document.getElementById('dashboard-tab');
             const aiTab = document.getElementById('ai-tab');
-            const rentTab = document.getElementById('rent-tab'); // New Rent tab
+            const rentTab = document.getElementById('rent-tab');
             const contactTab = document.getElementById('contact-tab');
 
             const dashboardView = document.getElementById('dashboard-view');
             const aiAssistantView = document.getElementById('ai-assistant-view');
-            const rentView = document.getElementById('rent-view'); // New Rent view
+            const rentView = document.getElementById('rent-view');
             const contactView = document.getElementById('contact-view');
 
             const tabIndicator = document.getElementById('tab-indicator');
+            const contentViewsContainer = document.getElementById('content-views-container'); // Parent of all views
+
+            // Store all content views for easy access
+            const allContentViews = [dashboardView, aiAssistantView, rentView, contactView];
 
             /**
-             * Switches the active tab and updates the UI.
+             * Switches the active tab and updates the UI with Warp Speed transition.
              * @param {HTMLElement} activeTabButton The button for the tab to activate.
-             * @param {HTMLElement} activeContentView The content view to display.
+             * @param {HTMLElement} newActiveContentView The content view to display.
              */
-            function switchTab(activeTabButton, activeContentView) {
-                // Remove 'active' class from all tab buttons
+            function switchTab(activeTabButton, newActiveContentView) {
+                const currentActiveView = document.querySelector('#content-views-container > div:not(.hidden)');
+
+                // If there's a current active view and it's not the same as the new one, apply warp-out
+                if (currentActiveView && currentActiveView !== newActiveContentView) {
+                    currentActiveView.classList.add('animate-warp-out');
+                    // Ensure the view is visible during warp-out animation
+                    currentActiveView.classList.remove('hidden');
+
+                    setTimeout(() => {
+                        // Hide old view and remove animation class after it fades out
+                        currentActiveView.classList.add('hidden');
+                        currentActiveView.classList.remove('animate-warp-out');
+
+                        // Show new view and apply warp-in animation
+                        newActiveContentView.classList.remove('hidden');
+                        newActiveContentView.classList.add('animate-warp-in');
+
+                        // Remove warp-in class after its animation completes
+                        setTimeout(() => {
+                            newActiveContentView.classList.remove('animate-warp-in');
+                        }, 500); // Duration of warpIn animation
+                    }, 300); // Duration of warpOut animation
+                } else {
+                    // If no current active view or it's the same, just show the new one instantly
+                    newActiveContentView.classList.remove('hidden');
+                    newActiveContentView.classList.add('animate-fadeInUp'); // Use initial fade-in for first load or same tab click
+                    setTimeout(() => {
+                        newActiveContentView.classList.remove('animate-fadeInUp');
+                    }, 800);
+                }
+
+
+                // Update active state for tab buttons
                 document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-                // Add 'active' class to the clicked tab button
                 activeTabButton.classList.add('active');
-
-                // Hide all content views
-                dashboardView.classList.add('hidden');
-                aiAssistantView.classList.add('hidden');
-                rentView.classList.add('hidden'); // Hide Rent view
-                contactView.classList.add('hidden');
-
-                // Show the active content view and apply animation
-                activeContentView.classList.remove('hidden');
-                activeContentView.classList.add('animate-fadeInUp');
 
                 // Update tab indicator position and width
                 const tabWidth = activeTabButton.offsetWidth;
@@ -1117,8 +1177,13 @@
                 tabIndicator.style.transform = `translateX(${tabLeft}px)`;
             }
 
-            // Initial setup for tab indicator
+            // Initial setup for tab indicator and content view
             // Ensure indicator is correctly positioned on load for the active tab
+            // And ensure only the initial dashboard view is shown
+            allContentViews.forEach(view => view.classList.add('hidden')); // Hide all views initially
+            dashboardView.classList.remove('hidden'); // Show dashboard by default
+            dashboardView.classList.add('animate-fadeInUp'); // Apply fade-in on initial load
+
             const initialActiveTab = document.querySelector('.tab-btn.active');
             if (initialActiveTab) {
                 const tabWidth = initialActiveTab.offsetWidth;
@@ -1137,7 +1202,7 @@
                 switchTab(aiTab, aiAssistantView);
             });
 
-            rentTab.addEventListener('click', () => { // Event listener for new Rent tab
+            rentTab.addEventListener('click', () => {
                 switchTab(rentTab, rentView);
             });
 
@@ -1182,9 +1247,9 @@
 
             // Payment details data (example data)
             const paymentDetails = {
-                dana: { name: "DANA", number: "TIDAK TERSEDIA" },
-                gopay: { name: "GOPAY", number: "TIDAK TERSEDIA" },
-                ovo: { name: "OVO", number: "TIDAK TERSEDIA" }
+                dana: { name: "DANA", number: "0812-3456-7890" },
+                gopay: { name: "GOPAY", number: "0876-5432-1098" },
+                ovo: { name: "OVO", number: "0850-1234-5678" }
             };
 
             ewalletMethodBtns.forEach(btn => {
