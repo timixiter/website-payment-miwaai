@@ -3,270 +3,351 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pusat Pembayaran - MIWAAI HOSTING</title>
-    <!-- Chosen Palette: Calm Harmony Neutrals with Vibrant Accents -->
-    <!-- Application Structure Plan: Aplikasi ini dirancang sebagai dasbor interaktif dengan tata letak dua kolom logis. Kolom kiri berisi navigasi tab utama (E-Wallet dan QRIS), dan kolom kanan menampilkan detail pembayaran yang dinamis. Struktur ini meminimalkan kebutuhan untuk bergulir dan memungkinkan pengguna untuk dengan cepat beralih antar kategori pembayaran. Ini dipilih karena efisiensinya dalam menyajikan informasi dan meningkatkan alur pengguna dengan menjaga semua interaksi pada satu layar, memberikan pengalaman yang koheren dan mudah dinavigasi. -->
-    <!-- Visualization & Content Choices: Karena laporan sumber tidak memiliki data kuantitatif, fokusnya adalah pada penyajian informasi tekstual dan fungsionalitas interaktif. Goal: Memfasilitasi pembayaran yang cepat dan jelas -> Presentation: Tampilan berbasis tab dengan kartu metode pembayaran yang dapat diklik dan panel detail dinamis. -> Interaction: Pengguna mengklik tab untuk beralih kategori. Di dalam tab E-Wallet, mengklik tombol penyedia (Dana, OVO, Gopay) akan menampilkan nomor pembayaran dan logo yang relevan. Tombol 'Salin' menyalin nomor dan menampilkan notifikasi animasi. Justification: Desain ini lebih menarik secara visual dan interaktif dibandingkan dengan daftar statis, dengan penambahan animasi untuk umpan balik yang lebih baik dan "wow factor" yang halus. Library/Method: Vanilla JavaScript untuk logika, Tailwind CSS untuk tata letak dan gaya, dan CSS keyframes untuk animasi. -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <title>Cosmic Payment Gateway</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
+        /* Menggunakan font Orbitron untuk nuansa sci-fi dan Roboto untuk keterbacaan */
         body {
-            font-family: 'Inter', sans-serif;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
+            font-family: 'Roboto', sans-serif;
+            color: #E0E0E0; /* Warna teks dasar abu-abu terang */
+            overflow: hidden; /* Mencegah scroll bar dari canvas */
         }
-        .tab-active {
-            border-bottom-color: #6366f1; /* Indigo 500 */
-            color: #4338ca; /* Indigo 700 */
-            font-weight: 600;
+
+        h1, h2, h3, .font-orbitron {
+            font-family: 'Orbitron', sans-serif;
         }
-        .tab-inactive {
-            border-bottom-color: transparent;
-            color: #6b7280; /* Gray 500 */
+
+        /* Canvas untuk latar belakang bintang-bintang */
+        #starfield {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: radial-gradient(ellipse at bottom, #0d1a2f 0%, #02040a 100%);
         }
-        .method-btn-active {
-            background-color: #eef2ff; /* Indigo 50 */
-            color: #4338ca; /* Indigo 700 */
-            border-color: #a5b4fc; /* Indigo 300 */
-            font-weight: 600;
-            box-shadow: 0 4px 10px rgba(99, 102, 241, 0.2);
-            transform: translateY(-2px);
+
+        /* Efek glassmorphism untuk panel utama */
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.6); /* Warna slate-900 dengan transparansi */
+            backdrop-filter: blur(12px) saturate(150%);
+            -webkit-backdrop-filter: blur(12px) saturate(150%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
         }
-        .method-btn-inactive {
-            background-color: #f9fafb; /* Gray 50 */
-            color: #374151; /* Gray 700 */
-            border-color: #e5e7eb; /* Gray 200 */
+        
+        /* Gaya untuk tab menu */
+        .tab-btn {
+            transition: all 0.3s ease;
+            text-shadow: 0 0 5px rgba(0, 195, 255, 0.5);
         }
+
+        .tab-btn.active {
+            background: rgba(56, 189, 248, 0.2); /* sky-400 dengan transparansi */
+            color: #f0f9ff; /* sky-50 */
+            border-bottom-color: #0ea5e9; /* sky-500 */
+        }
+        
+        .tab-btn:not(.active):hover {
+            background: rgba(56, 189, 248, 0.1);
+        }
+
+        /* Tombol metode pembayaran */
+        .method-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: all 0.3s ease;
+        }
+
         .method-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            background: rgba(255, 255, 255, 0.1);
+            border-color: #0ea5e9;
+            transform: translateY(-3px);
+            box-shadow: 0 0 15px rgba(14, 165, 233, 0.5);
         }
 
-        /* Animations */
+        .method-btn.active {
+            background: rgba(14, 165, 233, 0.8);
+            color: #0c0a09; /* stone-950 */
+            font-weight: 700;
+            border-color: #0ea5e9;
+            box-shadow: 0 0 20px rgba(14, 165, 233, 0.7);
+        }
+        
+        /* Animasi */
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
         }
-        .animate-fadeIn {
-            animation: fadeIn 0.5s ease-out forwards;
-        }
+        .animate-fadeIn { animation: fadeIn 0.8s ease-out forwards; }
 
-        @keyframes slideInUp {
+        @keyframes slideUp {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        .animate-slideInUp {
-            animation: slideInUp 0.6s ease-out forwards;
+        .animate-slideUp { animation: slideUp 0.6s ease-out forwards; }
+        
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 15px rgba(14, 165, 233, 0.4); }
+            50% { box-shadow: 0 0 25px rgba(14, 165, 233, 0.8); }
         }
+        .animate-pulseGlow { animation: pulseGlow 2.5s infinite; }
 
-        @keyframes pulseBorder {
-            0% { border-color: #a5b4fc; box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.4); }
-            50% { border-color: #818cf8; box-shadow: 0 0 0 8px rgba(99, 102, 241, 0); }
-            100% { border-color: #a5b4fc; box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); }
-        }
-        .animate-pulseBorder {
-            animation: pulseBorder 2s infinite;
-        }
-
-        @keyframes popIn {
-            0% { transform: scale(0.8); opacity: 0; }
-            70% { transform: scale(1.05); opacity: 1; }
-            100% { transform: scale(1); }
-        }
-        .animate-popIn {
-            animation: popIn 0.3s ease-out forwards;
-        }
-
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-3px); }
-            50% { transform: translateX(3px); }
-            75% { transform: translateX(-3px); }
-        }
-        .animate-shake {
-            animation: shake 0.2s ease-in-out;
-        }
     </style>
 </head>
-<body class="bg-gradient-to-br from-slate-50 to-indigo-50 min-h-screen flex items-center justify-center py-8">
+<body class="bg-slate-900">
 
-    <div class="container mx-auto max-w-2xl px-4 animate-fadeIn">
+    <canvas id="starfield"></canvas>
 
-        <header class="text-center mb-8">
-            <div class="relative inline-block mb-4 group">
-                <img src="https://files.catbox.moe/4ya0zn.jpg" alt="Profil Pengguna" class="w-24 h-24 rounded-full mx-auto border-4 border-white shadow-md transition-transform duration-300 group-hover:scale-105">
-                <div class="absolute inset-0 rounded-full border-4 border-transparent group-hover:border-indigo-400 transition-all duration-300 animate-pulseBorder"></div>
-            </div>
-            <h1 class="text-3xl sm:text-4xl font-bold text-slate-900 leading-tight">Pusat Pembayaran MIWAAI</h1>
-            <p class="mt-2 text-slate-600 max-w-md mx-auto">Pilih dan selesaikan pembayaran Anda dengan mudah, cepat, dan aman.</p>
-            <p class="text-xs text-slate-400 mt-1">Credit: 𝐌𝐢𝐰𝐚𝐚𝐆𝐎𝐃</p>
-        </header>
+    <div class="min-h-screen flex items-center justify-center p-4 animate-fadeIn">
+        <main class="w-full max-w-2xl glass-panel rounded-2xl overflow-hidden">
+            <!-- Header Panel -->
+            <header class="p-6 border-b border-slate-700/50 text-center">
+                <img src="https://files.catbox.moe/4ya0zn.jpg" alt="Profil Developer" class="w-24 h-24 rounded-full mx-auto border-4 border-slate-700 shadow-lg mb-4 ring-2 ring-sky-500/50 hover:ring-sky-400 transition-all duration-300">
+                <h1 class="text-3xl font-bold tracking-wider text-white">COSMIC PAYMENT</h1>
+                <p class="text-sm text-slate-400 mt-1">Website Payment Pembayaran by MiwaaGOD</p>
+            </header>
 
-        <main class="bg-white rounded-xl shadow-xl overflow-hidden animate-slideInUp">
-            <nav class="flex border-b border-slate-200 bg-slate-50">
-                <button id="ewallet-tab" class="flex-1 py-4 text-center border-b-2 transition-colors duration-200 tab-active hover:bg-slate-100">
-                    <i class="fa-solid fa-wallet mr-2"></i>E-Wallet
+            <!-- Menu / Navigasi -->
+            <nav class="flex bg-slate-900/50 border-b-2 border-slate-800">
+                <button id="dashboard-tab" class="tab-btn active flex-1 p-4 text-base sm:text-lg font-orbitron border-b-4 border-transparent">
+                    <i class="fas fa-tachometer-alt mr-2"></i>Dashboard
                 </button>
-                <button id="qris-tab" class="flex-1 py-4 text-center border-b-2 transition-colors duration-200 tab-inactive hover:bg-slate-100">
-                     <i class="fa-solid fa-qrcode mr-2"></i>QRIS
+                 <button id="contact-tab" class="tab-btn flex-1 p-4 text-base sm:text-lg font-orbitron border-b-4 border-transparent">
+                    <i class="fas fa-user-astronaut mr-2"></i>Hubungi Dev
                 </button>
             </nav>
 
-            <div class="p-6 sm:p-8">
-                <!-- E-Wallet View -->
-                <div id="ewallet-view">
-                    <div class="text-center mb-6">
-                         <h2 class="text-xl font-semibold text-slate-800">Pembayaran E-Wallet</h2>
-                         <p class="text-slate-500 mt-1">Pilih penyedia layanan untuk melihat nomor tujuan.</p>
-                    </div>
-
-                    <div id="method-selector" class="grid grid-cols-3 gap-3 mb-6">
-                        <button data-method="dana" class="method-btn p-3 text-center border rounded-lg transition-all duration-200 method-btn-inactive hover:scale-105 active:scale-95">Dana</button>
-                        <button data-method="ovo" class="method-btn p-3 text-center border rounded-lg transition-all duration-200 method-btn-inactive hover:scale-105 active:scale-95">OVO</button>
-                        <button data-method="gopay" class="method-btn p-3 text-center border rounded-lg transition-all duration-200 method-btn-inactive hover:scale-105 active:scale-95">Gopay</button>
-                    </div>
-
-                    <div id="details-container" class="bg-slate-50 rounded-lg p-5 text-center min-h-[140px] flex flex-col justify-center transition-all duration-300 animate-fadeIn">
-                        <div id="placeholder">
-                            <i class="fa-solid fa-arrow-up text-slate-400 text-2xl"></i>
-                            <p class="mt-2 text-slate-500">Pilih metode di atas</p>
+            <!-- Konten Panel -->
+            <div class="relative">
+                <!-- View Dashboard -->
+                <div id="dashboard-view" class="p-6 sm:p-8">
+                    <div id="payment-content" class="animate-slideUp">
+                        <!-- Pilihan Tipe Pembayaran -->
+                        <div class="flex justify-center gap-4 mb-6">
+                            <button data-type="ewallet" class="payment-type-btn method-btn active px-5 py-2 rounded-lg"><i class="fas fa-wallet mr-2"></i>E-Wallet</button>
+                            <button data-type="qris" class="payment-type-btn method-btn px-5 py-2 rounded-lg"><i class="fas fa-qrcode mr-2"></i>QRIS</button>
                         </div>
-                        <div id="details" class="hidden">
-                            <img id="method-logo" src="" alt="Logo Metode" class="h-10 mx-auto mb-3 animate-popIn">
-                            <p class="text-sm text-slate-600">Nomor Akun <span id="method-name" class="font-semibold"></span></p>
-                            <div class="flex items-center justify-center gap-4 mt-2">
-                                <p id="payment-number" class="text-2xl font-mono font-bold text-slate-800 tracking-wide animate-popIn"></p>
-                                <button id="copy-btn" class="bg-indigo-600 text-white w-10 h-10 rounded-lg text-sm font-semibold hover:bg-indigo-700 active:bg-indigo-800 transition-all duration-200 flex items-center justify-center shadow-md hover:shadow-lg active:shadow-sm">
-                                    <i class="fa-regular fa-copy"></i>
-                                </button>
+
+                        <!-- View E-Wallet -->
+                        <div id="ewallet-view">
+                            <div class="grid grid-cols-3 gap-3 mb-6">
+                                <button data-method="dana" class="ewallet-method-btn method-btn p-3 rounded-lg text-center text-lg">DANA</button>
+                                <button data-method="gopay" class="ewallet-method-btn method-btn p-3 rounded-lg text-center text-lg">GOPAY</button>
+                                <button data-method="ovo" class="ewallet-method-btn method-btn p-3 rounded-lg text-center text-lg">OVO</button>
                             </div>
+                            <div id="details-container" class="bg-slate-900/70 rounded-lg p-5 text-center min-h-[120px] flex flex-col justify-center items-center border border-slate-700">
+                                <div id="placeholder" class="text-slate-400">
+                                    <i class="fas fa-arrow-up text-2xl"></i>
+                                    <p class="mt-2">Pilih metode pembayaran</p>
+                                </div>
+                                <div id="details" class="hidden w-full">
+                                    <p class="text-sm text-slate-300">Silakan transfer ke nomor <span id="method-name" class="font-bold"></span> berikut:</p>
+                                    <div class="flex items-center justify-center gap-4 mt-2">
+                                        <p id="payment-number" class="text-2xl sm:text-3xl font-orbitron text-sky-300"></p>
+                                        <button id="copy-btn" title="Salin Nomor" class="bg-sky-500 text-slate-900 w-10 h-10 rounded-full text-lg hover:bg-sky-400 active:bg-sky-600 transition-all duration-200 flex items-center justify-center shadow-lg hover:shadow-sky-400/50">
+                                            <i class="far fa-copy"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- View QRIS -->
+                        <div id="qris-view" class="hidden text-center">
+                             <p class="text-slate-300 mb-4">Pindai kode QR di bawah ini menggunakan aplikasi pembayaran Anda.</p>
+                             <div class="max-w-xs mx-auto bg-white p-3 rounded-lg border-4 border-sky-400 shadow-2xl shadow-sky-500/30 animate-pulseGlow">
+                                 <img src="https://files.catbox.moe/x5ixxt.jpeg" alt="Kode QRIS Pembayaran" class="w-full h-auto rounded-md">
+                             </div>
+                             <p class="text-xs text-slate-400 mt-4">Pastikan nama merchant tujuan sudah benar.</p>
                         </div>
                     </div>
                 </div>
-
-                <!-- QRIS View -->
-                <div id="qris-view" class="hidden">
-                     <div class="text-center mb-6">
-                         <h2 class="text-xl font-semibold text-slate-800">Pembayaran QRIS</h2>
-                         <p class="text-slate-500 mt-1">Pindai kode untuk membayar dengan aplikasi apa pun.</p>
+                
+                <!-- View Hubungi Developer -->
+                <div id="contact-view" class="p-6 sm:p-8 hidden">
+                    <div class="text-center animate-slideUp">
+                        <h2 class="text-2xl font-orbitron mb-6 text-sky-300">Hubungi Developer</h2>
+                        <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
+                            <a href="https://wa.me/628174731245" target="_blank" rel="noopener noreferrer" class="method-btn w-full sm:w-auto flex items-center justify-center px-6 py-3 rounded-lg text-lg">
+                                <i class="fab fa-whatsapp text-2xl mr-3 text-green-400"></i>
+                                WhatsApp
+                            </a>
+                            <a href="https://t.me/miwasogg" target="_blank" rel="noopener noreferrer" class="method-btn w-full sm:w-auto flex items-center justify-center px-6 py-3 rounded-lg text-lg">
+                                <i class="fab fa-telegram text-2xl mr-3 text-sky-400"></i>
+                                Telegram
+                            </a>
+                        </div>
                     </div>
-                    <div class="max-w-60 mx-auto bg-white p-3 rounded-lg border-2 border-slate-200 shadow-inner animate-popIn">
-                        <img src="https://files.catbox.moe/x5ixxt.jpeg" alt="Kode QRIS untuk MIWAAI" class="w-full h-auto rounded-md">
-                    </div>
-                     <p class="text-center text-xs text-slate-500 mt-4">Pastikan nama merchant adalah <strong class="text-slate-700">MIWAAI HOSTING</strong>.</p>
                 </div>
             </div>
         </main>
-        
-        <footer class="text-center mt-8">
-            <p class="text-sm text-slate-500">&copy; 2025 MIWAAI HOSTING. Semua Hak Cipta Dilindungi.</p>
-        </footer>
     </div>
 
-    <!-- Notification -->
-    <div id="notification" class="fixed bottom-5 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-sm py-2 px-4 rounded-full shadow-xl transition-all duration-300 opacity-0 translate-y-4 pointer-events-none">
-        Nomor berhasil disalin ke clipboard!
+    <!-- Notifikasi -->
+    <div id="notification" class="fixed bottom-8 left-1/2 -translate-x-1/2 glass-panel py-2 px-5 rounded-full text-white transition-all duration-500 opacity-0 -translate-y-10 pointer-events-none">
+        <i class="fas fa-check-circle text-green-400 mr-2"></i>Nomor berhasil disalin!
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const ewalletTab = document.getElementById('ewallet-tab');
-            const qrisTab = document.getElementById('qris-tab');
+            // --- Animasi Latar Belakang Bintang ---
+            const canvas = document.getElementById('starfield');
+            const ctx = canvas.getContext('2d');
+
+            function resizeCanvas() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+            window.addEventListener('resize', resizeCanvas);
+            resizeCanvas();
+
+            const stars = [];
+            const numStars = 200;
+
+            for (let i = 0; i < numStars; i++) {
+                stars.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    radius: Math.random() * 1.5 + 0.5,
+                    vx: Math.random() * 0.2 - 0.1,
+                    vy: Math.random() * 0.2 - 0.1
+                });
+            }
+
+            function drawStars() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = '#FFFFFF';
+                stars.forEach(star => {
+                    ctx.beginPath();
+                    ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+                    ctx.fill();
+                });
+            }
+
+            function updateStars() {
+                stars.forEach(star => {
+                    star.x += star.vx;
+                    star.y += star.vy;
+                    if (star.x < 0 || star.x > canvas.width) star.vx = -star.vx;
+                    if (star.y < 0 || star.y > canvas.height) star.vy = -star.vy;
+                });
+            }
+
+            function animate() {
+                drawStars();
+                updateStars();
+                requestAnimationFrame(animate);
+            }
+            animate();
+
+            // --- Logika UI ---
+            const dashboardTab = document.getElementById('dashboard-tab');
+            const contactTab = document.getElementById('contact-tab');
+            const dashboardView = document.getElementById('dashboard-view');
+            const contactView = document.getElementById('contact-view');
+            
+            const paymentTypeBtns = document.querySelectorAll('.payment-type-btn');
             const ewalletView = document.getElementById('ewallet-view');
             const qrisView = document.getElementById('qris-view');
-            const methodSelector = document.getElementById('method-selector');
-            
+            const ewalletMethodBtns = document.querySelectorAll('.ewallet-method-btn');
             const placeholder = document.getElementById('placeholder');
             const details = document.getElementById('details');
             const methodNameEl = document.getElementById('method-name');
-            const methodLogoEl = document.getElementById('method-logo');
             const paymentNumberEl = document.getElementById('payment-number');
             const copyBtn = document.getElementById('copy-btn');
             const notification = document.getElementById('notification');
 
             const paymentData = {
-                dana: { name: "DANA", number: "08174731245", logo: "https://files.catbox.moe/ub1asb.jpg" },
-                ovo: { name: "OVO", number: "08174731245", logo: "https://files.catbox.moe/xk31nx.jpg" },
-                gopay: { name: "GOPAY", number: "08174731245", logo: "https://files.catbox.moe/46j4wz.jpg" }
+                dana: { name: "DANA", number: "08174731245" },
+                gopay: { name: "GOPAY", number: "08174731245" },
+                ovo: { name: "OVO", number: "08174731245" }
             };
 
             let activeMethod = null;
             let notificationTimeout;
 
-            function switchView(view) {
-                if (view === 'ewallet') {
-                    ewalletView.classList.remove('hidden');
-                    qrisView.classList.add('hidden');
-                    ewalletTab.classList.add('tab-active');
-                    ewalletTab.classList.remove('tab-inactive');
-                    qrisTab.classList.remove('tab-active');
-                    qrisTab.classList.add('tab-inactive');
+            // Fungsi untuk beralih Tab Utama
+            function switchTabView(tabToShow) {
+                if (tabToShow === 'dashboard') {
+                    dashboardView.classList.remove('hidden');
+                    contactView.classList.add('hidden');
+                    dashboardTab.classList.add('active');
+                    contactTab.classList.remove('active');
                 } else {
-                    ewalletView.classList.add('hidden');
-                    qrisView.classList.remove('hidden');
-                    qrisTab.classList.add('tab-active');
-                    qrisTab.classList.remove('tab-inactive');
-                    ewalletTab.classList.remove('tab-active');
-                    ewalletTab.classList.add('tab-inactive');
+                    dashboardView.classList.add('hidden');
+                    contactView.classList.remove('hidden');
+                    dashboardTab.classList.remove('active');
+                    contactTab.classList.add('active');
                 }
             }
             
-            function selectMethod(method) {
-                activeMethod = method;
-                const data = paymentData[method];
+            dashboardTab.addEventListener('click', () => switchTabView('dashboard'));
+            contactTab.addEventListener('click', () => switchTabView('contact'));
 
-                methodNameEl.textContent = data.name;
-                paymentNumberEl.textContent = data.number;
-                methodLogoEl.src = data.logo;
-                methodLogoEl.alt = `Logo ${data.name}`;
-
-                placeholder.classList.add('hidden');
-                details.classList.remove('hidden');
-                details.classList.add('animate-fadeIn'); // Re-trigger animation on content change
-
-                methodSelector.querySelectorAll('button').forEach(btn => {
-                    const isSelected = btn.dataset.method === method;
-                    btn.classList.toggle('method-btn-active', isSelected);
-                    btn.classList.toggle('method-btn-inactive', !isSelected);
-                });
+            // Fungsi untuk beralih antara E-Wallet dan QRIS di dalam Dashboard
+            function switchPaymentType(type) {
+                paymentTypeBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.type === type));
+                ewalletView.classList.toggle('hidden', type !== 'ewallet');
+                qrisView.classList.toggle('hidden', type !== 'qris');
             }
 
-            ewalletTab.addEventListener('click', () => switchView('ewallet'));
-            qrisTab.addEventListener('click', () => switchView('qris'));
+            // Fungsi untuk memilih metode E-Wallet
+            function selectEwalletMethod(method) {
+                activeMethod = method;
+                const data = paymentData[method];
+                methodNameEl.textContent = data.name;
+                paymentNumberEl.textContent = data.number;
+                placeholder.classList.add('hidden');
+                details.classList.remove('hidden');
+                details.classList.add('animate-fadeIn');
+                ewalletMethodBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.method === method));
+            }
 
-            methodSelector.addEventListener('click', (e) => {
-                const button = e.target.closest('button');
-                if (button && button.dataset.method) {
-                    selectMethod(button.dataset.method);
-                }
-            });
+            paymentTypeBtns.forEach(btn => btn.addEventListener('click', () => switchPaymentType(btn.dataset.type)));
+            ewalletMethodBtns.forEach(btn => btn.addEventListener('click', () => selectEwalletMethod(btn.dataset.method)));
 
+            // Event listener untuk tombol salin
             copyBtn.addEventListener('click', () => {
                 if (!activeMethod) return;
                 const numberToCopy = paymentData[activeMethod].number;
-                navigator.clipboard.writeText(numberToCopy).then(() => {
+                const textArea = document.createElement("textarea");
+                textArea.value = numberToCopy;
+                textArea.style.position = "fixed";
+                textArea.style.left = "-9999px";
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                try {
+                    document.execCommand('copy');
                     showNotification();
-                    copyBtn.classList.add('animate-shake'); // Add shake animation on copy
-                    setTimeout(() => {
-                        copyBtn.classList.remove('animate-shake');
-                    }, 200);
-                });
+                } catch (err) {
+                    console.error('Gagal menyalin nomor:', err);
+                }
+                document.body.removeChild(textArea);
             });
 
+            // Fungsi untuk menampilkan notifikasi
             function showNotification() {
                 clearTimeout(notificationTimeout);
-                notification.classList.remove('opacity-0', 'translate-y-4');
+                notification.classList.remove('opacity-0', '-translate-y-10');
+                notification.classList.add('opacity-100', 'translate-y-0');
                 notificationTimeout = setTimeout(() => {
-                    notification.classList.add('opacity-0', 'translate-y-4');
+                    notification.classList.add('opacity-0', '-translate-y-10');
+                    notification.classList.remove('opacity-100', 'translate-y-0');
                 }, 2500);
             }
-            
-            // Initial state: Select Dana by default
-            selectMethod('dana');
+
+            // Inisialisasi
+            switchTabView('dashboard'); // Tampilkan dashboard saat pertama kali dimuat
+            switchPaymentType('ewallet'); // Di dalam dashboard, tampilkan e-wallet
+            selectEwalletMethod('dana'); // Pilih Dana secara default
         });
     </script>
-
 </body>
 </html>
