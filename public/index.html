@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MiwaAI Payment Gateway - Enhanced</title>
+    <title>MIWAAI Payment Gateway - Enhanced</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -557,7 +557,7 @@
                 </div>
 
                 <h1 class="text-4xl md:text-5xl font-bold tracking-wider text-white mb-2 animate-slideInLeft">
-                    COSMIC PAYMENT
+                    MIWAAI PAYMENT
                 </h1>
                 <p class="text-slate-300 text-lg animate-slideInRight">
                     <i class="fas fa-rocket mr-2"></i>
@@ -736,7 +736,7 @@
                                     <p class="text-slate-400 mb-4">Akses singkat untuk kebutuhan mendesak.</p>
                                 </div>
                                 <div class="flex flex-col items-center">
-                                    <p class="price text-4xl mb-4">Rp10K</p>
+                                    <p class="price text-4xl mb-4">Rp5K</p> <!-- Updated price -->
                                     <a href="https://t.me/miwasogg" target="_blank" rel="noopener noreferrer" class="rent-now-btn method-btn active px-6 py-3 rounded-xl text-base font-semibold">
                                         Sewa Sekarang
                                     </a>
@@ -751,7 +751,7 @@
                                     <p class="text-slate-400 mb-4">Solusi ideal untuk penggunaan bulanan.</p>
                                 </div>
                                 <div class="flex flex-col items-center">
-                                    <p class="price text-4xl mb-4">Rp30K</p>
+                                    <p class="price text-4xl mb-4">Rp15K</p> <!-- Updated price -->
                                     <a href="https://t.me/miwasogg" target="_blank" rel="noopener noreferrer" class="rent-now-btn method-btn active px-6 py-3 rounded-xl text-base font-semibold">
                                         Sewa Sekarang
                                     </a>
@@ -766,7 +766,7 @@
                                     <p class="text-slate-400 mb-4">Hemat lebih banyak dengan paket tahunan.</p>
                                 </div>
                                 <div class="flex flex-col items-center">
-                                    <p class="price text-4xl mb-4">Rp300K</p>
+                                    <p class="price text-4xl mb-4">Rp100K</p> <!-- Updated price -->
                                     <a href="https://t.me/miwasogg" target="_blank" rel="noopener noreferrer" class="rent-now-btn method-btn active px-6 py-3 rounded-xl text-base font-semibold">
                                         Sewa Sekarang
                                     </a>
@@ -1182,9 +1182,9 @@
 
             // Payment details data (example data)
             const paymentDetails = {
-                dana: { name: "DANA", number: "0817-4731-245" },
-                gopay: { name: "GOPAY", number: "COMINGSOON" },
-                ovo: { name: "OVO", number: "COMINGSOON" }
+                dana: { name: "DANA", number: "0812-3456-7890" },
+                gopay: { name: "GOPAY", number: "0876-5432-1098" },
+                ovo: { name: "OVO", number: "0850-1234-5678" }
             };
 
             ewalletMethodBtns.forEach(btn => {
@@ -1295,7 +1295,7 @@
                 chatHistory.push({ role: "user", parts: [{ text: prompt }] });
 
                 const payload = { contents: chatHistory };
-                const apiKey = ""; // Canvas will automatically provide this
+                const apiKey = ""; // Canvas will automatically provide this via the environment
                 const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
 
                 try {
@@ -1323,9 +1323,25 @@
                         const text = result.candidates[0].content.parts[0].text;
                         aiResponseArea.innerHTML = `<p>${text}</p>`;
                     } else if (result.promptFeedback && result.promptFeedback.blockReason) {
-                        // Handle cases where the prompt was blocked
-                        aiResponseArea.innerHTML = `<p class="text-red-400">Maaf, pertanyaan Anda diblokir karena alasan keamanan: ${result.promptFeedback.blockReason}.</p>`;
-                    } else {
+                        // Handle cases where the prompt was blocked by safety filters
+                        let blockReasonMessage = '';
+                        switch (result.promptFeedback.blockReason) {
+                            case 'SAFETY':
+                                blockReasonMessage = 'Karena alasan keamanan (konten yang tidak pantas).';
+                                break;
+                            case 'OTHER':
+                                blockReasonMessage = 'Karena alasan lain yang tidak ditentukan.';
+                                break;
+                            default:
+                                blockReasonMessage = 'Karena alasan yang tidak diketahui.';
+                        }
+                        aiResponseArea.innerHTML = `<p class="text-red-400">Maaf, pertanyaan Anda diblokir ${blockReasonMessage}</p>`;
+                    } else if (result.error && result.error.message) {
+                        // Handle specific API errors returned in the response body
+                        aiResponseArea.innerHTML = `<p class="text-red-400">Terjadi kesalahan API: ${result.error.message}</p>`;
+                        console.error('Gemini API Error:', result.error.message);
+                    }
+                    else {
                         // Fallback for unexpected but non-error API response structure
                         aiResponseArea.innerHTML = '<p class="text-red-400">Maaf, tidak dapat menghasilkan respons yang valid. Struktur respons tidak terduga.</p>';
                         console.error('Unexpected API response structure or empty content:', result);
