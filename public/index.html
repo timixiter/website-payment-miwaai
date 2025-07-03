@@ -8,203 +8,258 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    
+    <!-- Impor Three.js -->
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.module.js"
+        }
+    }
+    </script>
+
     <style>
-        /* Menggunakan font Orbitron untuk nuansa sci-fi dan Roboto untuk keterbacaan */
+        :root {
+            --glow-color: #0ea5e9; /* sky-500 */
+        }
         body {
             font-family: 'Roboto', sans-serif;
-            color: #E0E0E0; /* Warna teks dasar abu-abu terang */
-            overflow: hidden; /* Mencegah scroll bar dari canvas */
+            color: #E0E0E0;
+            background-color: #02040a;
+            overflow: hidden;
         }
-
         h1, h2, h3, .font-orbitron {
             font-family: 'Orbitron', sans-serif;
         }
 
-        /* Canvas untuk latar belakang bintang-bintang */
-        #starfield {
+        /* Canvas untuk latar belakang 3D Three.js */
+        #three-canvas {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             z-index: -1;
-            background: radial-gradient(ellipse at bottom, #0d1a2f 0%, #02040a 100%);
         }
 
-        /* Efek glassmorphism untuk panel utama */
+        /* Efek glassmorphism utama */
         .glass-panel {
-            background: rgba(15, 23, 42, 0.6); /* Warna slate-900 dengan transparansi */
-            backdrop-filter: blur(12px) saturate(150%);
-            -webkit-backdrop-filter: blur(12px) saturate(150%);
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            box-shadow: 0 0 25px rgba(0,0,0,0.3), 0 0 40px rgba(var(--glow-color), 0.2);
+            transition: opacity 0.5s ease, transform 0.5s ease;
         }
         
-        /* Gaya untuk tab menu */
+        .main-panel.hidden {
+            opacity: 0;
+            transform: scale(0.95) translateY(20px);
+            pointer-events: none;
+        }
+
+        /* Gaya tab */
         .tab-btn {
             transition: all 0.3s ease;
-            text-shadow: 0 0 5px rgba(0, 195, 255, 0.5);
+            text-shadow: 0 0 8px rgba(var(--glow-color), 0.7);
         }
-
         .tab-btn.active {
-            background: rgba(56, 189, 248, 0.2); /* sky-400 dengan transparansi */
-            color: #f0f9ff; /* sky-50 */
-            border-bottom-color: #0ea5e9; /* sky-500 */
+            background: rgba(14, 165, 233, 0.25);
+            color: #f0f9ff;
+            border-bottom-color: var(--glow-color);
+            box-shadow: 0 2px 15px -5px rgba(var(--glow-color), 0.5);
         }
-        
         .tab-btn:not(.active):hover {
-            background: rgba(56, 189, 248, 0.1);
+            background: rgba(14, 165, 233, 0.1);
+            border-bottom-color: rgba(var(--glow-color), 0.5);
         }
 
-        /* Tombol metode pembayaran */
+        /* Tombol dan elemen interaktif */
         .method-btn {
             background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             transition: all 0.3s ease;
+            text-shadow: 0 0 3px rgba(0,0,0,0.5);
         }
-
         .method-btn:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: #0ea5e9;
-            transform: translateY(-3px);
-            box-shadow: 0 0 15px rgba(14, 165, 233, 0.5);
+            background: rgba(14, 165, 233, 0.3);
+            border-color: var(--glow-color);
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 0 20px rgba(var(--glow-color), 0.6);
         }
-
         .method-btn.active {
-            background: rgba(14, 165, 233, 0.8);
-            color: #0c0a09; /* stone-950 */
+            background: var(--glow-color);
+            color: #02040a;
             font-weight: 700;
-            border-color: #0ea5e9;
-            box-shadow: 0 0 20px rgba(14, 165, 233, 0.7);
+            border-color: var(--glow-color);
+            box-shadow: 0 0 25px rgba(var(--glow-color), 0.8), 0 0 50px rgba(var(--glow-color), 0.5);
+            transform: translateY(-2px);
         }
         
         /* Animasi */
         @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.95); }
+            from { opacity: 0; transform: scale(0.9); }
             to { opacity: 1; transform: scale(1); }
         }
-        .animate-fadeIn { animation: fadeIn 0.8s ease-out forwards; }
+        .animate-fadeIn { animation: fadeIn 1s ease-out forwards; }
 
         @keyframes slideUp {
-            from { opacity: 0; transform: translateY(20px); }
+            from { opacity: 0; transform: translateY(30px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        .animate-slideUp { animation: slideUp 0.6s ease-out forwards; }
+        .animate-slideUp { animation: slideUp 0.7s ease-out forwards; }
         
         @keyframes pulseGlow {
-            0%, 100% { box-shadow: 0 0 15px rgba(14, 165, 233, 0.4); }
-            50% { box-shadow: 0 0 25px rgba(14, 165, 233, 0.8); }
+            0%, 100% { box-shadow: 0 0 20px rgba(var(--glow-color), 0.6); }
+            50% { box-shadow: 0 0 35px rgba(var(--glow-color), 1); }
         }
         .animate-pulseGlow { animation: pulseGlow 2.5s infinite; }
 
-        /* Gaya untuk area chat AI */
+        /* Area Chat AI */
         .chat-container {
             height: 400px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
             padding: 15px;
-            background: rgba(2, 6, 23, 0.7); /* slate-950 dengan transparansi */
+            background: rgba(2, 6, 23, 0.7);
             border-radius: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
-
         .chat-message {
-            max-width: 80%;
-            padding: 10px 15px;
-            border-radius: 15px;
+            max-width: 85%;
+            padding: 12px 18px;
+            border-radius: 18px;
+            line-height: 1.5;
             word-wrap: break-word;
+            opacity: 0;
+            transform: translateY(10px);
+            animation: slideUp 0.4s ease forwards;
         }
-
         .chat-message.user {
-            background-color: #0ea5e9; /* sky-500 */
-            color: #0c0a09;
+            background: linear-gradient(135deg, #0ea5e9, #0284c7);
+            color: #fff;
             align-self: flex-end;
-            border-bottom-right-radius: 2px;
+            border-bottom-right-radius: 4px;
         }
-
         .chat-message.ai {
-            background-color: #475569; /* slate-600 */
+            background: #334155; /* slate-700 */
             color: #E0E0E0;
             align-self: flex-start;
-            border-bottom-left-radius: 2px;
+            border-bottom-left-radius: 4px;
         }
-
-        .chat-input-container {
-            display: flex;
-            gap: 10px;
-            margin-top: 15px;
-        }
-
         .chat-input {
-            flex-grow: 1;
-            padding: 10px 15px;
-            border-radius: 25px;
             border: 1px solid #475569;
-            background-color: #1e293b; /* slate-800 */
-            color: #E0E0E0;
-            outline: none;
+            background-color: #1e293b;
         }
-
         .chat-input:focus {
-            border-color: #0ea5e9;
-            box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.5);
+            border-color: var(--glow-color);
+            box-shadow: 0 0 0 2px rgba(var(--glow-color), 0.5);
         }
-
-        .chat-send-btn {
-            background-color: #0ea5e9;
-            color: #0c0a09;
-            padding: 10px 15px;
-            border-radius: 25px;
-            transition: all 0.2s ease;
-        }
-
-        .chat-send-btn:hover {
-            background-color: #0284c7; /* sky-600 */
-            transform: translateY(-1px);
-        }
-
-        .chat-send-btn:active {
-            background-color: #0369a1; /* sky-700 */
-            transform: translateY(0);
-        }
-
+        
+        /* Indikator pengetikan AI */
         .loading-dots span {
             display: inline-block;
-            width: 8px;
-            height: 8px;
-            margin: 0 2px;
-            background-color: #E0E0E0;
+            width: 9px;
+            height: 9px;
+            margin: 0 3px;
+            background-color: #94a3b8;
             border-radius: 50%;
             animation: bounce 1.4s infinite ease-in-out both;
         }
-
         .loading-dots span:nth-child(1) { animation-delay: -0.32s; }
         .loading-dots span:nth-child(2) { animation-delay: -0.16s; }
-        .loading-dots span:nth-child(3) { animation-delay: 0s; }
-
         @keyframes bounce {
             0%, 80%, 100% { transform: scale(0); }
             40% { transform: scale(1.0); }
         }
+
+        /* Avatar AI */
+        #ai-avatar {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.4s ease;
+        }
+        #ai-avatar::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(14, 165, 233, 0.8) 0%, rgba(15, 23, 42, 0.5) 70%);
+            animation: pulseGlow 3s infinite, rotateGlow 10s linear infinite;
+            box-shadow: 0 0 15px rgba(var(--glow-color), 0.5), 0 0 30px rgba(var(--glow-color), 0.3);
+        }
+        #ai-avatar:hover {
+            transform: scale(1.1);
+        }
+        #ai-avatar i {
+            font-size: 2rem;
+            color: #f0f9ff;
+            text-shadow: 0 0 10px #fff;
+            z-index: 1;
+        }
+        @keyframes rotateGlow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Tombol Mute */
+        #mute-btn {
+            position: fixed;
+            top: 1.5rem;
+            right: 1.5rem;
+            width: 45px;
+            height: 45px;
+            z-index: 1000;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #94a3b8;
+        }
+        #mute-btn:hover {
+            background: rgba(14, 165, 233, 0.2);
+            color: #fff;
+        }
     </style>
 </head>
-<body class="bg-slate-900">
+<body class="bg-slate-950">
 
-    <canvas id="starfield"></canvas>
+    <canvas id="three-canvas"></canvas>
+    
+    <audio id="ambient-sound" loop>
+        <source src="https://files.catbox.moe/l2b3o6.mp3" type="audio/mpeg">
+    </audio>
+    
+    <button id="mute-btn" class="rounded-full flex items-center justify-center transition-all duration-300">
+        <i id="mute-icon" class="fas fa-volume-off"></i>
+    </button>
 
-    <div class="min-h-screen flex items-center justify-center p-4 animate-fadeIn">
-        <main class="w-full max-w-2xl glass-panel rounded-2xl overflow-hidden">
-            <!-- Header Panel -->
-            <header class="p-6 border-b border-slate-700/50 text-center">
+    <div id="ai-avatar" title="Buka Panel">
+        <i class="fas fa-satellite-dish"></i>
+    </div>
+
+    <div class="min-h-screen w-full flex items-center justify-center p-4">
+        <main id="main-panel" class="w-full max-w-2xl glass-panel rounded-2xl overflow-hidden animate-fadeIn main-panel">
+            <header class="p-6 border-b border-slate-700/50 text-center relative">
+                <div class="absolute top-4 left-4 text-xs text-sky-400 opacity-70">
+                    <i class="fas fa-signal"></i> STATUS: SECURE
+                </div>
                 <img src="https://files.catbox.moe/4ya0zn.jpg" alt="Profil Developer" class="w-24 h-24 rounded-full mx-auto border-4 border-slate-700 shadow-lg mb-4 ring-2 ring-sky-500/50 hover:ring-sky-400 transition-all duration-300">
                 <h1 class="text-3xl font-bold tracking-wider text-white">COSMIC PAYMENT</h1>
-                <p class="text-sm text-slate-400 mt-1">Website Payment Pembayaran by MiwaaGOD</p>
+                <p class="text-sm text-slate-400 mt-1">Gateway Pembayaran Futuristik oleh MiwaaGOD</p>
             </header>
 
-            <!-- Menu / Navigasi -->
             <nav class="flex bg-slate-900/50 border-b-2 border-slate-800">
                 <button id="dashboard-tab" class="tab-btn active flex-1 p-4 text-base sm:text-lg font-orbitron border-b-4 border-transparent">
                     <i class="fas fa-tachometer-alt mr-2"></i>Dashboard
@@ -217,31 +272,26 @@
                 </button>
             </nav>
 
-            <!-- Konten Panel -->
             <div class="relative">
-                <!-- View Dashboard -->
                 <div id="dashboard-view" class="p-6 sm:p-8">
-                    <div id="payment-content" class="animate-slideUp">
-                        <!-- Pilihan Tipe Pembayaran -->
+                    <div class="animate-slideUp">
                         <div class="flex justify-center gap-4 mb-6">
                             <button data-type="ewallet" class="payment-type-btn method-btn active px-5 py-2 rounded-lg"><i class="fas fa-wallet mr-2"></i>E-Wallet</button>
                             <button data-type="qris" class="payment-type-btn method-btn px-5 py-2 rounded-lg"><i class="fas fa-qrcode mr-2"></i>QRIS</button>
                         </div>
-
-                        <!-- View E-Wallet -->
                         <div id="ewallet-view">
                             <div class="grid grid-cols-3 gap-3 mb-6">
                                 <button data-method="dana" class="ewallet-method-btn method-btn p-3 rounded-lg text-center text-lg">DANA</button>
                                 <button data-method="gopay" class="ewallet-method-btn method-btn p-3 rounded-lg text-center text-lg">GOPAY</button>
                                 <button data-method="ovo" class="ewallet-method-btn method-btn p-3 rounded-lg text-center text-lg">OVO</button>
                             </div>
-                            <div id="details-container" class="bg-slate-900/70 rounded-lg p-5 text-center min-h-[120px] flex flex-col justify-center items-center border border-slate-700">
+                            <div class="bg-slate-900/70 rounded-lg p-5 text-center min-h-[120px] flex flex-col justify-center items-center border border-slate-700">
                                 <div id="placeholder" class="text-slate-400">
                                     <i class="fas fa-arrow-up text-2xl"></i>
                                     <p class="mt-2">Pilih metode pembayaran</p>
                                 </div>
                                 <div id="details" class="hidden w-full">
-                                    <p class="text-sm text-slate-300">Silakan transfer ke nomor <span id="method-name" class="font-bold"></span> berikut:</p>
+                                    <p class="text-sm text-slate-300">Silakan transfer ke <span id="method-name" class="font-bold text-sky-300"></span>:</p>
                                     <div class="flex items-center justify-center gap-4 mt-2">
                                         <p id="payment-number" class="text-2xl sm:text-3xl font-orbitron text-sky-300"></p>
                                         <button id="copy-btn" title="Salin Nomor" class="bg-sky-500 text-slate-900 w-10 h-10 rounded-full text-lg hover:bg-sky-400 active:bg-sky-600 transition-all duration-200 flex items-center justify-center shadow-lg hover:shadow-sky-400/50">
@@ -251,45 +301,36 @@
                                 </div>
                             </div>
                         </div>
-
-                        <!-- View QRIS -->
                         <div id="qris-view" class="hidden text-center">
-                             <p class="text-slate-300 mb-4">Pindai kode QR di bawah ini menggunakan aplikasi pembayaran Anda.</p>
+                             <p class="text-slate-300 mb-4">Pindai kode QR di bawah ini.</p>
                              <div class="max-w-xs mx-auto bg-white p-3 rounded-lg border-4 border-sky-400 shadow-2xl shadow-sky-500/30 animate-pulseGlow">
                                  <img src="https://files.catbox.moe/x5ixxt.jpeg" alt="Kode QRIS Pembayaran" class="w-full h-auto rounded-md">
                              </div>
-                             <p class="text-xs text-slate-400 mt-4">Pastikan nama merchant tujuan sudah benar.</p>
                         </div>
                     </div>
                 </div>
                 
-                <!-- View Hubungi Developer -->
                 <div id="contact-view" class="p-6 sm:p-8 hidden">
                     <div class="text-center animate-slideUp">
                         <h2 class="text-2xl font-orbitron mb-6 text-sky-300">Hubungi Developer</h2>
                         <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
                             <a href="https://wa.me/628174731245" target="_blank" rel="noopener noreferrer" class="method-btn w-full sm:w-auto flex items-center justify-center px-6 py-3 rounded-lg text-lg">
-                                <i class="fab fa-whatsapp text-2xl mr-3 text-green-400"></i>
-                                WhatsApp
+                                <i class="fab fa-whatsapp text-2xl mr-3 text-green-400"></i> WhatsApp
                             </a>
                             <a href="https://t.me/miwasogg" target="_blank" rel="noopener noreferrer" class="method-btn w-full sm:w-auto flex items-center justify-center px-6 py-3 rounded-lg text-lg">
-                                <i class="fab fa-telegram text-2xl mr-3 text-sky-400"></i>
-                                Telegram
+                                <i class="fab fa-telegram text-2xl mr-3 text-sky-400"></i> Telegram
                             </a>
                         </div>
                     </div>
                 </div>
 
-                <!-- View AI Assistant -->
                 <div id="ai-assistant-view" class="p-6 sm:p-8 hidden">
-                    <h2 class="text-2xl font-orbitron mb-6 text-sky-300 text-center">AI Asisten</h2>
-                    <div id="chat-container" class="chat-container">
-                        <!-- Pesan chat akan dimuat di sini -->
-                    </div>
-                    <div class="chat-input-container">
-                        <input type="text" id="chat-input" class="chat-input" placeholder="Ketik pesan Anda...">
-                        <button id="send-chat-btn" class="chat-send-btn">
-                            <i class="fas fa-paper-plane mr-2"></i>Kirim
+                    <h2 class="text-2xl font-orbitron mb-4 text-sky-300 text-center">MIWA AI Assistant</h2>
+                    <div id="chat-container" class="chat-container"></div>
+                    <div class="mt-4 flex gap-3">
+                        <input type="text" id="chat-input" class="chat-input flex-grow p-3 rounded-full outline-none" placeholder="Tanya MIWA AI...">
+                        <button id="send-chat-btn" class="bg-sky-500 text-slate-900 w-12 h-12 rounded-full text-lg hover:bg-sky-400 active:bg-sky-600 transition-all duration-200 flex items-center justify-center shadow-lg hover:shadow-sky-400/50 animate-pulseGlow">
+                            <i class="fas fa-paper-plane"></i>
                         </button>
                     </div>
                 </div>
@@ -297,239 +338,292 @@
         </main>
     </div>
 
-    <!-- Notifikasi -->
     <div id="notification" class="fixed bottom-8 left-1/2 -translate-x-1/2 glass-panel py-2 px-5 rounded-full text-white transition-all duration-500 opacity-0 -translate-y-10 pointer-events-none">
         <i class="fas fa-check-circle text-green-400 mr-2"></i>Nomor berhasil disalin!
     </div>
 
-    <script>
+    <script type="module">
+        import * as THREE from 'three';
+
         document.addEventListener('DOMContentLoaded', () => {
-            // --- Animasi Latar Belakang Bintang ---
-            const canvas = document.getElementById('starfield');
-            const ctx = canvas.getContext('2d');
+            // --- Inisialisasi Audio ---
+            const ambientSound = document.getElementById('ambient-sound');
+            const muteBtn = document.getElementById('mute-btn');
+            const muteIcon = document.getElementById('mute-icon');
+            let isMuted = true;
 
-            function resizeCanvas() {
-                canvas.width = window.innerWidth;
-                canvas.height = window.innerHeight;
-            }
-            window.addEventListener('resize', resizeCanvas);
-            resizeCanvas();
-
-            const stars = [];
-            const numStars = 200;
-
-            for (let i = 0; i < numStars; i++) {
-                stars.push({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height,
-                    radius: Math.random() * 1.5 + 0.5,
-                    vx: Math.random() * 0.2 - 0.1,
-                    vy: Math.random() * 0.2 - 0.1
-                });
+            const clickSound = new Audio('https://files.catbox.moe/bgsif3.mp3');
+            clickSound.volume = 0.5;
+            const aiResponseSound = new Audio('https://files.catbox.moe/i5we15.mp3');
+            aiResponseSound.volume = 0.4;
+            
+            function playClickSound() {
+                clickSound.currentTime = 0;
+                clickSound.play().catch(e => {});
             }
 
-            function drawStars() {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                ctx.fillStyle = '#FFFFFF';
-                stars.forEach(star => {
-                    ctx.beginPath();
-                    ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
-                    ctx.fill();
+            function toggleMute() {
+                isMuted = !isMuted;
+                ambientSound.muted = isMuted;
+                muteIcon.className = isMuted ? 'fas fa-volume-off' : 'fas fa-volume-up';
+                if (!isMuted && ambientSound.paused) {
+                    ambientSound.play().catch(e => console.log("Audio play failed. User interaction needed."));
+                }
+            }
+            muteBtn.addEventListener('click', toggleMute);
+            // Coba putar audio setelah interaksi pertama
+            document.body.addEventListener('click', () => {
+                if (!isMuted && ambientSound.paused) {
+                    ambientSound.play().catch(e => {});
+                }
+            }, { once: true });
+
+
+            // --- Latar Belakang 3D Three.js ---
+            let scene, camera, renderer, stars;
+            let mouseX = 0, mouseY = 0;
+
+            function initThree() {
+                const canvas = document.getElementById('three-canvas');
+                scene = new THREE.Scene();
+                camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 1000);
+                camera.position.z = 1;
+                
+                renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+                renderer.setSize(window.innerWidth, window.innerHeight);
+                renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+                const starGeo = new THREE.BufferGeometry();
+                const starCount = 20000;
+                const positions = new Float32Array(starCount * 3);
+                for(let i=0; i < starCount * 3; i++) {
+                    positions[i] = (Math.random() - 0.5) * 800;
+                }
+                starGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+                
+                const starMaterial = new THREE.PointsMaterial({
+                    color: 0xffffff,
+                    size: 0.7,
+                    transparent: true,
+                    opacity: 0.8
                 });
+
+                stars = new THREE.Points(starGeo, starMaterial);
+                scene.add(stars);
+
+                window.addEventListener('resize', onWindowResize);
+                document.addEventListener('mousemove', onMouseMove);
+                animate();
             }
 
-            function updateStars() {
-                stars.forEach(star => {
-                    star.x += star.vx;
-                    star.y += star.vy;
-                    if (star.x < 0 || star.x > canvas.width) star.vx = -star.vx;
-                    if (star.y < 0 || star.y > canvas.height) star.vy = -star.vy;
-                });
+            function onWindowResize() {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            }
+
+            function onMouseMove(event) {
+                mouseX = event.clientX - window.innerWidth / 2;
+                mouseY = event.clientY - window.innerHeight / 2;
             }
 
             function animate() {
-                drawStars();
-                updateStars();
                 requestAnimationFrame(animate);
+                const t = Date.now() * 0.0001;
+                stars.rotation.y = t * 0.5;
+                
+                camera.position.x += (mouseX * 0.0001 - camera.position.x) * 0.05;
+                camera.position.y += (-mouseY * 0.0001 - camera.position.y) * 0.05;
+                camera.lookAt(scene.position);
+
+                renderer.render(scene, camera);
             }
-            animate();
+
+            initThree();
 
             // --- Logika UI ---
-            const dashboardTab = document.getElementById('dashboard-tab');
-            const contactTab = document.getElementById('contact-tab');
-            const aiAssistantTab = document.getElementById('ai-assistant-tab'); // Tab AI Asisten
-            
-            const dashboardView = document.getElementById('dashboard-view');
-            const contactView = document.getElementById('contact-view');
-            const aiAssistantView = document.getElementById('ai-assistant-view'); // View AI Asisten
-            
+            const mainPanel = document.getElementById('main-panel');
+            const aiAvatar = document.getElementById('ai-avatar');
+            const tabs = document.querySelectorAll('.tab-btn');
+            const views = {
+                'dashboard-tab': document.getElementById('dashboard-view'),
+                'contact-tab': document.getElementById('contact-view'),
+                'ai-assistant-tab': document.getElementById('ai-assistant-view')
+            };
             const paymentTypeBtns = document.querySelectorAll('.payment-type-btn');
             const ewalletView = document.getElementById('ewallet-view');
             const qrisView = document.getElementById('qris-view');
             const ewalletMethodBtns = document.querySelectorAll('.ewallet-method-btn');
-            const placeholder = document.getElementById('placeholder');
-            const details = document.getElementById('details');
-            const methodNameEl = document.getElementById('method-name');
-            const paymentNumberEl = document.getElementById('payment-number');
+            const detailsContainer = {
+                placeholder: document.getElementById('placeholder'),
+                details: document.getElementById('details'),
+                methodName: document.getElementById('method-name'),
+                paymentNumber: document.getElementById('payment-number')
+            };
             const copyBtn = document.getElementById('copy-btn');
             const notification = document.getElementById('notification');
-
-            const chatContainer = document.getElementById('chat-container');
-            const chatInput = document.getElementById('chat-input');
-            const sendChatBtn = document.getElementById('send-chat-btn');
-
+            
             const paymentData = {
                 dana: { name: "DANA", number: "08174731245" },
                 gopay: { name: "GOPAY", number: "08174731245" },
                 ovo: { name: "OVO", number: "08174731245" }
             };
-
             let activeMethod = null;
-            let notificationTimeout;
-            let clickSound = new Audio('https://www.soundjay.com/buttons/button-1.mp3'); // Efek suara klik
 
-            // Fungsi untuk beralih Tab Utama
-            function switchTabView(tabToShow) {
-                // Sembunyikan semua view
-                dashboardView.classList.add('hidden');
-                contactView.classList.add('hidden');
-                aiAssistantView.classList.add('hidden');
-
-                // Nonaktifkan semua tab
-                dashboardTab.classList.remove('active');
-                contactTab.classList.remove('active');
-                aiAssistantTab.classList.remove('active');
-
-                // Tampilkan view yang sesuai dan aktifkan tab
-                if (tabToShow === 'dashboard') {
-                    dashboardView.classList.remove('hidden');
-                    dashboardTab.classList.add('active');
-                } else if (tabToShow === 'contact') {
-                    contactView.classList.remove('hidden');
-                    contactTab.classList.add('active');
-                } else if (tabToShow === 'ai-assistant') {
-                    aiAssistantView.classList.remove('hidden');
-                    aiAssistantTab.classList.add('active');
-                }
-            }
-            
-            dashboardTab.addEventListener('click', () => { switchTabView('dashboard'); playClickSound(); });
-            contactTab.addEventListener('click', () => { switchTabView('contact'); playClickSound(); });
-            aiAssistantTab.addEventListener('click', () => { switchTabView('ai-assistant'); playClickSound(); }); // Event listener untuk tab AI Asisten
-
-            // Fungsi untuk beralih antara E-Wallet dan QRIS di dalam Dashboard
-            function switchPaymentType(type) {
-                paymentTypeBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.type === type));
-                ewalletView.classList.toggle('hidden', type !== 'ewallet');
-                qrisView.classList.toggle('hidden', type !== 'qris');
-            }
-
-            // Fungsi untuk memilih metode E-Wallet
-            function selectEwalletMethod(method) {
-                activeMethod = method;
-                const data = paymentData[method];
-                methodNameEl.textContent = data.name;
-                paymentNumberEl.textContent = data.number;
-                placeholder.classList.add('hidden');
-                details.classList.remove('hidden');
-                details.classList.add('animate-fadeIn');
-                ewalletMethodBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.method === method));
-            }
-
-            // Tambahkan efek suara klik ke semua tombol yang relevan
-            function addClickSoundToButtons() {
-                const allButtons = document.querySelectorAll('button, a.method-btn'); // Pilih semua tombol dan link dengan class method-btn
-                allButtons.forEach(button => {
-                    button.addEventListener('click', () => {
-                        playClickSound();
-                    });
-                });
-            }
-
-            function playClickSound() {
-                clickSound.currentTime = 0; // Reset audio ke awal setiap kali diputar
-                clickSound.play().catch(e => console.error("Error playing sound:", e));
-            }
-
-            paymentTypeBtns.forEach(btn => btn.addEventListener('click', () => { switchPaymentType(btn.dataset.type); playClickSound(); }));
-            ewalletMethodBtns.forEach(btn => btn.addEventListener('click', () => { selectEwalletMethod(btn.dataset.method); playClickSound(); }));
-
-            // Event listener untuk tombol salin
-            copyBtn.addEventListener('click', () => {
-                playClickSound(); // Mainkan suara saat tombol salin diklik
-                if (!activeMethod) return;
-                const numberToCopy = paymentData[activeMethod].number;
-                const textArea = document.createElement("textarea");
-                textArea.value = numberToCopy;
-                textArea.style.position = "fixed";
-                textArea.style.left = "-9999px";
-                document.body.appendChild(textArea);
-                textArea.focus();
-                textArea.select();
-                try {
-                    document.execCommand('copy');
-                    showNotification();
-                } catch (err) {
-                    console.error('Gagal menyalin nomor:', err);
-                }
-                document.body.removeChild(textArea);
+            aiAvatar.addEventListener('click', () => {
+                mainPanel.classList.toggle('hidden');
+                playClickSound();
             });
 
-            // Fungsi untuk menampilkan notifikasi
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    playClickSound();
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    Object.values(views).forEach(v => v.classList.add('hidden'));
+                    views[tab.id].classList.remove('hidden');
+                });
+            });
+
+            paymentTypeBtns.forEach(btn => btn.addEventListener('click', () => {
+                playClickSound();
+                paymentTypeBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                ewalletView.classList.toggle('hidden', btn.dataset.type !== 'ewallet');
+                qrisView.classList.toggle('hidden', btn.dataset.type !== 'qris');
+            }));
+
+            ewalletMethodBtns.forEach(btn => btn.addEventListener('click', () => {
+                playClickSound();
+                activeMethod = btn.dataset.method;
+                const data = paymentData[activeMethod];
+                detailsContainer.methodName.textContent = data.name;
+                detailsContainer.paymentNumber.textContent = data.number;
+                detailsContainer.placeholder.classList.add('hidden');
+                detailsContainer.details.classList.remove('hidden');
+                ewalletMethodBtns.forEach(b => b.classList.toggle('active', b.dataset.method === activeMethod));
+            }));
+
+            copyBtn.addEventListener('click', () => {
+                playClickSound();
+                if (!activeMethod) return;
+                navigator.clipboard.writeText(paymentData[activeMethod].number).then(() => {
+                    showNotification();
+                });
+            });
+
             function showNotification() {
-                clearTimeout(notificationTimeout);
                 notification.classList.remove('opacity-0', '-translate-y-10');
                 notification.classList.add('opacity-100', 'translate-y-0');
-                notificationTimeout = setTimeout(() => {
+                setTimeout(() => {
                     notification.classList.add('opacity-0', '-translate-y-10');
                     notification.classList.remove('opacity-100', 'translate-y-0');
                 }, 2500);
             }
 
-            // --- Logika AI Assistant ---
+            // --- Logika AI Assistant (MIWA) ---
+            const chatContainer = document.getElementById('chat-container');
+            const chatInput = document.getElementById('chat-input');
+            const sendChatBtn = document.getElementById('send-chat-btn');
+            
+            const CHAT_HISTORY_KEY = 'miwa_chat_history';
             let chatHistory = [];
 
-            // Fungsi untuk menambahkan pesan ke UI chat
-            function addMessageToChat(message, sender) {
-                const messageElement = document.createElement('div');
-                messageElement.classList.add('chat-message', sender);
-                messageElement.textContent = message;
-                chatContainer.appendChild(messageElement);
-                chatContainer.scrollTop = chatContainer.scrollHeight; // Gulir ke bawah
+            // Sistem prompt untuk memberikan kepribadian pada AI
+            const systemPrompt = {
+                role: "system",
+                parts: [{ text: "Anda adalah MIWA, asisten AI futuristik untuk Cosmic Payment Gateway. Anda ramah, canggih, dan sangat membantu. Selalu jawab dalam Bahasa Indonesia. Fokus pada pertanyaan seputar pembayaran, status transaksi, dan cara penggunaan gateway. Jika ditanya di luar topik, dengan sopan kembalikan percakapan ke topik pembayaran." }]
+            };
+
+            function loadChatHistory() {
+                const storedHistory = localStorage.getItem(CHAT_HISTORY_KEY);
+                if (storedHistory) {
+                    chatHistory = JSON.parse(storedHistory);
+                    chatHistory.forEach(msg => {
+                        if (msg.role !== 'system') {
+                            addMessageToChat(msg.parts[0].text, msg.role === 'user' ? 'user' : 'ai', false);
+                        }
+                    });
+                } else {
+                    chatHistory = [systemPrompt];
+                    addMessageToChat("Halo! Saya MIWA, asisten AI Anda. Ada yang bisa saya bantu terkait pembayaran?", 'ai', false);
+                }
             }
 
-            // Fungsi untuk menampilkan indikator loading AI
+            function saveChatHistory() {
+                localStorage.setItem(CHAT_HISTORY_KEY, JSON.stringify(chatHistory));
+            }
+
+            function addMessageToChat(message, sender, animate = true) {
+                const messageElement = document.createElement('div');
+                messageElement.classList.add('chat-message', sender);
+                if (!animate) {
+                    messageElement.style.opacity = 1;
+                    messageElement.style.transform = 'translateY(0)';
+                }
+                messageElement.textContent = message;
+                chatContainer.appendChild(messageElement);
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            }
+
             function showLoadingIndicator() {
                 const loadingElement = document.createElement('div');
+                loadingElement.id = 'loading-indicator';
                 loadingElement.classList.add('chat-message', 'ai', 'loading-dots');
                 loadingElement.innerHTML = '<span></span><span></span><span></span>';
-                loadingElement.id = 'loading-indicator';
                 chatContainer.appendChild(loadingElement);
                 chatContainer.scrollTop = chatContainer.scrollHeight;
             }
 
-            // Fungsi untuk menyembunyikan indikator loading AI
             function hideLoadingIndicator() {
-                const loadingElement = document.getElementById('loading-indicator');
-                if (loadingElement) {
-                    loadingElement.remove();
-                }
+                document.getElementById('loading-indicator')?.remove();
             }
 
-            // Fungsi untuk mengirim pesan ke Gemini API
             async function sendMessageToGemini() {
                 const prompt = chatInput.value.trim();
                 if (prompt === '') return;
 
+                playClickSound();
                 addMessageToChat(prompt, 'user');
                 chatHistory.push({ role: "user", parts: [{ text: prompt }] });
-                chatInput.value = ''; // Kosongkan input
+                chatInput.value = '';
+                
+                showLoadingIndicator();
 
-                showLoadingIndicator(); // Tampilkan indikator loading
+                // =================================================================
+                // PANDUAN BACKEND: Implementasi Middleware & Keamanan API
+                // =================================================================
+                // Di aplikasi Next.js, Anda akan membuat file `middleware.ts` di root.
+                // Middleware ini akan mencegat request ke API routes (`/api/*`).
+                //
+                // Contoh `middleware.ts`:
+                // import { NextRequest, NextResponse } from 'next/server';
+                // import { Ratelimit } from '@upstash/ratelimit';
+                // import { kv } from '@vercel/kv';
+                //
+                // const ratelimit = new Ratelimit({ redis: kv, limiter: Ratelimit.slidingWindow(5, '10s') });
+                //
+                // export async function middleware(request: NextRequest) {
+                //   const ip = request.ip ?? '127.0.0.1';
+                //   const { success } = await ratelimit.limit(ip);
+                //   if (!success) {
+                //     return new NextResponse('Rate limit exceeded', { status: 429 });
+                //   }
+                //
+                //   // Di sini Anda juga akan melakukan validasi HMAC signature untuk webhook,
+                //   // validasi timestamp, dan cek token JWT jika ada.
+                //
+                //   return NextResponse.next();
+                // }
+                //
+                // export const config = {
+                //   matcher: '/api/:path*',
+                // };
+                // =================================================================
 
                 try {
                     const payload = { contents: chatHistory };
-                    const apiKey = ""; // API key akan diisi secara otomatis oleh Canvas
+                    const apiKey = ""; // Otomatis diisi oleh Canvas
                     const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
 
                     const response = await fetch(apiUrl, {
@@ -539,38 +633,39 @@
                     });
 
                     const result = await response.json();
-                    
-                    hideLoadingIndicator(); // Sembunyikan indikator loading
+                    hideLoadingIndicator();
+                    aiResponseSound.play().catch(e => {});
 
-                    if (result.candidates && result.candidates.length > 0 &&
-                        result.candidates[0].content && result.candidates[0].content.parts &&
-                        result.candidates[0].content.parts.length > 0) {
+                    if (result.candidates?.[0]?.content?.parts?.[0]?.text) {
                         const aiResponse = result.candidates[0].content.parts[0].text;
                         addMessageToChat(aiResponse, 'ai');
                         chatHistory.push({ role: "model", parts: [{ text: aiResponse }] });
+                        saveChatHistory();
                     } else {
-                        addMessageToChat("Maaf, saya tidak dapat memahami permintaan Anda. Bisakah Anda mencoba lagi?", 'ai');
+                        addMessageToChat("Maaf, terjadi gangguan kosmik. Saya tidak bisa merespons saat ini.", 'ai');
                     }
                 } catch (error) {
                     console.error('Error calling Gemini API:', error);
-                    hideLoadingIndicator(); // Sembunyikan indikator loading jika ada error
-                    addMessageToChat("Terjadi kesalahan saat menghubungi AI. Mohon coba lagi nanti.", 'ai');
+                    hideLoadingIndicator();
+                    addMessageToChat("Koneksi ke nebula AI terputus. Silakan coba lagi.", 'ai');
                 }
             }
 
-            sendChatBtn.addEventListener('click', () => { sendMessageToGemini(); playClickSound(); });
+            sendChatBtn.addEventListener('click', sendMessageToGemini);
             chatInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    sendMessageToGemini();
-                    playClickSound();
-                }
+                if (e.key === 'Enter') sendMessageToGemini();
             });
 
             // Inisialisasi
-            switchTabView('dashboard'); // Tampilkan dashboard saat pertama kali dimuat
-            switchPaymentType('ewallet'); // Di dalam dashboard, tampilkan e-wallet
-            selectEwalletMethod('dana'); // Pilih Dana secara default
-            addClickSoundToButtons(); // Tambahkan efek suara ke semua tombol
+            document.querySelector('[data-type="ewallet"]').classList.add('active');
+            document.querySelector('[data-method="dana"]').classList.add('active');
+            activeMethod = 'dana';
+            detailsContainer.methodName.textContent = paymentData.dana.name;
+            detailsContainer.paymentNumber.textContent = paymentData.dana.number;
+            detailsContainer.placeholder.classList.add('hidden');
+            detailsContainer.details.classList.remove('hidden');
+            
+            loadChatHistory();
         });
     </script>
 </body>
