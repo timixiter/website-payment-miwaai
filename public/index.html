@@ -1,559 +1,475 @@
 <!DOCTYPE html>
-<html lang="id" class="dark">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quantum Nexus // Pengalaman Digital Imersif</title>
-    <!-- Tailwind CSS CDN -->
+    <title>GalacticPay - Futuristic Payment Gateway</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    <!-- Google Fonts for Futuristic Typography -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Roboto:wght@300;400;500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Base Styles & Custom Properties */
-        :root {
-            --primary-glow: #0ea5e9; /* Sky blue */
-            --secondary-glow: #8b5cf6; /* Violet */
-            --tertiary-glow: #ec4899; /* Pink */
-            --glass-bg: rgba(15, 23, 42, 0.3);
-            --glass-border: rgba(56, 189, 248, 0.2);
-            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
-            --glass-inset: inset 0 1px 0 rgba(255, 255, 255, 0.1);
-        }
-
+        /* Base styles for body and fonts */
         body {
-            font-family: 'Share Tech Mono', monospace;
-            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            font-family: 'Inter', sans-serif;
             color: #E0E0E0;
-            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="%230ea5e9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-crosshair"><circle cx="12" cy="12" r="10"></circle><line x1="22" y1="12" x2="2" y2="12"></line><line x1="12" y1="2" x2="12" y2="22"></line></svg>') 12 12, crosshair;
             overflow-x: hidden;
-            overscroll-behavior: contain;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
         }
 
         h1, h2, h3, .font-orbitron {
             font-family: 'Orbitron', sans-serif;
-            text-shadow: 0 0 10px var(--primary-glow);
         }
 
-        /* ----------------------- 1️⃣ Static Professional UI ----------------------- */
-        /* Glassmorphism Panel with 3D Depth */
-        .glass-panel {
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px) saturate(180%);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
-            border: 1px solid var(--glass-border);
-            box-shadow: var(--glass-shadow), var(--glass-inset);
-            transform: perspective(1000px);
-            transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
-        }
-        .glass-panel-secondary {
-            background: rgba(30, 41, 59, 0.5); /* Slightly darker for chat bubbles */
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(168, 85, 247, 0.2);
-            box-shadow: 0 0 10px rgba(139, 92, 246, 0.2);
-        }
-
-        /* Neon Glow Accents */
-        .neon-text {
-            color: #E0E0E0;
-            text-shadow: 0 0 5px var(--primary-glow), 0 0 10px var(--primary-glow);
-        }
-
-        .neon-button {
-            position: relative;
-            z-index: 10;
-            overflow: hidden;
-            transition: all 0.4s ease-out;
-            box-shadow: 0 0 10px rgba(14, 165, 233, 0.3);
-            background-color: rgba(14, 165, 233, 0.2);
-            border: 1px solid rgba(14, 165, 233, 0.5);
-        }
-
-        .neon-button:hover {
-            transform: translateY(-3px) scale(1.05);
-            box-shadow: 0 0 20px rgba(14, 165, 233, 0.6), 0 0 30px rgba(14, 165, 233, 0.4);
-            background-color: rgba(14, 165, 233, 0.4);
-        }
-
-        .neon-button::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.4) 0%, transparent 70%);
-            transition: all 0.6s ease;
-            transform: translate(-50%, -50%);
-        }
-
-        .neon-button:hover::before {
-            width: 300%;
-            height: 300%;
-        }
-
-        /* Cinematic Lighting & Effects */
+        /* Starfield background with a cinematic touch */
         #starfield {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -2;
-            background: radial-gradient(ellipse at center, rgba(15, 20, 25, 0.9) 0%, rgba(2, 2, 4, 1) 100%);
-        }
-
-        #vignette {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(ellipse at center, rgba(0,0,0,0) 0%, rgba(0,0,0,0.8) 100%);
-            pointer-events: none;
             z-index: -1;
+            background: radial-gradient(ellipse at center, #0f1419 0%, #020204 100%);
         }
 
-        /* Scrolling effects */
-        .scroll-fade {
-            opacity: 0;
-            transform: translateY(20px) scale(0.98);
-            transition: opacity 1s cubic-bezier(0.2, 0.8, 0.2, 1), transform 1s cubic-bezier(0.2, 0.8, 0.2, 1);
+        /* Advanced Glassmorphism effect for panels */
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.3);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            box-shadow:
+                0 8px 32px 0 rgba(0, 0, 0, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
         }
 
-        .scroll-fade.is-visible {
-            opacity: 1;
-            transform: translateY(0) scale(1);
+        .glass-panel-secondary {
+            background: rgba(30, 41, 59, 0.4);
+            backdrop-filter: blur(15px) saturate(150%);
+            -webkit-backdrop-filter: blur(15px) saturate(150%);
+            border: 1px solid rgba(100, 116, 139, 0.2);
+            box-shadow:
+                0 4px 24px 0 rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
         }
 
-        /* ----------------------- 2️⃣ Hologram & 3D Futuristic ----------------------- */
-        .holographic-panel {
+        /* Cinematic Neon-Glow CTA Button */
+        .cta-btn {
             position: relative;
-            background: rgba(30, 41, 59, 0.2);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(168, 85, 247, 0.2);
-            box-shadow: 0 0 20px rgba(139, 92, 246, 0.3), inset 0 0 10px rgba(139, 92, 246, 0.1);
-            transform: rotateX(20deg) scale(0.9);
-            transform-origin: center bottom;
-            transition: all 0.8s ease;
-            animation: holographic-pulse 5s infinite ease-in-out;
-        }
-
-        .holographic-panel::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(0deg, rgba(139, 92, 246, 0.2) 0%, transparent 50%, rgba(139, 92, 246, 0.2) 100%);
-            animation: holographic-scan 3s infinite linear;
-            pointer-events: none;
-        }
-
-        @keyframes holographic-pulse {
-            0%, 100% { box-shadow: 0 0 20px rgba(139, 92, 246, 0.3), inset 0 0 10px rgba(139, 92, 246, 0.1); }
-            50% { box-shadow: 0 0 40px rgba(139, 92, 246, 0.6), inset 0 0 20px rgba(139, 92, 246, 0.2); }
-        }
-
-        @keyframes holographic-scan {
-            0% { transform: translateY(-100%); }
-            100% { transform: translateY(100%); }
-        }
-
-        /* ----------------------- 3️⃣ Interactive Animation / Active UI ----------------------- */
-        .interactive-panel {
-            transition: all 0.2s ease-out;
-            will-change: transform, box-shadow;
-        }
-
-        .interactive-element {
-            position: relative;
-            transition: all 0.3s ease;
+            background: linear-gradient(135deg, #0ea5e9 0%, #3b82f6 100%);
+            color: white;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            transition: all 0.4s ease;
             overflow: hidden;
-            z-index: 1;
+            border: none;
+            cursor: pointer;
         }
-        
-        .interactive-element::before {
+
+        .cta-btn:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 15px 35px rgba(14, 165, 233, 0.5);
+            background: linear-gradient(135deg, #0284c7 0%, #2563eb 100%);
+        }
+
+        .cta-btn::before {
             content: '';
             position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 300%;
+            height: 300%;
+            background: rgba(255, 255, 255, 0.1);
+            transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transform: translate(-50%, -50%) scale(0);
+            border-radius: 50%;
+        }
+
+        .cta-btn:hover::before {
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        /* Neon-Glow input field */
+        .neon-input {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            transition: all 0.3s ease;
+            color: #E0E0E0;
+        }
+
+        .neon-input:focus {
+            outline: none;
+            border-color: #38bdf8;
+            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.3);
+            background: rgba(15, 23, 42, 0.8);
+        }
+
+        /* Holographic animation for header */
+        .holographic {
+            background: linear-gradient(45deg,
+                rgba(56, 189, 248, 0.1) 0%,
+                rgba(168, 85, 247, 0.1) 25%,
+                rgba(236, 72, 153, 0.1) 50%,
+                rgba(56, 189, 248, 0.1) 75%,
+                rgba(168, 85, 247, 0.1) 100%);
+            background-size: 400% 400%;
+            animation: holographicShift 8s ease infinite;
+        }
+
+        @keyframes holographicShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        /* Animated payment method buttons */
+        .method-btn {
+            position: relative;
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid rgba(100, 116, 139, 0.3);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .method-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: radial-gradient(circle, rgba(14, 165, 233, 0.3) 0%, transparent 70%);
+            transition: all 0.6s ease;
+            transform: translate(-50%, -50%);
+        }
+
+        .method-btn:hover::before {
+            width: 200%;
+            height: 200%;
+        }
+
+        .method-btn:hover {
+            background: rgba(56, 189, 248, 0.15);
+            border-color: #0ea5e9;
+            transform: translateY(-5px) scale(1.02);
+            box-shadow:
+                0 10px 25px rgba(14, 165, 233, 0.3),
+                0 0 15px rgba(14, 165, 233, 0.2);
+        }
+
+        .method-btn.active {
+            background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+            color: #ffffff;
+            font-weight: 700;
+            border-color: #0ea5e9;
+            box-shadow:
+                0 15px 30px rgba(14, 165, 233, 0.4),
+                0 0 25px rgba(14, 165, 233, 0.3);
+            transform: translateY(-3px) scale(1.05);
+        }
+
+        /* Button pressed animation */
+        .pressed {
+            transform: scale(0.95);
+            transition: transform 0.1s ease-out;
+        }
+        
+        /* QR Code Modal */
+        #qris-modal-overlay {
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(14, 165, 233, 0.2);
-            opacity: 0;
-            transform: scale(0);
-            transition: transform 0.4s ease-out, opacity 0.4s ease-out;
-            z-index: -1;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
         }
 
-        .interactive-element:hover::before {
-            transform: scale(1.1);
-            opacity: 1;
-        }
-
-        /* AI Assistant Panel */
-        #ai-assistant-panel {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            width: 320px;
-            max-height: 80vh;
-            display: flex;
-            flex-direction: column;
-            transform: scale(0.9) translateX(100%);
-            opacity: 0;
-            pointer-events: none;
-            transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
-            z-index: 100;
-        }
-
-        #ai-assistant-panel.active {
-            transform: scale(1) translateX(0);
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        #ai-chat-history {
-            flex-grow: 1;
-            overflow-y: auto;
+        #qris-modal-content {
+            position: relative;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+            text-align: center;
+            max-width: 90%;
+            width: fit-content;
         }
         
-        .ai-message {
-            animation: slideInUp 0.3s ease-out forwards;
+        #qris-modal-overlay.active {
+            display: flex;
         }
 
-        @keyframes slideInUp {
+        /* Loading Spinner */
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(56, 189, 248, 0.3);
+            border-top: 4px solid #38bdf8;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Keyframe animations for various elements */
+        @keyframes fadeInUp {
             from {
-                transform: translateY(10px);
                 opacity: 0;
+                transform: translateY(30px) scale(0.9);
             }
             to {
-                transform: translateY(0);
                 opacity: 1;
+                transform: translateY(0) scale(1);
             }
         }
 
-        /* ----------------------- 4️⃣ Cinematic Sci-Fi Style ----------------------- */
-        /* Dynamic Shadows & Volumetric Lighting (simulated with CSS gradients) */
-        .volumetric-light {
-            position: fixed;
-            top: -200px;
-            left: 50%;
-            width: 1000px;
-            height: 1000px;
-            background: radial-gradient(circle, rgba(14, 165, 233, 0.2) 0%, transparent 70%);
-            animation: light-beam 15s infinite ease-in-out;
-            pointer-events: none;
-            z-index: -1;
-            filter: blur(100px);
+        @keyframes pulseGlow {
+            0%, 100% {
+                box-shadow: 0 0 20px rgba(14, 165, 233, 0.4);
+                border-color: rgba(14, 165, 233, 0.6);
+            }
+            50% {
+                box-shadow: 0 0 40px rgba(14, 165, 233, 0.8);
+                border-color: rgba(14, 165, 233, 1);
+            }
         }
+        
+        .animate-fadeInUp { animation: fadeInUp 0.8s ease-out forwards; }
+        .animate-pulseGlow { animation: pulseGlow 3s infinite; }
 
-        @keyframes light-beam {
-            0%, 100% { transform: translateX(-50%) translateY(0); }
-            50% { transform: translateX(-50%) translateY(100px); }
-        }
-
-        /* Mobile Adjustments */
-        @media (max-width: 768px) {
-            #central-panel {
-                transform: none !important;
+        /* Responsive adjustments for smaller screens */
+        @media (max-width: 640px) {
+            .glass-panel {
+                margin: 1rem;
+                border-radius: 1rem;
             }
-            .holographic-panel {
-                transform: none !important;
+            .method-btn {
+                padding: 0.75rem;
+                font-size: 0.875rem;
             }
-            .hidden-mobile {
-                display: none;
+            h1 {
+                font-size: 2.5rem;
             }
-            .flex-col-mobile {
-                flex-direction: column;
+            .tab-btn {
+                font-size: 0.9rem;
+                padding: 1rem 0.5rem;
+            }
+            .qr-container {
+                padding: 15px;
+            }
+            #qris-modal-content {
+                padding: 20px;
             }
         }
     </style>
 </head>
 <body class="bg-slate-900 min-h-screen">
-    <!-- Immersive Backgrounds -->
-    <div id="starfield"></div>
-    <div id="vignette"></div>
-    <div class="volumetric-light"></div>
+    <canvas id="starfield"></canvas>
     
-    <!-- Main Content Grid -->
-    <div id="main-container" class="relative z-10 p-4 md:p-8 min-h-screen flex items-center justify-center">
-        
-        <!-- Interactive & Floating Panels -->
-        <div id="central-panel" class="w-full max-w-6xl interactive-panel grid md:grid-cols-3 gap-4 md:gap-8 transition-all duration-300">
-            
-            <!-- Left Panel: Profile & Navigation (Static Professional UI) -->
-            <div class="glass-panel p-6 rounded-3xl col-span-3 md:col-span-1 shadow-2xl flex flex-col justify-between scroll-fade">
-                <div>
-                    <!-- Profile Card -->
-                    <div class="flex items-center space-x-4 mb-6">
-                        <div class="relative w-16 h-16 rounded-full overflow-hidden border-2 border-sky-400">
-                            <img src="https://placehold.co/64x64/0f172a/60a5fa?text=U" alt="User Avatar" class="w-full h-full object-cover">
-                            <div class="absolute inset-0 rounded-full animate-pulse-slow pointer-events-none" style="box-shadow: inset 0 0 10px #60a5fa, 0 0 15px #60a5fa;"></div>
+    <div class="min-h-screen flex items-center justify-center p-4 animate-fadeInUp">
+        <main class="w-full max-w-3xl glass-panel rounded-3xl overflow-hidden shadow-2xl">
+            <!-- Header Section -->
+            <header class="holographic p-8 border-b border-slate-700/30 text-center relative overflow-hidden">
+                <h1 class="text-4xl md:text-5xl font-bold tracking-wider text-white mb-2 animate-slideInLeft"> GALACTICPAY </h1>
+                <p class="text-slate-300 text-lg"> Payment Gateway of the Future </p>
+            </header>
+
+            <!-- Main Content Area -->
+            <div class="p-8">
+                <!-- Payment Options Section -->
+                <section class="mb-8">
+                    <h2 class="font-orbitron text-2xl font-bold text-sky-400 mb-6 text-center">Pilih Metode Pembayaran</h2>
+                    <div id="payment-methods" class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <!-- Dana -->
+                        <div class="method-btn rounded-xl p-4 flex flex-col items-center justify-center" data-method="dana">
+                            <img src="https://logolook.net/wp-content/uploads/2022/02/Dana-Logo.png" alt="Dana" class="w-12 h-12 mb-2">
+                            <span class="text-sm font-semibold">Dana</span>
                         </div>
-                        <div>
-                            <h2 class="font-orbitron text-xl md:text-2xl font-bold neon-text">User_079_D</h2>
-                            <p class="text-sm text-slate-400">Authorized Personnel</p>
+                        <!-- Gopay -->
+                        <div class="method-btn rounded-xl p-4 flex flex-col items-center justify-center" data-method="gopay">
+                            <img src="https://www.gopay.co.id/icon/gopay_logo_primary_white.svg" alt="Gopay" class="w-12 h-12 mb-2">
+                            <span class="text-sm font-semibold">Gopay</span>
+                        </div>
+                        <!-- OVO -->
+                        <div class="method-btn rounded-xl p-4 flex flex-col items-center justify-center" data-method="ovo">
+                            <img src="https://ovoin.com/assets/images/logo-dark-mode.svg" alt="OVO" class="w-12 h-12 mb-2">
+                            <span class="text-sm font-semibold">OVO</span>
+                        </div>
+                        <!-- QRIS -->
+                        <div class="method-btn rounded-xl p-4 flex flex-col items-center justify-center" data-method="qris">
+                            <img src="https://www.bi.go.id/en/statistik/sistem-pembayaran/qris/PublishingImages/Logo%20QRIS.png" alt="QRIS" class="w-12 h-12 mb-2">
+                            <span class="text-sm font-semibold">QRIS</span>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Payment Nominal & Action Section -->
+                <section>
+                    <div class="mb-6">
+                        <label for="nominal" class="block text-md font-medium text-slate-300 mb-2">Nominal Pembayaran</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-4 flex items-center font-bold text-sky-400">IDR</span>
+                            <input type="number" id="nominal" name="nominal" placeholder="Masukkan nominal" class="neon-input block w-full pl-16 pr-4 py-3 rounded-xl shadow-inner text-lg placeholder-slate-500">
                         </div>
                     </div>
                     
-                    <!-- Main Navigation -->
-                    <nav>
-                        <ul class="space-y-2">
-                            <li><a href="#" class="block p-4 rounded-xl hover:bg-slate-800/50 transition-colors duration-200 neon-button"><i class="fas fa-home mr-3 text-sky-400"></i> Dashboard</a></li>
-                            <li><a href="#" class="block p-4 rounded-xl hover:bg-slate-800/50 transition-colors duration-200 neon-button"><i class="fas fa-cubes mr-3 text-fuchsia-400"></i> Modules</a></li>
-                            <li><a href="#" class="block p-4 rounded-xl hover:bg-slate-800/50 transition-colors duration-200 neon-button"><i class="fas fa-database mr-3 text-teal-400"></i> Data Streams</a></li>
-                            <li><a href="#" class="block p-4 rounded-xl hover:bg-slate-800/50 transition-colors duration-200 neon-button"><i class="fas fa-cog mr-3 text-slate-400"></i> Settings</a></li>
-                        </ul>
-                    </nav>
-                </div>
-                
-                <!-- System Status -->
-                <div class="mt-8 pt-4 border-t border-slate-700/50">
-                    <h3 class="font-orbitron text-lg neon-text mb-2">Status Sistem</h3>
-                    <div class="flex items-center text-sm text-green-400">
-                        <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse mr-2"></div>
-                        <p>Sistem utama: Online</p>
-                    </div>
-                    <div class="flex items-center text-sm text-orange-400 mt-1">
-                        <div class="w-2 h-2 bg-orange-500 rounded-full animate-pulse mr-2"></div>
-                        <p>Sinkronisasi data: Sedang menyinkronkan...</p>
-                    </div>
-                </div>
+                    <button id="pay-now-btn" class="cta-btn w-full py-4 text-xl rounded-xl shadow-xl hover:shadow-2xl">
+                        Bayar Sekarang
+                    </button>
+                </section>
             </div>
-            
-            <!-- Center Panel: Main Content (Hologram & 3D Futuristic) -->
-            <div class="col-span-3 md:col-span-2 holographic-panel p-6 rounded-3xl shadow-2xl flex flex-col justify-between scroll-fade" style="min-height: 70vh;">
-                
-                <!-- Header -->
-                <div class="flex items-center justify-between mb-6">
-                    <h1 class="font-orbitron text-3xl md:text-4xl font-black neon-text">Quantum Nexus</h1>
-                    <button class="neon-button px-4 py-2 rounded-lg text-sm hidden md:block" id="ai-toggle-btn">
-                        <i class="fas fa-brain mr-2"></i>Asisten AI
-                    </button>
-                </div>
-                
-                <!-- Main Carousel -->
-                <div class="relative overflow-hidden mb-6" style="height: 300px;">
-                    <div id="carousel-container" class="flex transition-transform duration-700 ease-in-out h-full">
-                        <!-- Carousel Item 1 -->
-                        <div class="w-full flex-shrink-0 flex items-center justify-center p-8 bg-sky-900/10 rounded-2xl border border-sky-400/20">
-                            <div class="text-center">
-                                <h2 class="font-orbitron text-2xl font-bold neon-text mb-2">Akses Data Galaksi</h2>
-                                <p class="text-slate-400 max-w-lg mx-auto">Jelajahi aliran data real-time dari seluruh kosmos. Alat visualisasi canggih di ujung jari Anda.</p>
-                            </div>
+
+            <!-- Transaction History Panel -->
+            <aside class="glass-panel-secondary p-8 border-t border-slate-700/30">
+                <h3 class="font-orbitron text-xl font-semibold text-sky-400 mb-4">Riwayat Transaksi</h3>
+                <ul id="transaction-history" class="space-y-4">
+                    <!-- Example transactions -->
+                    <li class="flex justify-between items-center bg-slate-800/50 p-4 rounded-lg">
+                        <div>
+                            <p class="font-semibold text-sm md:text-base">Pembayaran Dana - Rp150.000</p>
+                            <span class="text-xs text-slate-400">2025-08-15 14:30</span>
                         </div>
-                        <!-- Carousel Item 2 -->
-                        <div class="w-full flex-shrink-0 flex items-center justify-center p-8 bg-violet-900/10 rounded-2xl border border-violet-400/20">
-                            <div class="text-center">
-                                <h2 class="font-orbitron text-2xl font-bold neon-text mb-2">Protokol Otomatis 8-K</h2>
-                                <p class="text-slate-400 max-w-lg mx-auto">Mulai protokol otomatis dengan satu klik. Integrasi mulus dengan semua modul inti.</p>
-                            </div>
+                        <i class="fas fa-check-circle text-green-400 text-lg"></i>
+                    </li>
+                    <li class="flex justify-between items-center bg-slate-800/50 p-4 rounded-lg">
+                        <div>
+                            <p class="font-semibold text-sm md:text-base">Top Up OVO - Rp50.000</p>
+                            <span class="text-xs text-slate-400">2025-08-14 11:00</span>
                         </div>
-                        <!-- Carousel Item 3 -->
-                        <div class="w-full flex-shrink-0 flex items-center justify-center p-8 bg-pink-900/10 rounded-2xl border border-pink-400/20">
-                            <div class="text-center">
-                                <h2 class="font-orbitron text-2xl font-bold neon-text mb-2">Aman & Terenkripsi</h2>
-                                <p class="text-slate-400 max-w-lg mx-auto">Infrastruktur kami menjamin 100% integritas data dan keamanan dengan enkripsi tingkat kuantum.</p>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Carousel Controls -->
-                    <button id="carousel-prev" class="absolute top-1/2 -translate-y-1/2 left-4 w-10 h-10 bg-slate-800/50 hover:bg-slate-700/70 rounded-full transition-colors duration-200"><i class="fas fa-chevron-left"></i></button>
-                    <button id="carousel-next" class="absolute top-1/2 -translate-y-1/2 right-4 w-10 h-10 bg-slate-800/50 hover:bg-slate-700/70 rounded-full transition-colors duration-200"><i class="fas fa-chevron-right"></i></button>
-                </div>
-                
-                <!-- Action Buttons & Stats (Interactive Animation / Active UI) -->
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-                    <button class="interactive-element neon-button p-4 rounded-xl text-center">
-                        <i class="fas fa-sync-alt text-2xl mb-2 text-violet-400"></i>
-                        <span class="block text-sm">Sinkronkan Modul</span>
-                    </button>
-                    <button class="interactive-element neon-button p-4 rounded-xl text-center">
-                        <i class="fas fa-paper-plane text-2xl mb-2 text-pink-400"></i>
-                        <span class="block text-sm">Kirim Perintah</span>
-                    </button>
-                    <button class="interactive-element neon-button p-4 rounded-xl text-center">
-                        <i class="fas fa-upload text-2xl mb-2 text-cyan-400"></i>
-                        <span class="block text-sm">Unggah Data</span>
-                    </button>
-                    <button class="interactive-element neon-button p-4 rounded-xl text-center">
-                        <i class="fas fa-cogs text-2xl mb-2 text-yellow-400"></i>
-                        <span class="block text-sm">Kelola API</span>
-                    </button>
-                </div>
-                
-                <!-- Interactive Chart (Placeholder for Hologram) -->
-                <div class="holographic-panel p-6 rounded-3xl flex-grow flex items-center justify-center text-center">
-                    <div>
-                        <h3 class="font-orbitron text-xl font-bold neon-text">Tampilan Data Holografik</h3>
-                        <p class="mt-2 text-slate-400">Di sini akan ada grafik dan dashboard interaktif.</p>
-                    </div>
-                </div>
-                
-            </div>
-            
-        </div>
-        
+                        <i class="fas fa-check-circle text-green-400 text-lg"></i>
+                    </li>
+                </ul>
+                <div id="no-transactions" class="text-center text-slate-500 mt-4 hidden">Belum ada transaksi.</div>
+            </aside>
+        </main>
     </div>
 
-    <!-- AI Assistant Panel (Cinematic Sci-Fi Style) -->
-    <div id="ai-assistant-panel" class="glass-panel rounded-3xl shadow-2xl p-6 hidden md:flex">
-        <div class="flex justify-between items-center mb-4 border-b border-slate-700/50 pb-2">
-            <h3 class="font-orbitron text-xl neon-text"><i class="fas fa-robot mr-2 text-violet-400"></i>Q_AI Asisten</h3>
-            <button id="ai-close-btn" class="text-slate-400 hover:text-red-400 transition-colors"><i class="fas fa-times"></i></button>
-        </div>
-        
-        <div id="ai-chat-history" class="space-y-4 mb-4 text-sm" style="height: 400px;">
-            <!-- Chat messages will be appended here -->
-            <div class="ai-message flex items-start space-x-2">
-                <i class="fas fa-robot text-violet-400 mt-1"></i>
-                <div class="glass-panel-secondary p-3 rounded-lg text-slate-200">
-                    <p>Halo, saya Q_AI. Ada yang bisa saya bantu hari ini?</p>
-                </div>
+    <!-- QRIS Modal -->
+    <div id="qris-modal-overlay" class="fixed inset-0 bg-black bg-opacity-70 backdrop-blur-md flex items-center justify-center hidden">
+        <div id="qris-modal-content" class="p-8 rounded-3xl animate-fadeInUp">
+            <h3 class="font-orbitron text-2xl font-bold text-sky-400 mb-6">Scan QRIS untuk Bayar</h3>
+            <div id="qris-code" class="relative qr-container w-[256px] h-[256px] mx-auto rounded-3xl p-6 flex items-center justify-center">
+                <!-- QR Code placeholder -->
+                <img src="https://placehold.co/200x200/FFFFFF/000000?text=QRIS+Code" alt="QRIS Code" class="w-full h-full rounded-lg">
             </div>
-        </div>
-
-        <div class="flex items-center space-x-2 mt-auto">
-            <textarea id="ai-query-input" class="flex-grow p-3 rounded-xl glass-panel-secondary border-none resize-none focus:outline-none focus:ring-2 focus:ring-sky-500" placeholder="Tanyakan sesuatu..." rows="1"></textarea>
-            <button id="send-ai-query-btn" class="neon-button w-10 h-10 rounded-xl flex items-center justify-center">
-                <i class="fas fa-paper-plane"></i>
-            </button>
+            <p class="text-slate-400 mt-4">Pindai kode ini dengan aplikasi pembayaran Anda.</p>
+            <div class="flex justify-center mt-6">
+                <button id="qris-close-btn" class="cta-btn py-3 px-8 text-lg rounded-xl">Tutup</button>
+            </div>
         </div>
     </div>
     
-    <!-- JS for Interactive Elements -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const centralPanel = document.getElementById('central-panel');
-            const aiAssistantPanel = document.getElementById('ai-assistant-panel');
-            const aiToggleBtn = document.getElementById('ai-toggle-btn');
-            const aiCloseBtn = document.getElementById('ai-close-btn');
-            const aiQueryInput = document.getElementById('ai-query-input');
-            const sendAiQueryBtn = document.getElementById('send-ai-query-btn');
-            const aiChatHistory = document.getElementById('ai-chat-history');
-            const carouselContainer = document.getElementById('carousel-container');
-            const carouselPrev = document.getElementById('carousel-prev');
-            const carouselNext = document.getElementById('carousel-next');
-
-            // ----------------------- 3️⃣ Interactive Animation / Active UI -----------------------
-            // Panel float & shift with cursor
-            document.body.addEventListener('mousemove', (e) => {
-                // Gunakan throttle untuk performa yang lebih baik
-                if (e.target.closest('#ai-assistant-panel')) return; // Jangan mengintervensi panel AI
-
-                const { clientX, clientY } = e;
-                const x = (clientX / window.innerWidth - 0.5) * 50;
-                const y = (clientY / window.innerHeight - 0.5) * 50;
-                
-                centralPanel.style.transform = `perspective(1000px) rotateX(${-y/20}deg) rotateY(${x/20}deg)`;
-            });
-
-            // Reset transform on mouse leave
-            document.body.addEventListener('mouseleave', () => {
-                centralPanel.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg)`;
-            });
-
-            // Scroll Fade-in Animation
-            const observer = new IntersectionObserver(entries => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('is-visible');
-                        observer.unobserve(entry.target); // Hentikan mengamati setelah terlihat
-                    }
-                });
-            }, { threshold: 0.2 });
-
-            document.querySelectorAll('.scroll-fade').forEach(el => observer.observe(el));
-            
-            // AI Assistant Toggle
-            if (aiToggleBtn) {
-                aiToggleBtn.addEventListener('click', () => {
-                    aiAssistantPanel.classList.toggle('active');
-                });
-            }
-            if (aiCloseBtn) {
-                aiCloseBtn.addEventListener('click', () => {
-                    aiAssistantPanel.classList.remove('active');
-                });
-            }
-
-            // AI Chat Functionality (Simulasi untuk demonstrasi)
-            sendAiQueryBtn.addEventListener('click', async () => {
-                const userQuery = aiQueryInput.value.trim();
-                if (userQuery === '') return;
-
-                // Tambahkan pesan pengguna ke riwayat obrolan
-                const userMessageDiv = document.createElement('div');
-                userMessageDiv.className = 'ai-message flex justify-end space-x-2';
-                userMessageDiv.innerHTML = `
-                    <div class="glass-panel-secondary p-3 rounded-lg bg-blue-900/50 text-slate-100">
-                        <p>${userQuery}</p>
-                    </div>
-                    <i class="fas fa-user-astronaut text-sky-400 mt-1"></i>
-                `;
-                aiChatHistory.appendChild(userMessageDiv);
-
-                // Buat pesan loading
-                const loadingMessageDiv = document.createElement('div');
-                loadingMessageDiv.className = 'ai-message flex items-start space-x-2';
-                loadingMessageDiv.innerHTML = `
-                    <i class="fas fa-robot text-violet-400 mt-1"></i>
-                    <div class="glass-panel-secondary p-3 rounded-lg text-slate-200">
-                        <div class="flex items-center space-x-2">
-                            <div class="loading-spinner w-4 h-4 border-2 border-slate-500 border-t-sky-400 rounded-full animate-spin"></div>
-                            <p>Memproses...</p>
-                        </div>
-                    </div>
-                `;
-                aiChatHistory.appendChild(loadingMessageDiv);
-                aiChatHistory.scrollTop = aiChatHistory.scrollHeight;
-                aiQueryInput.value = ''; // Kosongkan input
-
-                // Simulasi respons AI dengan penundaan
+            // Function to add the 'pressed' class for a short time on click
+            const addPressedEffect = (element) => {
+                element.classList.add('pressed');
                 setTimeout(() => {
-                    loadingMessageDiv.remove();
-                    const aiResponse = "Permintaan Anda telah diproses. Semua sistem beroperasi dalam parameter nominal. Analisis lebih lanjut memerlukan otentikasi level Gamma.";
-                    const aiResponseDiv = document.createElement('div');
-                    aiResponseDiv.className = 'ai-message flex items-start space-x-2';
-                    aiResponseDiv.innerHTML = `
-                        <i class="fas fa-robot text-violet-400 mt-1"></i>
-                        <div class="glass-panel-secondary p-3 rounded-lg text-slate-200">
-                            <p>${aiResponse}</p>
-                        </div>
-                    `;
-                    aiChatHistory.appendChild(aiResponseDiv);
-                    aiChatHistory.scrollTop = aiChatHistory.scrollHeight;
-                }, 2000);
-            });
-            
-            // Carousel Logic
-            let currentSlide = 0;
-            const totalSlides = carouselContainer.children.length;
-
-            const updateCarousel = () => {
-                const slideWidth = carouselContainer.children[0].clientWidth;
-                carouselContainer.style.transform = `translateX(-${currentSlide * slideWidth}px)`;
+                    element.classList.remove('pressed');
+                }, 100);
             };
 
-            carouselPrev.addEventListener('click', () => {
-                currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
-                updateCarousel();
+            const paymentMethodsContainer = document.getElementById('payment-methods');
+            const payNowBtn = document.getElementById('pay-now-btn');
+            const qrisModalOverlay = document.getElementById('qris-modal-overlay');
+            const qrisCloseBtn = document.getElementById('qris-close-btn');
+            const transactionHistoryList = document.getElementById('transaction-history');
+            const noTransactionsMessage = document.getElementById('no-transactions');
+
+            let selectedMethod = null;
+
+            // Handle payment method selection
+            paymentMethodsContainer.addEventListener('click', (e) => {
+                const button = e.target.closest('.method-btn');
+                if (!button) return;
+
+                addPressedEffect(button);
+
+                // Remove active class from all buttons
+                document.querySelectorAll('.method-btn').forEach(btn => btn.classList.remove('active'));
+
+                // Add active class to the clicked button
+                button.classList.add('active');
+                selectedMethod = button.dataset.method;
             });
 
-            carouselNext.addEventListener('click', () => {
-                currentSlide = (currentSlide + 1) % totalSlides;
-                updateCarousel();
+            // Handle "Bayar Sekarang" button click
+            payNowBtn.addEventListener('click', () => {
+                addPressedEffect(payNowBtn);
+                const nominalInput = document.getElementById('nominal');
+                const nominal = nominalInput.value;
+
+                if (!selectedMethod) {
+                    alert('Mohon pilih metode pembayaran terlebih dahulu.');
+                    return;
+                }
+
+                if (!nominal || nominal <= 0) {
+                    alert('Mohon masukkan nominal pembayaran yang valid.');
+                    return;
+                }
+                
+                // Show QRIS modal if QRIS is selected
+                if (selectedMethod === 'qris') {
+                    qrisModalOverlay.classList.add('active');
+                } else {
+                    // Placeholder for other payment methods
+                    alert(`Pembayaran sebesar IDR ${nominal} dengan ${selectedMethod.toUpperCase()} berhasil!`);
+                    
+                    // Add new transaction to history
+                    const newTransaction = document.createElement('li');
+                    newTransaction.className = 'flex justify-between items-center bg-slate-800/50 p-4 rounded-lg';
+                    newTransaction.innerHTML = `
+                        <div>
+                            <p class="font-semibold text-sm md:text-base">Pembayaran ${selectedMethod.toUpperCase()} - Rp${nominal}</p>
+                            <span class="text-xs text-slate-400">${new Date().toLocaleString()}</span>
+                        </div>
+                        <i class="fas fa-check-circle text-green-400 text-lg"></i>
+                    `;
+                    
+                    transactionHistoryList.prepend(newTransaction);
+                    
+                    // Clear input and selection
+                    nominalInput.value = '';
+                    document.querySelectorAll('.method-btn').forEach(btn => btn.classList.remove('active'));
+                    selectedMethod = null;
+                    
+                    // Hide "no transactions" message if it was visible
+                    noTransactionsMessage.classList.add('hidden');
+                }
             });
 
-            window.addEventListener('resize', updateCarousel);
-            updateCarousel(); // Initial call
+            // Close QRIS modal
+            qrisCloseBtn.addEventListener('click', () => {
+                addPressedEffect(qrisCloseBtn);
+                qrisModalOverlay.classList.remove('active');
+            });
+            
+            // Close QRIS modal by clicking outside
+            qrisModalOverlay.addEventListener('click', (e) => {
+                if (e.target === qrisModalOverlay) {
+                    qrisModalOverlay.classList.remove('active');
+                }
+            });
+
+            // Initial check for transaction history
+            if (transactionHistoryList.children.length === 0) {
+                noTransactionsMessage.classList.remove('hidden');
+            } else {
+                 noTransactionsMessage.classList.add('hidden');
+            }
         });
     </script>
 </body>
