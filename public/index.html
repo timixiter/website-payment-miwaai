@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MiwasoPay</title>
+    <title>GalacticPay - Re-Imagined</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Font Awesome for Icons -->
@@ -233,7 +233,7 @@
         <main class="w-full max-w-3xl glassmorphism rounded-3xl overflow-hidden p-8 md:p-12 shadow-2xl">
             <!-- Header/Hero Section -->
             <header class="text-center mb-10">
-                <h1 class="text-4xl md:text-5xl font-bold tracking-wider text-neon-red mb-2">MIWASOPAY</h1>
+                <h1 class="text-4xl md:text-5xl font-bold tracking-wider text-neon-red mb-2">GALACTICPAY</h1>
                 <p id="typing-text" class="text-lg md:text-xl font-light h-6"></p>
             </header>
 
@@ -242,17 +242,17 @@
                 <h2 class="font-orbitron text-2xl font-bold text-center mb-8">Pilih Metode Pembayaran</h2>
                 <div id="payment-methods" class="grid grid-cols-2 md:grid-cols-4 gap-6">
                     <!-- Dana -->
-                    <div class="interactive-card glassmorphism rounded-xl p-6 flex flex-col items-center justify-center cursor-pointer" data-method="dana" data-number="𝘊𝘖𝘔𝘐𝘕𝘎𝘚𝘖𝘖𝘕">
+                    <div class="interactive-card glassmorphism rounded-xl p-6 flex flex-col items-center justify-center cursor-pointer" data-method="dana" data-number="0812-3456-7890">
                         <i class="fas fa-wallet payment-symbol"></i>
                         <span class="text-sm md:text-base font-semibold">Dana</span>
                     </div>
                     <!-- Gopay -->
-                    <div class="interactive-card glassmorphism rounded-xl p-6 flex flex-col items-center justify-center cursor-pointer" data-method="gopay" data-number="𝘊𝘖𝘔𝘐𝘕𝘎𝘚𝘖𝘖𝘕">
+                    <div class="interactive-card glassmorphism rounded-xl p-6 flex flex-col items-center justify-center cursor-pointer" data-method="gopay" data-number="0857-1234-5678">
                         <i class="fas fa-money-bill-wave payment-symbol"></i>
                         <span class="text-sm md:text-base font-semibold">Gopay</span>
                     </div>
                     <!-- OVO -->
-                    <div class="interactive-card glassmorphism rounded-xl p-6 flex flex-col items-center justify-center cursor-pointer" data-method="ovo" data-number="𝘊𝘖𝘔𝘐𝘕𝘎𝘚𝘖𝘖𝘕">
+                    <div class="interactive-card glassmorphism rounded-xl p-6 flex flex-col items-center justify-center cursor-pointer" data-method="ovo" data-number="0878-9012-3456">
                         <i class="fas fa-credit-card payment-symbol"></i>
                         <span class="text-sm md:text-base font-semibold">OVO</span>
                     </div>
@@ -270,7 +270,7 @@
                 <div id="ai-chat-container" class="glassmorphism p-6 rounded-xl space-y-4">
                     <div id="ai-response-container" class="space-y-4">
                         <div class="ai-response-message">
-                            <p>Halo! Saya Asisten AI MiwasoPay. Ada yang bisa saya bantu?</p>
+                            <p>Halo! Saya Asisten AI GalacticPay. Ada yang bisa saya bantu?</p>
                         </div>
                     </div>
                 </div>
@@ -474,7 +474,7 @@
                 const payload = { contents: chatHistory };
                 // API key akan diisi secara otomatis oleh lingkungan Canvas
                 const apiKey = ""
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
 
                 let retries = 0;
                 const maxRetries = 5;
