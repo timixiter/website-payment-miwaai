@@ -266,7 +266,22 @@
             
             <!-- AI Assistant Section -->
             <section>
-                <h2 class="font-orbitron text-2xl font-bold text-center mb-8">Asisten AI</h2>
+                <h2 class="font-orbitron text-2xl font-bold text-center mb-4">Asisten AI</h2>
+
+                <!-- Model Selection and API Key Input -->
+                <div class="mb-4 space-y-2">
+                    <div class="flex items-center space-x-2">
+                        <label for="ai-model-select" class="text-sm font-semibold">Pilih Model AI:</label>
+                        <select id="ai-model-select" class="flex-grow rounded-full px-4 py-2 bg-gray-800 text-white border border-gray-700 focus:border-neon-red focus:outline-none">
+                            <option value="gemini">Gemini</option>
+                            <option value="anthropic">Anthropic</option>
+                        </select>
+                    </div>
+                    <div id="anthropic-api-key-container" class="hidden">
+                        <input type="password" id="anthropic-api-key" placeholder="Masukkan Kunci API Anthropic" class="w-full rounded-full px-4 py-2 bg-gray-800 text-white border border-gray-700 focus:border-neon-red focus:outline-none">
+                    </div>
+                </div>
+
                 <div id="ai-chat-container" class="glassmorphism p-6 rounded-xl space-y-4">
                     <div id="ai-response-container" class="space-y-4">
                         <div class="ai-response-message">
@@ -325,7 +340,22 @@
             const sendIcon = document.getElementById('send-icon');
             const qrisImageUrl = "https://files.catbox.moe/x5ixxt.jpeg";
 
+            const aiModelSelect = document.getElementById('ai-model-select');
+            const anthropicApiKeyContainer = document.getElementById('anthropic-api-key-container');
+            const anthropicApiKeyInput = document.getElementById('anthropic-api-key');
+
             let isMuted = false;
+            let currentAiModel = 'gemini';
+
+            // --- UI Interaction for AI Model Selection ---
+            aiModelSelect.addEventListener('change', (e) => {
+                currentAiModel = e.target.value;
+                if (currentAiModel === 'anthropic') {
+                    anthropicApiKeyContainer.classList.remove('hidden');
+                } else {
+                    anthropicApiKeyContainer.classList.add('hidden');
+                }
+            });
 
             // --- Background Audio and Mute Toggle ---
             document.body.addEventListener('click', () => {
@@ -462,19 +492,18 @@
             });
 
             // --- Fungsionalitas Asisten AI ---
+
             /**
              * Fungsi untuk mengirim permintaan ke API Gemini (AI)
              * @param {string} prompt - Pertanyaan yang diajukan pengguna
              * @returns {Promise<string>} - Mengembalikan respons teks dari AI
              */
-            async function getAiResponse(prompt) {
-                // Riwayat obrolan disiapkan
+            async function getGeminiResponse(prompt) {
                 let chatHistory = [];
                 chatHistory.push({ role: "user", parts: [{ text: prompt }] });
                 const payload = { contents: chatHistory };
-                // API key akan diisi secara otomatis oleh lingkungan Canvas
-                const apiKey = "";
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+                const apiKey = ""; // Canvas environment provides this automatically
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
 
                 let retries = 0;
                 const maxRetries = 5;
@@ -488,11 +517,10 @@
                             body: JSON.stringify(payload)
                         });
 
-                        // Cek apakah respons tidak berhasil (mis. status 4xx atau 5xx)
                         if (!response.ok) {
                             const errorData = await response.json();
                             const errorMessage = errorData.error?.message || `API error with status: ${response.status}`;
-                            console.error('Error fetching AI response:', errorMessage);
+                            console.error('Error fetching Gemini AI response:', errorMessage);
                             return `Maaf, terjadi kesalahan saat menghubungi server AI: ${errorMessage}`;
                         }
                         
@@ -513,14 +541,82 @@
                             return 'Maaf, saya tidak dapat memproses permintaan Anda saat ini. Silakan coba lagi.';
                         }
                     } catch (error) {
-                        console.error('Error fetching AI response:', error);
+                        console.error('Error fetching Gemini AI response:', error);
                         return `Maaf, terjadi kesalahan: ${error.message}. Pastikan koneksi internet Anda stabil.`;
                     }
                 }
                 return 'Maaf, saya tidak dapat terhubung dengan server AI setelah beberapa kali mencoba. Silakan coba lagi nanti.';
             }
 
-            // Fungsi untuk menangani input dari pengguna dan memanggil API
+            /**
+             * Fungsi untuk mengirim permintaan ke API Anthropic (Claude)
+             * @param {string} prompt - Pertanyaan yang diajukan pengguna
+             * @param {string} apiKey - Kunci API Anthropic
+             * @returns {Promise<string>} - Mengembalikan respons teks dari AI
+             */
+            async function getAnthropicResponse(prompt, apiKey) {
+                if (!apiKey) {
+                    return "Untuk menggunakan Anthropic, Anda harus memasukkan Kunci API terlebih dahulu.";
+                }
+
+                const apiUrl = 'https://api.aimlapi.com/v1/messages';
+                const payload = {
+                    model: 'claude-3-7-sonnet-20250219',
+                    max_tokens: 2048,
+                    system: 'You are an AI assistant who knows everything.',
+                    messages: [
+                        {
+                            role: 'user',
+                            content: prompt
+                        }
+                    ],
+                };
+
+                let retries = 0;
+                const maxRetries = 5;
+                const baseDelay = 1000;
+
+                while (retries < maxRetries) {
+                    try {
+                        const response = await fetch(apiUrl, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${apiKey}`
+                            },
+                            body: JSON.stringify(payload)
+                        });
+
+                        if (!response.ok) {
+                            const errorData = await response.json();
+                            const errorMessage = errorData.error?.message || `API error with status: ${response.status}`;
+                            console.error('Error fetching Anthropic AI response:', errorMessage);
+                            return `Maaf, terjadi kesalahan saat menghubungi server Anthropic: ${errorMessage}`;
+                        }
+                        
+                        if (response.status === 429) {
+                            retries++;
+                            const delay = baseDelay * Math.pow(2, retries);
+                            await new Promise(resolve => setTimeout(resolve, delay));
+                            continue;
+                        }
+
+                        const result = await response.json();
+                        if (result.content && result.content.length > 0) {
+                            return result.content[0].text;
+                        } else {
+                            console.error('Error: Unexpected Anthropic API response structure', result);
+                            return 'Maaf, saya tidak dapat memproses permintaan Anda saat ini. Silakan coba lagi.';
+                        }
+                    } catch (error) {
+                        console.error('Error fetching Anthropic AI response:', error);
+                        return `Maaf, terjadi kesalahan: ${error.message}. Pastikan koneksi internet Anda stabil.`;
+                    }
+                }
+                return 'Maaf, saya tidak dapat terhubung dengan server Anthropic setelah beberapa kali mencoba. Silakan coba lagi nanti.';
+            }
+
+            // Fungsi utama untuk menangani input dari pengguna dan memanggil API yang sesuai
             async function handleAiQuery() {
                 const query = aiQueryInput.value.trim();
                 if (!query) return;
@@ -531,12 +627,18 @@
                 userMessageDiv.innerHTML = `<p>${query}</p>`;
                 aiResponseContainer.appendChild(userMessageDiv);
 
-                // Tampilkan loading spinner dan sembunyikan ikon kirim
+                // Tampilkan loading spinner
                 sendIcon.classList.add('hidden');
                 aiLoadingSpinner.classList.remove('hidden');
                 aiQueryInput.disabled = true;
 
-                const responseText = await getAiResponse(query);
+                let responseText = '';
+                if (currentAiModel === 'anthropic') {
+                    const anthropicApiKey = anthropicApiKeyInput.value.trim();
+                    responseText = await getAnthropicResponse(query, anthropicApiKey);
+                } else {
+                    responseText = await getGeminiResponse(query);
+                }
 
                 // Tambahkan respons AI ke chat container
                 const aiMessageDiv = document.createElement('div');
@@ -547,7 +649,7 @@
                 // Gulir ke bagian bawah obrolan
                 aiResponseContainer.scrollTop = aiResponseContainer.scrollHeight;
 
-                // Sembunyikan loading spinner dan tampilkan ikon kirim
+                // Sembunyikan loading spinner
                 sendIcon.classList.remove('hidden');
                 aiLoadingSpinner.classList.add('hidden');
                 aiQueryInput.disabled = false;
