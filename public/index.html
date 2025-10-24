@@ -1,378 +1,884 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>S.D.U.O.P. ABSOLUT BRUTAL - Hacked by MIWATEAM</title>
-    <meta name='description' content='BRUTAL HACKED OVERLOAD: Hacked by miwasogg.t.me - MIWATEAM'/>
-    <meta name='keywords' content='MIWATEAM, 諦めずに頑張ろう！, HACKED BY miwasogg.t.m'/>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Load Tone.js for maximum audio brutality -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.min.js"></script>
-    <style>
-        /* Custom Fonts and Base Styling */
-        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Orbitron:wght@400;700&family=Inter:wght@400;700&display=swap');
-        
-        :root {
-            --glitch-speed: 0.05s;
-        }
-
-        body {
-            font-family: 'Orbitron', monospace;
-            background: #000;
-            color: #ff0000; /* Dominant Red for maximum danger */
-            /* Disable selection/right-click visibility */
-            -webkit-touch-callout: none;
-            -webkit-user-select: none;
-            -khtml-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            /* GLOBAL SCREEN GLITCH EFFECT - FASTER AND MORE VIOLENT */
-            animation: screen-glitch var(--glitch-speed) infinite alternate;
-            filter: contrast(150%) brightness(120%); /* BRUTAL contrast */
-        }
-
-        @keyframes screen-glitch {
-            0% { transform: translate(1px, -1px); filter: hue-rotate(0deg); }
-            15% { transform: translate(-2px, 2px); filter: hue-rotate(5deg); }
-            30% { transform: translate(3px, 0px); filter: hue-rotate(0deg); }
-            45% { transform: translate(0px, 4px); filter: hue-rotate(-5deg); }
-            60% { transform: translate(-3px, -3px); filter: hue-rotate(0deg); }
-            75% { transform: translate(4px, 1px); filter: hue-rotate(5deg); }
-            90% { transform: translate(-1px, 0px); }
-            100% { transform: translate(0px, -4px); filter: hue-rotate(0deg); }
-        }
-        
-        /* CRT/VHS OVERLAY - The BRUTAL Layer */
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 100; /* Highest Z-index for max brutality */
-            pointer-events: none;
-            background: 
-                linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
-                linear-gradient(90deg, transparent 50%, rgba(255, 0, 0, 0.1) 50%),
-                linear-gradient(0deg, transparent 50%, rgba(0, 255, 0, 0.1) 50%),
-                linear-gradient(0deg, transparent 50%, rgba(0, 0, 255, 0.1) 50%);
-            background-size: 100% 4px, 3px 100%, 2px 100%, 4px 100%;
-            opacity: 0.5;
-            animation: static-noise 0.1s steps(2) infinite;
-        }
-
-        @keyframes static-noise {
-            0% { background-position: 0 0, 0 0, 0 0, 0 0; }
-            100% { background-position: 0 4px, 0 2px, 0 1px, 0 3px; }
-        }
-
-        /* Matrix Canvas Layer */
-        #matrix {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 5;
-            pointer-events: none;
-            filter: blur(0.5px); /* Less blur for more clarity in chaos */
-        }
-
-        /* Content Layer */
-        #container {
-            position: relative;
-            z-index: 20;
-            text-align: center;
-            padding: 1rem;
-            max-width: 95%;
-            /* Add some movement to the content block itself */
-            animation: content-drift 0.5s infinite alternate;
-        }
-        @keyframes content-drift {
-            0% { margin-top: 0; }
-            100% { margin-top: -5px; }
-        }
-
-        /* Rainbow/Glitch Text Effect - Maximum Speed & Intensity */
-        .rainbow-text {
-            text-shadow: 0 0 20px rgba(255, 0, 0, 1), 0 0 10px rgba(255, 255, 0, 1);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            background-image: linear-gradient(90deg, #FF0000, #FFFF00, #00FFFF, #FF0000); 
-            background-size: 300% 100%;
-            /* ULTRA FAST ANIMATION */
-            animation: text-flow 0.5s linear infinite, text-shadow-pulse 0.1s infinite alternate;
-        }
-
-        @keyframes text-flow {
-            0% { background-position: 0% 50%; }
-            100% { background-position: 300% 50%; }
-        }
-
-        @keyframes text-shadow-pulse {
-            0% { text-shadow: 0 0 30px #F00, 0 0 5px #FFF; }
-            100% { text-shadow: 0 0 15px #0FF, 0 0 10px #FF0; }
-        }
-
-        /* Logo/Image Styling - HYPER GLITCH */
-        #logo-container {
-            margin: 2rem 0;
-        }
-        #logo {
-            width: 280px; /* Slightly larger */
-            height: 280px;
-            object-fit: cover;
-            border: 8px solid #FF0; /* Thicker border */
-            border-radius: 50%;
-            animation: border-glitch 0.1s steps(1) infinite; /* Extremely fast glitch */
-            box-shadow: 0 0 30px #F00, 0 0 60px #FF0;
-        }
-
-        @keyframes border-glitch {
-            0%, 100% { border-color: #F00; box-shadow: 0 0 30px #F00; transform: scale(1); }
-            20% { border-color: #FF0; box-shadow: 0 0 35px #FF0; transform: scale(1.03); }
-            40% { border-color: #FFF; box-shadow: 0 0 40px #FFF; transform: scale(1); }
-            60% { border-color: #0FF; box-shadow: 0 0 35px #0FF; transform: scale(1.03); }
-            80% { border-color: #F00; box-shadow: 0 0 30px #F00; transform: scale(1); }
-        }
-        
-        /* Glitch and Vignette Overlay */
-        #glitch-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 50;
-            pointer-events: none;
-            mix-blend-mode: color-dodge;
-            opacity: 0.7; /* Higher opacity */
-        }
-
-        /* Custom Modal for Anti-Copy Messages - More aggressive */
-        #message-modal {
-            background: linear-gradient(135deg, rgba(255, 0, 0, 0.98), rgba(255, 255, 0, 0.98)); /* Gradien Merah-Kuning */
-            border: 5px solid #000;
-            box-shadow: 0 0 40px 10px #FF0, inset 0 0 10px #000;
-            color: #000;
-            z-index: 150; /* Above the CRT layer */
-            font-family: 'Cinzel', serif;
-        }
-        #message-modal p {
-            font-weight: bold;
-            text-shadow: 1px 1px #FFF;
-        }
-        #message-modal button {
-            background: #000;
-            color: #FFF;
-            border: 2px solid #FF0;
-        }
-        #message-modal button:hover {
-            background: #FF0;
-            color: #000;
-        }
-        
-    </style>
+  <meta charset="UTF-8">
+  <title>Web2APK Builder Premium | YatzzHost</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Konversi website ke APK dengan mudah dan gratis"> 
+  <meta name="google-site-verification" content="mpZXVrORh_EsUHsFjdu0GumjK0Utz1y-Q5KM7buBxAY" />
+  <meta name="keywords" content="website, toapp, konvert, web2app, konvertWebToapk, konverting, konvert, free">
+  <meta name="author" content="Reseller Gaming">
+  <meta property="og:title" content="Web2App Builder Premium">
+  <meta property="og:description" content="Konversi link website ke APK dengan fitur premium">
+  <meta property="og:image" content="https://example.com/preview.png">
+  <meta property="og:url" content="www.web2app.zone.id">
+  <meta property="og:type" content="website">
+  <meta name="robots" content="index, follow">
+  <link rel="shortcut icon" href="https://files.catbox.moe/dcujb8.jpg" type="image/x-icon">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #4361ee;
+      --primary-dark: #3a56d4;
+      --primary-light: #e0e7ff;
+      --danger: #ef4444;
+      --dark: #1e293b;
+      --darker: #0f172a;
+      --light: #f8fafc;
+      --gray: #64748b;
+      --gray-light: #e2e8f0;
+      --success: #22c55e;
+      --accent: #8b5cf6;
+      --accent-gradient: linear-gradient(135deg, #4361ee, #8b5cf6);
+      --glow: 0 0 15px rgba(67, 97, 238, 0.5);
+    }
+    
+    * { 
+      box-sizing: border-box; 
+      margin: 0; 
+      padding: 0; 
+    }
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, var(--darker), #1e293b);
+      color: var(--light);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 2rem 1rem;
+      position: relative;
+      overflow-x: hidden;
+    }
+    
+    /* Background animation */
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        radial-gradient(circle at 10% 20%, rgba(67, 97, 238, 0.1) 0%, transparent 20%),
+        radial-gradient(circle at 90% 70%, rgba(139, 92, 246, 0.1) 0%, transparent 20%),
+        radial-gradient(circle at 50% 30%, rgba(34, 197, 94, 0.05) 0%, transparent 20%);
+      z-index: -1;
+    }
+    
+    /* Animated floating elements */
+    .floating-element {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(67, 97, 238, 0.1);
+      animation: float 15s infinite ease-in-out;
+      z-index: -1;
+    }
+    
+    .floating-element:nth-child(1) {
+      width: 100px;
+      height: 100px;
+      top: 10%;
+      left: 5%;
+      animation-delay: 0s;
+    }
+    
+    .floating-element:nth-child(2) {
+      width: 150px;
+      height: 150px;
+      top: 70%;
+      left: 80%;
+      animation-delay: -5s;
+    }
+    
+    .floating-element:nth-child(3) {
+      width: 80px;
+      height: 80px;
+      top: 20%;
+      left: 85%;
+      animation-delay: -10s;
+    }
+    
+    .floating-element:nth-child(4) {
+      width: 120px;
+      height: 120px;
+      top: 75%;
+      left: 10%;
+      animation-delay: -7s;
+    }
+    
+    @keyframes float {
+      0%, 100% {
+        transform: translateY(0) rotate(0deg);
+      }
+      33% {
+        transform: translateY(-20px) rotate(10deg);
+      }
+      66% {
+        transform: translateY(20px) rotate(-10deg);
+      }
+    }
+    
+    .card {
+      width: 100%;
+      max-width: 480px;
+      background: rgba(30, 41, 59, 0.8);
+      backdrop-filter: blur(10px);
+      border-radius: 1.5rem;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3), 0 0 30px rgba(67, 97, 238, 0.2);
+      padding: 2.5rem;
+      opacity: 0;
+      transform: translateY(30px) scale(0.95);
+      animation: cardEntrance 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+      transform: rotate(45deg);
+      animation: shine 6s infinite;
+      pointer-events: none;
+    }
+    
+    @keyframes cardEntrance {
+      to { 
+        opacity: 1; 
+        transform: translateY(0) scale(1); 
+      }
+    }
+    
+    @keyframes shine {
+      0% {
+        transform: rotate(45deg) translateX(-100%);
+      }
+      20% {
+        transform: rotate(45deg) translateX(200%);
+      }
+      100% {
+        transform: rotate(45deg) translateX(200%);
+      }
+    }
+    
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      justify-content: center;
+      margin-bottom: 2rem;
+      position: relative;
+    }
+    
+    .logo-icon { 
+      font-size: 2rem; 
+      color: var(--primary);
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 0 10px rgba(67, 97, 238, 0.5));
+      animation: pulse 2s infinite ease-in-out;
+    }
+    
+    @keyframes pulse {
+      0%, 100% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.1);
+      }
+    }
+    
+    .logo-text { 
+      font-size: 1.75rem; 
+      font-weight: 700; 
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      position: relative;
+    }
+    
+    .logo-text::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: var(--accent-gradient);
+      transform: scaleX(0);
+      transform-origin: right;
+      transition: transform 0.5s ease;
+    }
+    
+    .logo:hover .logo-text::after {
+      transform: scaleX(1);
+      transform-origin: left;
+    }
+    
+    .form-group { 
+      margin-bottom: 1.5rem; 
+      position: relative;
+      opacity: 0;
+      transform: translateX(-20px);
+      animation: fadeInRight 0.6s forwards;
+    }
+    
+    .form-group:nth-child(1) { animation-delay: 0.2s; }
+    .form-group:nth-child(2) { animation-delay: 0.3s; }
+    .form-group:nth-child(3) { animation-delay: 0.4s; }
+    .form-group:nth-child(4) { animation-delay: 0.5s; }
+    
+    @keyframes fadeInRight {
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+    
+    .form-label {
+      display: block;
+      margin-bottom: .75rem;
+      font-size: .95rem;
+      font-weight: 500;
+      color: var(--light);
+      transition: all 0.3s ease;
+    }
+    
+    .form-control-container {
+      position: relative;
+    }
+    
+    .form-control {
+      width: 100%;
+      padding: 1rem 1rem 1rem 3rem;
+      background: rgba(15, 23, 42, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: .75rem;
+      font-size: 1rem;
+      color: var(--light);
+      transition: all 0.3s ease;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+    
+    .form-control::placeholder {
+      color: rgba(255, 255, 255, 0.4);
+    }
+    
+    .form-control:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.3), inset 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+    
+    .input-icon {
+      position: absolute;
+      top: 50%;
+      left: 1rem;
+      transform: translateY(-50%);
+      color: var(--gray);
+      font-size: 1.1rem;
+      transition: all 0.3s ease;
+      z-index: 2;
+    }
+    
+    .form-control:focus + .input-icon {
+      color: var(--primary);
+    }
+    
+    .btn {
+      width: 100%;
+      padding: 1.1rem;
+      border-radius: .75rem;
+      font-size: 1.05rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .75rem;
+      transition: all 0.4s ease;
+      position: relative;
+      overflow: hidden;
+      background: var(--accent-gradient);
+      color: white;
+      box-shadow: 0 5px 15px rgba(67, 97, 238, 0.4);
+      opacity: 0;
+      animation: fadeInUp 0.6s 0.6s forwards;
+    }
+    
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: all 0.6s ease;
+    }
+    
+    .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(67, 97, 238, 0.6);
+    }
+    
+    .btn:hover::before {
+      left: 100%;
+    }
+    
+    .btn:active {
+      transform: translateY(0);
+      box-shadow: 0 3px 10px rgba(67, 97, 238, 0.4);
+    }
+    
+    .btn:disabled { 
+      background: var(--gray); 
+      color: var(--gray-light); 
+      cursor: not-allowed; 
+      transform: none;
+      box-shadow: none;
+    }
+    
+    .btn:disabled:hover::before {
+      display: none;
+    }
+    
+    .alert {
+      padding: 1.1rem;
+      border-left: 4px solid var(--danger);
+      background: rgba(239, 68, 68, 0.15);
+      color: var(--light);
+      border-radius: .75rem;
+      margin-bottom: 1.5rem;
+      font-size: .95rem;
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      backdrop-filter: blur(5px);
+      animation: shake 0.5s ease;
+    }
+    
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-5px); }
+      40%, 80% { transform: translateX(5px); }
+    }
+    
+    .hidden { 
+      display: none; 
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.3s ease;
+    }
+    
+    .progress-box {
+      text-align: center;
+      margin-top: 2rem;
+      font-size: 1rem;
+      color: var(--light);
+      opacity: 0;
+      transform: scale(0.9);
+      transition: all 0.5s ease;
+    }
+    
+    .progress-box.show {
+      opacity: 1;
+      transform: scale(1);
+    }
+    
+    .progress-bar {
+      height: 8px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-top: 1rem;
+      position: relative;
+    }
+    
+    .progress-bar div {
+      height: 100%;
+      background: var(--accent-gradient);
+      width: 0%;
+      transition: width 0.5s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .progress-bar div::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+      animation: progressShine 1.5s infinite;
+    }
+    
+    @keyframes progressShine {
+      0% {
+        transform: translateX(-100%);
+      }
+      100% {
+        transform: translateX(100%);
+      }
+    }
+    
+    .footer {
+      margin-top: 2.5rem;
+      text-align: center;
+      font-size: .9rem;
+      color: var(--gray);
+      opacity: 0;
+      animation: fadeIn 1s 1s forwards;
+    }
+    
+    .footer a { 
+      color: var(--primary-light); 
+      text-decoration: none;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+    
+    .footer a::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: var(--primary-light);
+      transition: width 0.3s ease;
+    }
+    
+    .footer a:hover::after {
+      width: 100%;
+    }
+    
+    .upload-status {
+      font-size: 0.9rem;
+      margin-top: 0.75rem;
+      padding: 0.5rem;
+      border-radius: 0.5rem;
+      transition: all 0.3s ease;
+    }
+    
+    .status-success {
+      background: rgba(34, 197, 94, 0.15);
+      color: var(--success);
+    }
+    
+    .status-error {
+      background: rgba(239, 68, 68, 0.15);
+      color: var(--danger);
+    }
+    
+    .result-box {
+      background: rgba(15, 23, 42, 0.5);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      margin-top: 1.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.5s ease;
+    }
+    
+    .result-box.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    .result-success {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+      font-size: 1.1rem;
+      color: var(--success);
+    }
+    
+    .result-success i {
+      animation: scaleIn 0.5s ease;
+    }
+    
+    @keyframes scaleIn {
+      0% {
+        transform: scale(0);
+      }
+      70% {
+        transform: scale(1.2);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+    
+    .info-box {
+      background: rgba(15, 23, 42, 0.7);
+      border-radius: 0.75rem;
+      padding: 1rem;
+      margin-top: 1rem;
+      font-family: monospace;
+      font-size: 0.85rem;
+      line-height: 1.6;
+      overflow: auto;
+      max-height: 200px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    details {
+      margin-top: 1rem;
+      transition: all 0.3s ease;
+    }
+    
+    summary {
+      cursor: pointer;
+      padding: 0.5rem;
+      border-radius: 0.5rem;
+      background: rgba(15, 23, 42, 0.5);
+      transition: all 0.3s ease;
+    }
+    
+    summary:hover {
+      background: rgba(15, 23, 42, 0.7);
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 576px) {
+      .card {
+        padding: 1.75rem;
+      }
+      
+      .logo-text {
+        font-size: 1.5rem;
+      }
+      
+      .form-control {
+        padding: 0.875rem 0.875rem 0.875rem 2.75rem;
+      }
+    }
+  </style>
 </head>
-<body ondragstart="return false" oncontextmenu="return false" onselectstart="return false">
-
-<!-- Main Glitch/Vignette Overlay (Layer 1) -->
-<div id="glitch-overlay"></div>
-
-<!-- Matrix Rain Canvas (Layer 2) -->
-<canvas id="matrix"></canvas>
-
-<!-- Content Container (Layer 3) -->
-<div id="container" class="flex flex-col justify-center items-center">
-    
-    <button id="audio-starter" class="p-5 bg-red-700 text-yellow-400 font-extrabold text-2xl border-4 border-double border-yellow-400 rounded-none mb-8 shadow-2xl shadow-red-900 animate-pulse transition duration-50 transform hover:scale-110">
-        NON ACTIVE HACKED BY miwasogg (NOT CLICK!) 
-    </button>
-
-    <h1 class="text-4xl sm:text-6xl lg:text-8xl font-bold mb-4 uppercase rainbow-text" style="font-family: 'Cinzel', serif;">
-        MIWATEAM X DOOMSDAYOU
-    </h1>
-    <h2 class="text-2xl sm:text-4xl lg:text-6xl font-light mb-8 uppercase rainbow-text" style="font-family: 'Cinzel', serif;">
-        - HACKED BY MIWATEAM -
-    </h2> 
-
-    <div id="logo-container">
-        <!-- Image URL and Fallback -->
-        <img src="https://img1.pixhost.to/images/8692/640371837_uploaded_image.jpg" 
-             onerror="this.onerror=null;this.src='https://placehold.co/280x280/000/F00?text=BRUTAL_ERROR';" 
-             id="logo" alt="MIWATEAM Logo">
+<body>
+  <!-- Floating background elements -->
+  <div class="floating-element"></div>
+  <div class="floating-element"></div>
+  <div class="floating-element"></div>
+  <div class="floating-element"></div>
+  
+  <div class="card">
+    <div class="logo">
+      <div class="logo-icon"><i class="fas fa-globe"></i></div>
+      <div class="logo-text">Create Apk Premium</div>
     </div>
 
-    <h3 class="text-xl sm:text-3xl lg:text-4xl font-light mt-8 italic max-w-lg mx-auto rainbow-text">
-        “HACKED WEBSITE BY MIWATEAM - miwasogg.t.me”
-    </h3>
-    
-    <!-- Footer/Greetz Marquee - Maximum speed -->
-    <div class="mt-12 w-full max-w-xl p-3 bg-red-900 bg-opacity-90 border-4 border-solid border-white rounded-none">
-        <p class="text-sm sm:text-base text-gray-100 font-mono">
-            <span class="rainbow-text font-bold text-lg">SYSTEM WARNING :</span>
-            <marquee scrolldelay="0" scrollamount="8" direction="left" behavior="scroll" width="70%" class="inline-block text-white font-extrabold">
-                - MIWATEAM - miwasogg.t.me - The System is Broken - Total Control Achieved - 
-            </marquee>
-        </p>
+    <form id="builderForm" autocomplete="off">
+      <div class="form-group">
+        <label class="form-label" for="url">URL Website</label>
+        <div class="form-control-container">
+          <i class="fas fa-link input-icon"></i>
+          <input type="url" id="url" class="form-control" placeholder="https://example.com" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="appName">Nama Aplikasi</label>
+        <div class="form-control-container">
+          <i class="fas fa-mobile-alt input-icon"></i>
+          <input type="text" id="appName" class="form-control" placeholder="MyApp" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="email">Email Kamu</label>
+        <div class="form-control-container">
+          <i class="fas fa-envelope input-icon"></i>
+          <input type="email" id="email" class="form-control" placeholder="you@mail.com" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="iconFile">Ikon Aplikasi</label>
+        <div class="form-control-container">
+          <i class="fas fa-image input-icon"></i>
+          <input type="file" id="iconFile" class="form-control" accept="image/*" required style="padding-left: 3rem;">
+        </div>
+        <div id="uploadStatus" class="upload-status hidden"></div>
+      </div>
+
+      <button type="submit" class="btn btn-primary" id="submitBtn">
+        <i class="fas fa-hammer"></i> Build APK Premium
+      </button>
+    </form>
+
+    <div id="progress" class="progress-box hidden">
+      <p><i class="fas fa-spinner fa-spin"></i> <span id="progText">Mengunggah ikon…</span></p>
+      <div class="progress-bar"><div id="progBar"></div></div>
     </div>
-</div>
 
-<!-- Custom Message Modal (for anti-copy) -->
-<div id="message-modal">
-    <p class="text-xl">SYSTEM ERROR: 403 HACKED BY MIWATEAM</p>
-    <p class="mt-2 text-lg font-light">Maaf! Akses Anda telah Ditolak Penuh Secara Mutlak.</p>
-    <button onclick="document.getElementById('message-modal').style.display = 'none';">Acknowledge Failure</button>
-</div>
+    <div id="result" class="result-box hidden">
+      <p class="result-success">
+        <i class="fas fa-check-circle"></i> APK berhasil dibuat!
+      </p>
+      <a id="dlApk" class="btn btn-primary" href="#" download>
+        <i class="fas fa-download"></i> Download APK
+      </a>
+      <details style="margin-top:1rem;">
+        <summary>Info Lainnya</summary>
+        <pre id="keyInfo" class="info-box"></pre>
+      </details>
+    </div>
 
+    <div class="alert hidden" id="errorAlert">
+      <i class="fas fa-exclamation-circle"></i>
+      <span id="errorMsg"></span>
+    </div>
 
-<script type="module">
-// --- JavaScript Utama ---
+    <div class="footer">
+      Powered by <a href="https://api.fikmydomainsz.xyz" target="_blank">YatzzHost</a>
+    </div>
+  </div>
 
-// 1. Matrix Rain Effect (Maximum Chaos)
-const canvas = document.getElementById('matrix');
-const ctx = canvas.getContext('2d');
+  <script>
+    const $ = id => document.getElementById(id);
+    const form = $('builderForm');
+    const progr = $('progress');
+    const result = $('result');
+    const btn = $('submitBtn');
+    const progText = $('progText');
+    const progBar = $('progBar');
+    const errorAlert = $('errorAlert');
+    const errorMsg = $('errorMsg');
+    const uploadStatus = $('uploadStatus');
 
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-
-const chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()_+-=[]{};:'\",./<>?|\\アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン";
-const charArray = chars.split("");
-const fontSize = 16;
-const columns = Math.floor(canvas.width / fontSize);
-const drops = [];
-
-for (let i = 0; i < columns; i++) {
-    drops[i] = Math.floor(Math.random() * canvas.height / fontSize);
-}
-
-// Color scheme: Red, White, Yellow (High alert)
-const matrixColors = ["#FF0000", "#FF4400", "#FFFF00", "#FFFFFF", "#FF0000", "#FF8800"]; 
-
-function drawMatrix() {
-    // Fading effect - very low opacity for long, chaotic trails
-    ctx.fillStyle = "rgba(0, 0, 0, 0.05)"; 
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    
-    ctx.font = fontSize + "px monospace";
-    
-    for (let i = 0; i < drops.length; i++) {
-        const text = charArray[Math.floor(Math.random() * charArray.length)];
-        const y = drops[i] * fontSize;
-        
-        // Randomly assign a highly visible color
-        if (Math.random() < 0.15) {
-            ctx.fillStyle = matrixColors[3]; // White
-        } else if (Math.random() < 0.3) {
-            ctx.fillStyle = matrixColors[2]; // Yellow
-        } else {
-            ctx.fillStyle = matrixColors[0]; // Red
-        }
-
-        // The current character flashes bright white
-        if (Math.random() < 0.05) {
-             ctx.fillStyle = '#FFFFFF';
-        }
-        
-        ctx.fillText(text, i * fontSize, y);
-        
-        // Reset drop much faster and more randomly
-        if (y > canvas.height && Math.random() > 0.8) { 
-            drops[i] = 0;
-        }
-        
-        drops[i] += 2.5; // EXTREME drop speed
-    }
-}
-
-// 2. Audio Effect (Tone.js) - Loading external MP3 with Brutal Effects
-const externalAudioUrl = "https://files.catbox.moe/7lnu71.mp3";
-
-// Create effects chain: BitCrusher -> PingPongDelay -> Distortion -> Master
-const bitCrusher = new Tone.BitCrusher(4).toDestination(); // Digital breakdown
-const delay = new Tone.PingPongDelay("4n", 0.5).connect(bitCrusher); // Space and echo
-const distortion = new Tone.Distortion(0.8).connect(delay); // Heavy grit
-
-// Create a Player object for the external file, connected to the effects chain
-const player = new Tone.Player(externalAudioUrl, () => {
-    console.log("External audio loaded successfully. Ready for Brutal playback.");
-}).connect(distortion);
-
-player.loop = true;
-
-document.getElementById('audio-starter').addEventListener('click', async () => {
-    // Start audio context on user interaction
-    await Tone.start();
-    player.start(0); 
-    document.getElementById('audio-starter').remove(); // Remove button after use
-    console.log("BRUTAL Audio Overload Initiated.");
-});
-
-// 3. Anti-Copy/Inspection Logic (Brutalized)
-
-function showMessage(message) {
-    const modal = document.getElementById('message-modal');
-    modal.querySelector('p:nth-child(2)').textContent = message;
-    modal.style.display = 'block';
-}
-
-document.addEventListener('contextmenu', (e) => {
-    e.preventDefault();
-    showMessage("Akses Ditolak! Right-click disabled.");
-});
-
-document.addEventListener('keydown', (e) => {
-    // Disable F12 (Inspect)
-    if (e.key === 'F12') {
-        e.preventDefault();
-        showMessage("Inspeksi Ditolak! F12 disabled.");
-        return false;
+    function showError(message) {
+      errorMsg.textContent = message;
+      errorAlert.classList.remove('hidden');
+      setTimeout(() => {
+        errorAlert.classList.add('hidden');
+      }, 5000);
     }
 
-    // Disable common copy/paste/view source keys
-    if (e.ctrlKey || e.metaKey) { // metaKey for Mac users (Cmd key)
-        if (e.key === 'u' || e.key === 'U' || // Ctrl+U (View Source)
-            e.key === 's' || e.key === 'S' || // Ctrl+S (Save Page)
-            e.key === 'c' || e.key === 'C' || // Ctrl+C (Copy)
-            e.key === 'x' || e.key === 'X' || // Ctrl+X (Cut)
-            e.key === 'i' || e.key === 'I'    // Ctrl+Shift+I (Inspect)
-        ) {
-            e.preventDefault();
-            showMessage("Mati rasa! Tindakan ini dicegah.");
-            return false;
-        }
-    }
-});
+    async function uploadIcon(file) {
+      uploadStatus.classList.remove('hidden');
+      uploadStatus.textContent = 'Mengunggah ikon...';
+      uploadStatus.className = 'upload-status';
 
-
-// Start the Matrix animation loop
-window.onload = function () {
-    function animate() {
-        drawMatrix();
-        requestAnimationFrame(animate);
-    }
-    animate();
-    
-    // Resize handler for Matrix canvas
-    window.addEventListener('resize', function() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        const columns = Math.floor(canvas.width / fontSize);
-        drops.length = 0;
-        for (let i = 0; i < columns; i++) {
-            drops[i] = Math.floor(Math.random() * canvas.height / fontSize);
+      // list upload nyee
+      const uploadServices = [
+        {
+          name: 'ImgBB',
+          url: 'https://api.imgbb.com/1/upload?key=27b6cd66b77de7e91edcff653e2ba193', // kalo eror ganti key lu sndiri di https://api.imgbb.com/
+          method: 'POST',
+          body: (file) => {
+            const formData = new FormData();
+            formData.append('image', file);
+            return formData;
+          },
+          processResponse: async (response) => {
+            const data = await response.json();
+            return data.data.url;
+          }
+        },
+        {
+          name: 'Catbox',
+          url: 'https://catbox.moe/user/api.php',
+          method: 'POST',
+          body: (file) => {
+            const formData = new FormData();
+            formData.append('fileToUpload', file);
+            formData.append('reqtype', 'fileupload');
+            return formData;
+          },
+          processResponse: async (response) => {
+            return await response.text();
+          }
+        },
+        {
+          name: 'UploadCC',
+          url: 'https://upload.cc/index.php/upload',
+          method: 'POST',
+          body: (file) => {
+            const formData = new FormData();
+            formData.append('uploaded_file[]', file);
+            return formData;
+          },
+          processResponse: async (response) => {
+            const data = await response.json();
+            if (data.success && data.files && data.files.length > 0) {
+              return `https://upload.cc/${data.files[0].hash}`;
+            }
+            throw new Error('Upload gagal');
+          }
         }
+      ];
+
+      for (const service of uploadServices) {
+        try {
+          uploadStatus.textContent = `Mencoba mengunggah ke ${service.name}...`;
+          
+          // Buat timeout untuk jawa
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 30000); 
+          
+          const response = await fetch(service.url, {
+            method: service.method,
+            body: service.body(file),
+            signal: controller.signal
+          });
+          
+          clearTimeout(timeoutId);
+          
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          
+          const imageUrl = await service.processResponse(response);
+          
+          if (!imageUrl) {
+            throw new Error('Tidak mendapatkan URL gambar');
+          }
+          
+          uploadStatus.textContent = `Berhasil mengunggah ke ${service.name}`;
+          uploadStatus.classList.add('status-success');
+          return imageUrl;
+        } catch (error) {
+          console.warn(`Upload ke ${service.name} gagal:`, error);
+        }
+      }
+      
+      throw new Error('Semua layanan upload gambar gagal. Silakan coba lagi nanti.');
+    }
+
+    function animateProgress(tMin = 3) {
+      const total = tMin * 60 * 1000;
+      const start = Date.now();
+      const iv = setInterval(() => {
+        const elap = Date.now() - start;
+        const pct = Math.min(90, Math.round((elap / total) * 100));
+        progBar.style.width = pct + '%';
+        if (pct === 90) clearInterval(iv);
+      }, 1000);
+      return () => clearInterval(iv); 
+    }
+
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+      btn.disabled = true;
+      errorAlert.classList.add('hidden');
+      progr.classList.remove('hidden');
+      progr.classList.add('show');
+      result.classList.remove('show');
+      result.classList.add('hidden');
+      const stopProg = animateProgress(3);
+
+      try {
+        const url = $('url').value.trim();
+        const appName = $('appName').value.trim();
+        const email = $('email').value.trim();
+        const imgFile = $('iconFile').files[0];
+        
+        if (!imgFile) throw new Error('Pilih ikon dulu');
+
+        try {
+          new URL(url);
+        } catch (e) {
+          throw new Error('URL tidak valid');
+        }
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+          throw new Error('Format email tidak valid');
+        }
+
+        progText.textContent = 'Mengunggah ikon…';
+        const iconUrl = await uploadIcon(imgFile);
+
+        progText.textContent = 'Proceessing Builder…';
+        const apiUrl = 'https://api.fikmydomainsz.xyz/tools/toapp/build-complete' +
+          '?url=' + encodeURIComponent(url) +
+          '&email=' + encodeURIComponent(email) +
+          '&appName=' + encodeURIComponent(appName) +
+          '&appIcon=' + encodeURIComponent(iconUrl);
+
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 374600); // Timeout 5 menit an 
+        
+        const response = await fetch(apiUrl, { signal: controller.signal });
+        clearTimeout(timeoutId);
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const job = await response.json();
+        if (!job.status) throw new Error(job.error || 'Build gagal');
+
+        stopProg();
+        progBar.style.width = '100%';
+        
+        // Add slight delay before showing result for better UX
+        setTimeout(() => {
+          $('dlApk').href = job.downloadUrl;
+          $('keyInfo').textContent =
+            `storePass : ${job.storePass}
+keyPass   : ${job.keyPass}
+keySha    : ${job.keySha}
+package   : ${job.packageName}`;
+          
+          progr.classList.remove('show');
+          setTimeout(() => {
+            progr.classList.add('hidden');
+            result.classList.remove('hidden');
+            setTimeout(() => {
+              result.classList.add('show');
+            }, 50);
+          }, 500);
+        }, 800);
+
+      } catch (err) {
+        stopProg();
+        progr.classList.remove('show');
+        setTimeout(() => {
+          progr.classList.add('hidden');
+        }, 500);
+        btn.disabled = false;
+        showError('Error: ' + err.message);
+        console.error(err);
+      }
     });
-}
-</script>
+
+    $('iconFile').addEventListener('change', function() {
+      const file = this.files[0];
+      if (file) {
+        if (!file.type.match('image.*')) {
+          showError('File harus berupa gambar (PNG/JPG)');
+          this.value = '';
+          return;
+        }
+        
+        if (file.size > 5 * 1024 * 1024) {
+          showError('Ukuran file maksimal 5MB');
+          this.value = '';
+          return;
+        }
+        
+        uploadStatus.classList.remove('hidden');
+        uploadStatus.textContent = 'File siap diunggah: ' + file.name;
+        uploadStatus.className = 'upload-status status-success';
+      }
+    });
+  </script>
 </body>
 </html>
