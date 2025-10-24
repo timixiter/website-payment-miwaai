@@ -5,7 +5,7 @@
   <title>Web2APK Builder Premium | YatzzHost</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Konversi website ke APK dengan mudah dan cepat. Dapatkan aplikasi Android premium dari link URL Anda!"> 
-  <meta name="google-site-verification" content="mpZXVrORh_EsUHsFjdu0GumjK0Utz1y-Q5KM7buBxAY" />
+  <meta name="google-site-verification" content="mpZXVrORh_EsUHsFfdu0GumjK0Utz1y-Q5KM7buBxAY" />
   <meta name="keywords" content="web to apk, web2app, apk builder, konversi website, apk gratis, yatzzhost, toapp">
   <meta name="author" content="YatzzHost / Reseller Gaming">
   
@@ -22,19 +22,19 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   
   <style>
-    /* --- VARIABEL WARNA (DIBUAT LEBIH TERORGANISIR) --- */
+    /* --- VARIABEL WARNA --- */
     :root {
-      --primary: #4361ee; /* Biru Utama */
+      --primary: #4361ee; 
       --primary-dark: #3a56d4;
       --primary-light: #e0e7ff;
       --danger: #ef4444;
-      --dark: #1e293b; /* Slate-800 */
-      --darker: #0f172a; /* Slate-900 / Background Utama */
-      --light: #f8fafc; /* Slate-50 */
+      --dark: #1e293b; 
+      --darker: #0f172a; 
+      --light: #f8fafc; 
       --gray: #64748b;
       --gray-light: #e2e8f0;
       --success: #22c55e;
-      --accent: #8b5cf6; /* Ungu Sekunder */
+      --accent: #8b5cf6; 
       --accent-gradient: linear-gradient(135deg, var(--primary), var(--accent));
       --glow: 0 0 15px rgba(67, 97, 238, 0.5);
     }
@@ -260,7 +260,7 @@
         padding-bottom: 0.9rem !important;
     }
 
-    /* --- TOMBOL SUBMIT --- */
+    /* --- TOMBOL SUBMIT (BUTTON) --- */
     .btn {
       width: 100%;
       padding: 1.1rem;
@@ -619,7 +619,7 @@
     const form = $('builderForm');
     const progr = $('progress');
     const result = $('result');
-    const btn = $('submitBtn');
+    const btn = $('submitBtn'); // Tombol Build APK Premium
     const progText = $('progText');
     const progBar = $('progBar');
     const errorAlert = $('errorAlert');
@@ -667,7 +667,7 @@
         },
         {
           name: 'ImgBB',
-          // Ganti key ini dengan key ImgBB Anda sendiri agar lebih terjamin!
+          // Ganti key ini dengan key ImgBB Anda sendiri!
           url: 'https://api.imgbb.com/1/upload?key=27b6cd66b77de7e91edcff653e2ba193', 
           method: 'POST',
           body: (file) => {
@@ -719,8 +719,6 @@
 
     /**
      * Menjalankan animasi progress bar hingga 90%.
-     * @param {number} minMinutes Durasi minimal dalam menit sebelum mencapai 90%.
-     * @returns {function} Fungsi untuk menghentikan interval.
      */
     function animateProgress(minMinutes = 3) {
       const totalTime = minMinutes * 60 * 1000; 
@@ -737,10 +735,10 @@
       return () => clearInterval(iv); 
     }
 
-    // --- EVENT LISTENER UTAMA ---
+    // --- EVENT LISTENER UTAMA (DIJALANKAN SAAT TOMBOL DIKLIK) ---
     form.addEventListener('submit', async e => {
       e.preventDefault();
-      btn.disabled = true;
+      btn.disabled = true; // Nonaktifkan tombol
       errorAlert.classList.add('hidden');
       
       // Reset UI Progress
@@ -786,7 +784,7 @@
           '&appIcon=' + encodeURIComponent(iconUrl);
 
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 600000); // 10 menit timeout
+        const timeoutId = setTimeout(() => controller.abort(), 600000); // 10 menit timeout untuk proses build
         
         const response = await fetch(apiUrl, { signal: controller.signal });
         clearTimeout(timeoutId);
@@ -831,7 +829,7 @@ Key SHA:    ${job.keySha || 'N/A'}`;
         setTimeout(() => {
           progr.classList.add('hidden');
         }, 600);
-        btn.disabled = false;
+        btn.disabled = false; // Aktifkan kembali tombol
         showError('Proses dibatalkan atau terjadi kesalahan: ' + err.message);
         console.error("Kesalahan Proses:", err);
       }
