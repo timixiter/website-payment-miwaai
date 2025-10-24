@@ -11,7 +11,9 @@
   
   <meta property="og:title" content="Web2App Builder Premium | Cepat & Mudah">
   <meta property="og:description" content="Konversi link website ke APK dengan fitur premium. Coba sekarang!">
-  <meta property="og:image" content="https://example.com/preview.png"> <meta property="og:url" content="https://www.web2app.zone.id"> <meta property="og:type" content="website">
+  <meta property="og:image" content="https://example.com/preview.png"> 
+  <meta property="og:url" content="https://www.web2app.zone.id"> 
+  <meta property="og:type" content="website">
   <meta property="og:locale" content="id_ID">
   
   <meta name="robots" content="index, follow">
@@ -52,7 +54,7 @@
       justify-content: center;
       align-items: center;
       min-height: 100vh;
-      padding: 1.5rem; /* Sedikit dikurangi */
+      padding: 1.5rem; 
       position: relative;
       overflow-x: hidden;
     }
@@ -77,11 +79,10 @@
       position: absolute;
       border-radius: 50%;
       background: rgba(67, 97, 238, 0.05);
-      animation: float 20s infinite ease-in-out; /* Durasi lebih panjang */
+      animation: float 20s infinite ease-in-out; 
       z-index: -1;
     }
     
-    /* Positioning elemen floating lebih bervariasi */
     .floating-element:nth-child(1) { width: 80px; height: 80px; top: 5%; left: 2%; animation-delay: 0s; }
     .floating-element:nth-child(2) { width: 120px; height: 120px; top: 80%; left: 15%; animation-delay: -5s; }
     .floating-element:nth-child(3) { width: 60px; height: 60px; top: 30%; left: 90%; animation-delay: -10s; }
@@ -96,11 +97,11 @@
     /* --- CARD CONTAINER --- */
     .card {
       width: 100%;
-      max-width: 450px; /* Sedikit diperkecil untuk padding lebih lega */
-      background: rgba(30, 41, 59, 0.85); /* Sedikit lebih terang */
-      backdrop-filter: blur(12px); /* Blur lebih kuat */
+      max-width: 450px; 
+      background: rgba(30, 41, 59, 0.85); 
+      backdrop-filter: blur(12px); 
       border-radius: 1.5rem;
-      box-shadow: 0 15px 50px rgba(0, 0, 0, 0.5), 0 0 40px rgba(67, 97, 238, 0.3); /* Shadow lebih dramatis */
+      box-shadow: 0 15px 50px rgba(0, 0, 0, 0.5), 0 0 40px rgba(67, 97, 238, 0.3); 
       padding: 2.5rem;
       opacity: 0;
       transform: translateY(30px) scale(0.98);
@@ -117,9 +118,9 @@
       left: -50%;
       width: 200%;
       height: 200%;
-      background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.08), transparent); /* Opacity lebih rendah */
+      background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.08), transparent); 
       transform: rotate(45deg);
-      animation: shine 8s infinite linear; /* Kecepatan shine lebih lambat */
+      animation: shine 8s infinite linear; 
       pointer-events: none;
     }
     
@@ -160,7 +161,7 @@
     }
     
     .logo-text { 
-      font-size: 1.6rem; /* Sedikit lebih kecil */
+      font-size: 1.6rem; 
       font-weight: 700; 
       background: var(--accent-gradient);
       -webkit-background-clip: text;
@@ -174,11 +175,11 @@
       bottom: -4px;
       left: 0;
       width: 100%;
-      height: 3px; /* Lebih tebal */
+      height: 3px; 
       background: var(--accent);
       transform: scaleX(0);
       transform-origin: right;
-      transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55); /* Springy transition */
+      transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55); 
     }
     
     .logo:hover .logo-text::after {
@@ -205,7 +206,7 @@
     
     .form-label {
       display: block;
-      margin-bottom: 0.65rem; /* Sedikit lebih rapat */
+      margin-bottom: 0.65rem; 
       font-size: 0.9rem;
       font-weight: 500;
       color: var(--light);
@@ -218,8 +219,8 @@
     
     .form-control {
       width: 100%;
-      padding: 0.9rem 1rem 0.9rem 3rem; /* Padding vertikal dikurangi */
-      background: rgba(15, 23, 42, 0.6); /* Sedikit lebih gelap/transparan */
+      padding: 0.9rem 1rem 0.9rem 3rem; 
+      background: rgba(15, 23, 42, 0.6); 
       border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 0.75rem;
       font-size: 1rem;
@@ -234,7 +235,7 @@
     
     .form-control:focus {
       outline: none;
-      border-color: var(--accent); /* Fokus ke warna aksen */
+      border-color: var(--accent); 
       box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.4), inset 0 2px 4px rgba(0, 0, 0, 0.2);
     }
     
@@ -253,9 +254,7 @@
       color: var(--accent);
     }
 
-    /* Khusus untuk file input agar ikon tetap terlihat bagus */
     #iconFile {
-        /* Mengatur agar teks bawaan file input tidak mengganggu padding */
         padding-left: 3rem !important; 
         padding-top: 0.9rem !important;
         padding-bottom: 0.9rem !important;
@@ -320,7 +319,7 @@
     /* --- ALERTS & PROGRESS --- */
     .alert {
       padding: 1rem 1.25rem;
-      border-left: 5px solid var(--danger); /* Lebih tebal */
+      border-left: 5px solid var(--danger); 
       background: rgba(239, 68, 68, 0.15);
       color: var(--light);
       border-radius: .75rem;
@@ -355,7 +354,7 @@
     }
     
     .progress-bar {
-      height: 10px; /* Lebih tebal */
+      height: 10px; 
       background: rgba(255, 255, 255, 0.15);
       border-radius: 5px;
       overflow: hidden;
@@ -367,7 +366,7 @@
       height: 100%;
       background: var(--accent-gradient);
       width: 0%;
-      transition: width 0.5s ease-out; /* Transisi lebih halus */
+      transition: width 0.5s ease-out; 
       position: relative;
       overflow: hidden;
     }
@@ -379,8 +378,8 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent); /* Shine lebih jelas */
-      animation: progressShine 2s infinite linear; /* Sedikit lebih lambat */
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent); 
+      animation: progressShine 2s infinite linear; 
     }
     
     @keyframes progressShine {
@@ -435,6 +434,12 @@
       border: 1px solid rgba(34, 197, 94, 0.4);
     }
     
+    .status-error {
+      background: rgba(239, 68, 68, 0.2);
+      color: var(--danger);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+    }
+    
     .result-box {
       background: rgba(30, 41, 59, 0.85);
       border-radius: 1rem;
@@ -482,7 +487,7 @@
       overflow: auto;
       max-height: 200px;
       border: 1px solid rgba(67, 97, 238, 0.3);
-      white-space: pre-wrap; /* Memastikan teks panjang terbungkus */
+      white-space: pre-wrap; 
     }
     
     details {
@@ -495,7 +500,7 @@
       border-radius: 0.5rem;
       background: rgba(15, 23, 42, 0.6);
       transition: all 0.3s ease;
-      list-style: none; /* Menghilangkan default marker */
+      list-style: none; 
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -628,7 +633,6 @@
     function showError(message) {
       errorMsg.textContent = message;
       errorAlert.classList.remove('hidden');
-      // Hilangkan pesan error setelah 7 detik
       setTimeout(() => {
         errorAlert.classList.add('hidden');
       }, 7000); 
@@ -641,10 +645,9 @@
      */
     async function uploadIcon(file) {
       uploadStatus.classList.remove('hidden', 'status-success');
-      uploadStatus.classList.add('status-error'); // Default ke error sampai sukses
+      uploadStatus.classList.add('status-error'); 
       uploadStatus.textContent = 'Mencari layanan unggah...';
 
-      // Daftar layanan unggah (Tambahkan atau ganti sesuai kebutuhan)
       const uploadServices = [
         {
           name: 'Catbox.moe',
@@ -658,14 +661,13 @@
           },
           processResponse: async (response) => {
             const text = await response.text();
-            // Catbox mengembalikan URL langsung jika sukses
             if (text.startsWith('http')) return text; 
             throw new Error('Respon tidak valid dari Catbox');
           }
         },
         {
           name: 'ImgBB',
-          // Ganti key jika ini adalah service utama Anda
+          // Ganti key ini dengan key ImgBB Anda sendiri agar lebih terjamin!
           url: 'https://api.imgbb.com/1/upload?key=27b6cd66b77de7e91edcff653e2ba193', 
           method: 'POST',
           body: (file) => {
@@ -679,16 +681,14 @@
             throw new Error(data.error.message || 'Upload gagal di ImgBB');
           }
         }
-        // Service lain bisa ditambahkan di sini
       ];
 
       for (const service of uploadServices) {
         try {
           uploadStatus.textContent = `Mencoba mengunggah ke ${service.name}...`;
           
-          // Setel timeout untuk setiap permintaan upload (30 detik)
           const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 30000); 
+          const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 detik timeout
           
           const response = await fetch(service.url, {
             method: service.method,
@@ -699,9 +699,8 @@
           clearTimeout(timeoutId);
           
           if (!response.ok) {
-            // Coba dapatkan pesan error dari body jika ada
             const errText = await response.text();
-            throw new Error(`HTTP ${response.status} (${service.name}). Body: ${errText.substring(0, 50)}...`);
+            throw new Error(`HTTP ${response.status} (${service.name}). Respon: ${errText.substring(0, 50)}...`);
           }
           
           const imageUrl = await service.processResponse(response);
@@ -724,13 +723,11 @@
      * @returns {function} Fungsi untuk menghentikan interval.
      */
     function animateProgress(minMinutes = 3) {
-      // Total waktu minimal (3 menit = 180 detik)
       const totalTime = minMinutes * 60 * 1000; 
       const start = Date.now();
       
       const iv = setInterval(() => {
         const elapsed = Date.now() - start;
-        // Cap persentase di 90% agar proses build API terlihat masih berjalan
         const pct = Math.min(90, Math.round((elapsed / totalTime) * 100)); 
         progBar.style.width = pct + '%';
         
@@ -740,19 +737,20 @@
       return () => clearInterval(iv); 
     }
 
+    // --- EVENT LISTENER UTAMA ---
     form.addEventListener('submit', async e => {
       e.preventDefault();
       btn.disabled = true;
       errorAlert.classList.add('hidden');
       
-      // Reset UI
+      // Reset UI Progress
       progr.classList.remove('hidden');
       progr.classList.add('show');
       result.classList.add('hidden');
       result.classList.remove('show');
       uploadStatus.classList.add('hidden');
       
-      const stopProg = animateProgress(3); // Animasi berjalan minimal 3 menit
+      const stopProg = animateProgress(3); 
 
       try {
         const url = $('url').value.trim();
@@ -762,7 +760,7 @@
         
         if (!imgFile) throw new Error('Ikon aplikasi belum dipilih.');
 
-        // Validasi dasar
+        // Validasi URL dan Email
         try {
           new URL(url);
         } catch (e) {
@@ -780,16 +778,15 @@
         progText.textContent = 'Ikon berhasil diunggah.';
 
         // Tahap 2: Kirim Job Build ke API
-        progText.textContent = 'Memulai proses build APK di server...';
+        progText.textContent = 'Memulai proses build APK di server... (Maksimal 10 Menit)';
         const apiUrl = 'https://api.fikmydomainsz.xyz/tools/toapp/build-complete' +
           '?url=' + encodeURIComponent(url) +
           '&email=' + encodeURIComponent(email) +
           '&appName=' + encodeURIComponent(appName) +
           '&appIcon=' + encodeURIComponent(iconUrl);
 
-        // Timeout 10 menit untuk job build (374600 -> 10 menit = 600000)
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 600000); 
+        const timeoutId = setTimeout(() => controller.abort(), 600000); // 10 menit timeout
         
         const response = await fetch(apiUrl, { signal: controller.signal });
         clearTimeout(timeoutId);
@@ -802,10 +799,9 @@
         if (!job.status) throw new Error(job.error || 'Build gagal oleh server API.');
 
         // Tahap 3: Selesai
-        stopProg(); // Hentikan animasi
+        stopProg(); 
         progBar.style.width = '100%';
         
-        // Tunggu sebentar sebelum menampilkan hasil akhir
         setTimeout(() => {
           $('dlApk').href = job.downloadUrl;
           $('keyInfo').textContent =
@@ -830,7 +826,7 @@ Key SHA:    ${job.keySha || 'N/A'}`;
         }, 1000);
 
       } catch (err) {
-        stopProg(); // Pastikan animasi berhenti jika ada error
+        stopProg(); 
         progr.classList.remove('show');
         setTimeout(() => {
           progr.classList.add('hidden');
